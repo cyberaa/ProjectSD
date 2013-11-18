@@ -1,0 +1,79 @@
+@font-face {
+    font-family: "pixel";
+    src: url(fonts/Science_Fair.otf);
+}
+
+.fontBrand {
+    font-family: "pixel";
+    color: #bccdca;
+    font-size: 20px;
+}
+
+
+
+.navbar-default {
+    background-color: #007765;
+    border-color: #0e503e;
+}
+.navbar-default .navbar-brand {
+    color: #eff1f1;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #bccdca;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #eff1f1;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #bccdca;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #bccdca;
+    background-color: #0e503e;
+}
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #bccdca;
+    background-color: #0e503e;
+}
+.navbar-default .navbar-nav > .dropdown > a .caret {
+    border-top-color: #eff1f1;
+    border-bottom-color: #eff1f1;
+}
+.navbar-default .navbar-nav > .dropdown > a:hover .caret,
+.navbar-default .navbar-nav > .dropdown > a:focus .caret {
+    border-top-color: #bccdca;
+    border-bottom-color: #bccdca;
+}
+.navbar-default .navbar-nav > .open > a .caret,
+.navbar-default .navbar-nav > .open > a:hover .caret,
+.navbar-default .navbar-nav > .open > a:focus .caret {
+    border-top-color: #bccdca;
+    border-bottom-color: #bccdca;
+}
+.navbar-default .navbar-toggle {
+    border-color: #0e503e;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #0e503e;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #eff1f1;
+}
+@media (max-width: 767px) {
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #eff1f1;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #bccdca;
+    }
+}
+
+
