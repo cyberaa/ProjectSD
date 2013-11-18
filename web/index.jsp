@@ -22,15 +22,22 @@
 <nav class="navbar navbar-default navbar-static-top" role="navigation">
     <div class="container" style="padding-left: 0px; padding-right: 0px;">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#"> <span class="fontBrand"> <strong>Idea Broker</strong> </span> </a>
+            <span class="navbar-brand"> <span class="fontBrand"> <strong>Idea Broker</strong> </span> </span>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#"><i class="fa fa-lightbulb-o"> </i> Ideas </a></li>
-                <li><a href="#"> <i class="fa fa-bars"></i> Topics </a></li>
+                <li class="dropdown active">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-lightbulb-o"> </i> Ideas<!--<b class="caret"></b>--></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><i class="fa fa-flash"></i> New idea</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#"><i class="fa fa-star"></i> Watchlist</a></li>
+                        <li><a href="#"><i class="fa fa-trophy"></i> Hall of fame</a></li>
+                    </ul>
+                </li>
+                <li><a href="<s:url action='topics'/>"> <i class="fa fa-bars"></i> Topics </a></li>
                 <li><a href="#"> <i class="fa fa-tasks"></i> Portfolio </a></li>
-                <li><a href="#"> <i class="fa fa-star"></i> Watchlist </a></li>
             </ul>
             <form class="navbar-form navbar-left" role="search">
                 <div class="form-group">
@@ -49,7 +56,12 @@
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
-
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">João Simões<!--<b class="caret"></b>--></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><i class="fa fa-power-off"></i> Log out</a></li>
+                    </ul>
+                </li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div>
@@ -57,10 +69,11 @@
 
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
+
     <!-- Submit new idea panel -->
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-lightbulb-o" style="margin-right: 3px;"> </i> What's your idea?</h3>
+            <h3 class="panel-title"><i class="fa fa-flash" style="margin-right: 3px;"> </i> What's your idea?</h3>
         </div>
         <div class="panel-body">
             <textarea class="form-control" rows="3"></textarea>
@@ -83,6 +96,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Show some ideas panel -->
+    <div class="panel panel-default">
+        <div class="panel-body">
+            Basic panel example
         </div>
     </div>
 

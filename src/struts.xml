@@ -13,6 +13,14 @@
             <result>/index.jsp</result>
         </action>
 
+        <action name="topics">
+            <result>/topics.jsp</result>
+        </action>
+
+        <action name="auth">
+            <result>/auth.jsp</result>
+        </action>
+
         <!--<action name="hello" class="action.HelloAction"
                 method="execute">
             <result name="success">/Hello.jsp</result>
