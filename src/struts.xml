@@ -9,22 +9,22 @@
 
     <package name="basicstruts2" extends="struts-default">
 
-        <action name="index">
-            <result>/index.jsp</result>
+        <action name="idea">
+            <result>/idea.jsp</result>
         </action>
 
         <action name="topics">
             <result>/topics.jsp</result>
         </action>
 
-        <action name="auth">
-            <result>/auth.jsp</result>
+        <action name="index">
+            <result>/index.jsp</result>
         </action>
 
-        <!--<action name="hello" class="action.HelloAction"
+        <action name="login" class="action.Login"
                 method="execute">
-            <result name="success">/Hello.jsp</result>
-        </action> -->
+            <result name="success">/idea.jsp</result>
+        </action>
 
     </package>
 

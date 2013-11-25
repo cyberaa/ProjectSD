@@ -16,96 +16,34 @@
     <link href="assets/style.css" rel="stylesheet">
     <title>Idea Broker</title>
 </head>
-<body>
+<body background="assets/textures/escheresque_ste.png">
 
-<!-- Navbar -->
-<nav class="navbar navbar-default navbar-static-top" role="navigation">
-    <div class="container" style="padding-left: 0px; padding-right: 0px;">
-        <div class="navbar-header">
-            <span class="navbar-brand"> <span class="fontBrand"> <strong>Idea Broker</strong> </span> </span>
-        </div>
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="dropdown active">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-lightbulb-o"> </i> Ideas<!--<b class="caret"></b>--></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#"><i class="fa fa-flash"></i> New idea</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#"><i class="fa fa-star"></i> Watchlist</a></li>
-                        <li><a href="#"><i class="fa fa-trophy"></i> Hall of fame</a></li>
-                    </ul>
-                </li>
-                <li><a href="<s:url action='topics'/>"> <i class="fa fa-bars"></i> Topics </a></li>
-                <li><a href="#"> <i class="fa fa-tasks"></i> Portfolio </a></li>
-            </ul>
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search by topic or idea" size="45">
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default" style="height: 34px;"> <i class="fa fa-search"></i> </button>
-                    <button type="button" class="btn btn-default dropdown-toggle" style="height: 34px;" data-toggle="dropdown">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Topic</a></li>
-                        <li><a href="#">Idea</a></li>
-                    </ul>
-                </div>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">João Simões<!--<b class="caret"></b>--></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#"><i class="fa fa-power-off"></i> Log out</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
+<div class="container">
+    <div style="text-align: center; margin-bottom: 80px;">
+       <span class="fontBrand" style="font-size: 100px; color: #FFF;">IDEA BROKER</span>
     </div>
-</nav>
-
-<!-- Main container -->
-<div class="container" style="padding-left: 200px; padding-right: 200px;">
-
-    <!-- Submit new idea panel -->
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-flash" style="margin-right: 3px;"> </i> What's your idea?</h3>
-        </div>
-        <div class="panel-body">
-            <textarea class="form-control" rows="3"></textarea>
-
-            <div class="row" style="margin-top: 20px;">
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label class="control-label" for="investment">Investment</label>
-                        <input type="text" class="form-control" id="investment">
-                    </div>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Please sign in or sign up</h3>
                 </div>
-                <div class="col-md-5">
-
-                </div>
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <label for="attach">Attach file</label>
-                        <input type="file" id="attach">
-                        <p class="help-block">Only images</p>
-                    </div>
+                <div class="panel-body">
+                    <form action="login.action" accept-charset="UTF-8" role="form" method="POST">
+                        <fieldset>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="E-mail" name="username" type="text">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                            </div>
+                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Show some ideas panel -->
-    <div class="panel panel-default">
-        <div class="panel-body">
-            Basic panel example
-        </div>
-    </div>
-
 </div>
 
 

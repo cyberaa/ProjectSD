@@ -30,7 +30,7 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-lightbulb-o"> </i> Ideas<!--<b class="caret"></b>--></a>
                 <ul class="dropdown-menu">
-                    <li><a href="<s:url action='index'/>"><i class="fa fa-flash"></i> New idea</a></li>
+                    <li><a href="<s:url action='idea'/>"><i class="fa fa-flash"></i> New idea</a></li>
                     <li class="divider"></li>
                     <li><a href="#"><i class="fa fa-star"></i> Watchlist</a></li>
                     <li><a href="#"><i class="fa fa-trophy"></i> Hall of fame</a></li>
@@ -70,11 +70,43 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <a style="cursor: pointer; text-decoration: none;" onclick="togglePanel('p1');">
+            <div class="panel-heading" style=" background-color: #f5f5f5;">
+                <h3> <span style="color: #007765;">Situação económica da europa </span></h3>
+            </div>
+        </a>
+
+        <!-- List group -->
+        <ul class="list-group" id="p1" style="display: none;">
+            <li class="list-group-item">
+                <div style="">
+                    <strong> <i class="fa fa-user"></i> João Simões</strong>
+                </div>
+                <div style="padding-left: 10px; padding-top: 5px;">
+                    A europa está a atravessar uma crise económica derivada da má gestão financeira praticada pelos líderes politicos
+                </div>
+
+            </li>
+            <li class="list-group-item">
+                <div style="">
+                    <strong> <i class="fa fa-user"></i> João Simões </strong>
+                </div>
+                <div style="padding-left: 10px; padding-top: 5px;">
+                    A europa está a atravessar uma crise económica derivada da má gestão financeira praticada pelos líderes politicos
+                </div>
+
+            </li>
+        </ul>
+    </div>
+
 </div>
 
 
 <script src="assets/jquery.js"></script>
 <script src="assets/dist/js/bootstrap.min.js"></script>
+<script src="assets/custom.js"></script>
 
 
 </body>
