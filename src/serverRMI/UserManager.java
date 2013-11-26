@@ -160,7 +160,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 */
 	protected String hashPassword(String pass)
 	{
-		MessageDigest m = null;
+		/*MessageDigest m = null;
 		try {
 			m = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
@@ -183,6 +183,8 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		while(hashText.length() < 32)
 			hashText = "0" + hashText;
 
-		return hashText;
+		return hashText;              */
+
+        return pass;
 	}
 }
