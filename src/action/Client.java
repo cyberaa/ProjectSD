@@ -40,6 +40,4 @@ public class Client extends ActionSupport implements SessionAware {
         getUserSession();
         return SUCCESS;
     }
-
-
 }
