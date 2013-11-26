@@ -46,4 +46,8 @@ public class UserInfo {
             return true;
     }
 
+    public int getUserID() {
+        return userID;
+    }
+
 }

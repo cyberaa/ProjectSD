@@ -60,7 +60,7 @@
                     <a><strong><span style="">Balance: 3000</span></strong></a>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">João Simões<!--<b class="caret"></b>--></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <s:property value="%{#session.user.userID}" /><!--<b class="caret"></b>--></a>
                     <ul class="dropdown-menu">
                         <li><a href="#"><i class="fa fa-power-off"></i> Log out</a></li>
                     </ul>
