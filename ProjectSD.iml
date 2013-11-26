@@ -29,6 +29,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="struts2-2.3.15.3" level="project" />
+    <orderEntry type="library" name="ojdbc6-11.2.0.3" level="project" />
   </component>
 </module>
 
