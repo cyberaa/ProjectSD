@@ -1,5 +1,15 @@
 package model;
 
+import common.rmi.RemoteUserManager;
+import common.rmi.UserAuthenticationException;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: joaosimoes
@@ -9,22 +19,31 @@ package model;
  */
 public class UserInfo {
 
-    private String username;
-    private String password;
+    String rmiAddress = "rmi://127.0.0.1:7777/";
 
-    public void setUsername(String username) {
-        this.username = username;
+    private RemoteUserManager um;
+    private int userID;
+
+    public UserInfo() {
+
+        try {
+            um =  (RemoteUserManager) Naming.lookup(rmiAddress+"UserManager");
+        } catch (NotBoundException e) {
+            System.out.println("NotBoundException");
+        } catch (MalformedURLException e) {
+            System.out.println("Malformed");
+        } catch (RemoteException e) {
+            System.out.println("RemoteException");
+        }
+        userID = -1;
     }
 
-    public String getUsername() {
-        return this.username;
+    public boolean authenticateUser(String username, String password) throws RemoteException, UserAuthenticationException, SQLException {
+        int rmiResponse = this.userID = um.authenticate(username,password);
+        if(rmiResponse == -1)
+            return false;
+        else
+            return true;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
 }

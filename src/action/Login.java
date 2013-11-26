@@ -1,9 +1,14 @@
 package action;
 
 import com.opensymphony.xwork2.ActionSupport;
+import common.rmi.UserAuthenticationException;
 import model.UserInfo;
 import org.apache.struts2.interceptor.SessionAware;
 
+import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.Map;
 
 /**
@@ -13,24 +18,22 @@ import java.util.Map;
  * Time: 8:05 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Login extends ActionSupport implements SessionAware {
+public class Login extends Client {
 
     private String username;
     private String password;
-    private Map<String, Object> session;
 
     @Override
     public String execute() {
-
+        System.out.print(username+"   "+password);
+        super.execute();
+        try {
+            user.authenticateUser(username,password);
+        } catch (Exception e) {
+            System.out.println("Error 3" + e);
+            return ERROR;
+        }
         return SUCCESS;
-    }
-
-    public void setLogin(UserInfo user) {
-         this.session.put("user", user);
-    }
-
-    public UserInfo getLogin() {
-        return (UserInfo) this.session.get("user");
     }
 
     public void setUsername(String username) {
@@ -47,10 +50,5 @@ public class Login extends ActionSupport implements SessionAware {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Override
-    public void setSession(Map<String, Object> session) {
-         this.session = session;
     }
 }

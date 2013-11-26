@@ -21,6 +21,10 @@
             <result>/index.jsp</result>
         </action>
 
+        <action name="register">
+            <result>/register.jsp</result>
+        </action>
+
         <action name="login" class="action.Login"
                 method="execute">
             <result name="success">/idea.jsp</result>
