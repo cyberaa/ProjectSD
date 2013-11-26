@@ -183,7 +183,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		while(hashText.length() < 32)
 			hashText = "0" + hashText;
 
-		return hashText;              */
+		return hashText;*/
 
         return pass;
 	}
