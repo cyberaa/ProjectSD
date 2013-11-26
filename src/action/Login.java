@@ -1,16 +1,5 @@
 package action;
 
-import com.opensymphony.xwork2.ActionSupport;
-import common.rmi.UserAuthenticationException;
-import model.UserInfo;
-import org.apache.struts2.interceptor.SessionAware;
-
-import java.io.IOException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.sql.SQLException;
-import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  * User: joaosimoes

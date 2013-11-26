@@ -1,5 +1,6 @@
 package model;
 
+import common.rmi.ExistingUserException;
 import common.rmi.RemoteUserManager;
 import common.rmi.UserAuthenticationException;
 
@@ -17,14 +18,14 @@ import java.sql.SQLException;
  * Time: 8:11 PM
  * To change this template use File | Settings | File Templates.
  */
-public class UserInfo {
+public class UserBean {
 
     String rmiAddress = "rmi://127.0.0.1:7777/";
 
     private RemoteUserManager um;
     private int userID;
 
-    public UserInfo() {
+    public UserBean() {
 
         try {
             um =  (RemoteUserManager) Naming.lookup(rmiAddress+"UserManager");
@@ -44,6 +45,10 @@ public class UserInfo {
             return false;
         else
             return true;
+    }
+
+    public void registerUser(String username, String password) throws RemoteException, ExistingUserException, SQLException {
+        um.register(username,password);
     }
 
     public int getUserID() {

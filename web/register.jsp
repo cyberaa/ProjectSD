@@ -29,7 +29,7 @@
                     <h3 class="panel-title">Please sign up or <a href="<s:url action='index'/>"> sign in </a> </h3>
                 </div>
                 <div class="panel-body">
-                    <form action="login.action" accept-charset="UTF-8" role="form" method="POST">
+                    <form action="registerAction.action" accept-charset="UTF-8" role="form" method="POST">
                         <fieldset>
                             <div class="form-group">
                                 <input class="form-control" placeholder="E-mail" name="username" type="text">

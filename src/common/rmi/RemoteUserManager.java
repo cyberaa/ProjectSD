@@ -15,5 +15,5 @@ public interface RemoteUserManager extends Remote
 {
 	public int authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException;
 
-	public void register(String name, String pass, String nameAlias) throws RemoteException, ExistingUserException, SQLException;
+	public void register(String name, String pass) throws RemoteException, ExistingUserException, SQLException;
 }

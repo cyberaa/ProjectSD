@@ -16,7 +16,7 @@ public class Register extends Client {
     public String execute() {
         super.execute();
         try {
-            user.authenticateUser(username,password);
+            user.registerUser(username,password);
         } catch (Exception e) {
             System.out.println("Error 3" + e);
             return ERROR;
@@ -24,5 +24,19 @@ public class Register extends Client {
         return SUCCESS;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

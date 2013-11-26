@@ -1,11 +1,9 @@
 package action;
 
 import com.opensymphony.xwork2.ActionSupport;
-import model.UserInfo;
+import model.UserBean;
 import org.apache.struts2.interceptor.SessionAware;
 
-import java.io.IOException;
-import java.rmi.NotBoundException;
 import java.util.Map;
 
 /**
@@ -19,15 +17,15 @@ public class Client extends ActionSupport implements SessionAware {
 
     protected Map<String, Object> session;
 
-    protected UserInfo user;
+    protected UserBean user;
 
     public void getUserSession() {
         if (!session.containsKey("user")) {
-            this.user = new UserInfo();
+            this.user = new UserBean();
             session.put("user", user);
         }
         else {
-            this.user = (UserInfo) session.get("user");
+            this.user = (UserBean) session.get("user");
         }
     }
 

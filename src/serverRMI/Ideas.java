@@ -62,17 +62,16 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	    try {
 		    db.setAutoCommit(false);
 
-		    String query = "SELECT * FROM idea WHERE user_id = ? AND parent_id = ? AND number_parts = ? AND stance = ? AND active = ? AND text LIKE ? AND filename = ?";
+		    String query = "SELECT * FROM idea WHERE user_id = ? AND number_parts = ? AND active = ? AND text LIKE ? AND attach LIKE ? AND in_hall LIKE ?";
 
 		    try {
 			    stmt = db.prepareStatement(query);
 			    stmt.setInt(1, user_id);
-			    stmt.setInt(2, parent_id);
-			    stmt.setInt(3, number_parts);
-			    stmt.setInt(4, stance);
-			    stmt.setInt(5, 1);
-			    stmt.setString(6, text);
-			    stmt.setString(7, filename);
+			    stmt.setInt(2, number_parts);
+			    stmt.setInt(3, 1);
+			    stmt.setString(4, text);
+			    stmt.setString(5, filename);
+                stmt.setInt(6, 0);
 
 			    rs = stmt.executeQuery();
 
@@ -112,7 +111,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    }
 
 		    //Insert idea.
-		    query = "INSERT INTO idea (id,user_id,parent_id,number_parts,stance,active,text,attach) VALUES (idea_id_inc.nextval,?,?,?,?,?,?,?)";
+		    query = "INSERT INTO idea (id,user_id,number_parts,stance,active,text,attach) VALUES (idea_id_inc.nextval,?,?,?,?,?,?,?)";
 
             try {
                 stmt = db.prepareStatement(query);
