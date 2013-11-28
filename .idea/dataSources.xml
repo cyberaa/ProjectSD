@@ -15,6 +15,21 @@
         </library>
       </libraries>
     </data-source>
+    <data-source source="LOCAL" name="SD Database" product="Oracle" version="Oracle Database 11g Express Edition Release 11.2.0.2.0 - Production" jdbc-version="11.2" driver-name="Oracle JDBC driver" driver-version="11.2.0.3.0" uuid="3c933e00-b52c-4cfe-964d-c2f0c872d132">
+      <extra-name-characters>$#</extra-name-characters>
+      <identifier-quote-string>&quot;</identifier-quote-string>
+      <synchronize>true</synchronize>
+      <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
+      <jdbc-url>jdbc:oracle:thin:@10.6.0.242:1521:XE</jdbc-url>
+      <user-name>sd2</user-name>
+      <user-password>dfd9dfcedf98</user-password>
+      <default-dialect>Oracle</default-dialect>
+      <libraries>
+        <library>
+          <url>jar://$PROJECT_DIR$/../Project-v1/ProjectFinal/ProjectFinal/ojdbc6-11.2.0.3.jar!/</url>
+        </library>
+      </libraries>
+    </data-source>
   </component>
 </project>
 
