@@ -15,3 +15,34 @@ function togglePanel(pID) {
         $("#"+pID).hide();
     }
 }
+
+/*$("#submitIdea").click(function() {
+    alert(1);
+    $.ajax({
+        type: "POST",
+        url: "submitIdeaAction.action",
+        data: {
+            "topic" : $("#topic").val(),
+            "text" :  $("#ideaText").val(),
+            "investment" :  $("#investment").val()
+        },
+        success: function() {
+            var str = "";
+            str += "<div class='alert alert-success alert-dismissable'>";
+            str += "   <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
+            str += "   <strong>Success!</strong> You're idea was submited successfully";
+            str += "</div>";
+
+            $("#alertDiv").html(str);
+        },
+        error: function() {
+            var str = "";
+            str += "<div class='alert alert-danger alert-dismissable'>";
+            str += "   <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
+            str += "   <strong>Error!</strong> An error ocurred during operation";
+            str += "</div>";
+                                       s
+            $("#alertDiv").html(str);
+        }
+    });
+});*/

@@ -73,32 +73,67 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
+    <div id="alertDiv">
+        <s:set name="response" value="response"/>
+        <s:if test="%{#response == 'success'}">
+            <div class='alert alert-success alert-dismissable'>
+                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                <strong>Success!</strong> Idea submitted successfully
+            </div>
+        </s:if>
+        <s:elseif test="%{#response == 'rmi'}">
+            <div class='alert alert-danger alert-dismissable'>
+                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                <strong>Error!</strong> An internal error occurred during topic submission
+            </div>
+        </s:elseif>
+    </div>
+
     <!-- Submit new idea panel -->
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title"><i class="fa fa-flash" style="margin-right: 3px;"> </i> What's your idea?</h3>
         </div>
         <div class="panel-body">
-            <textarea class="form-control" rows="3"></textarea>
+            <form action="submitIdeaAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
+                <fieldset>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th style="text-align: center">Related Topics</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th>
+                            <input type="text" class="form-control" placeholder="Topic" name="topic" id="topic">
+                        </th>
+                        </tbody>
+                    </table>
 
-            <div class="row" style="margin-top: 20px;">
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label class="control-label" for="investment">Investment</label>
-                        <input type="text" class="form-control" id="investment">
-                    </div>
-                </div>
-                <div class="col-md-5">
+                    <textarea class="form-control" rows="3" id="ideaText" name="text"></textarea>
 
-                </div>
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <label for="attach">Attach file</label>
-                        <input type="file" id="attach">
-                        <p class="help-block">Only images</p>
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-md-2">
+                            <div class="form-group" style="margin-bottom: 30px;">
+                                <label class="control-label" for="investment">Investment</label>
+                                <input type="text" class="form-control" id="investment" name="investment">
+                            </div>
+
+                            <button type="submit" id="submitIdea" class="btn btn-default" style="background-color: #007765; color: #f5f5f5;"><strong>Submit</strong></button>
+                        </div>
+                        <div class="col-md-5">
+
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="attach">Attach file</label>
+                                <input type="file" id="attach">
+                                <p class="help-block">Only images</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </fieldset>
+            </form>
         </div>
     </div>
 
@@ -114,6 +149,7 @@
 
 <script src="assets/jquery.js"></script>
 <script src="assets/dist/js/bootstrap.min.js"></script>
+<script src="assets/custom.js"></script>
 
 
 </body>

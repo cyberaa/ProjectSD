@@ -56,10 +56,13 @@
             </div>
         </form>
         <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a><strong><span style="">Balance: 3000</span></strong></a>
+            </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">João Simões<!--<b class="caret"></b>--></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <s:property value="%{#session.user.userID}" /><!--<b class="caret"></b>--></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Log out</a></li>
+                    <li><a href="#"><i class="fa fa-power-off"></i> Log out</a></li>
                 </ul>
             </li>
         </ul>
@@ -69,6 +72,40 @@
 
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
+
+    <s:set name="response" value="response"/>
+    <s:if test="%{#response == 'success'}">
+        <div class='alert alert-success alert-dismissable'>
+            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+            <strong>Success!</strong>  Topic submitted successfully
+        </div>
+    </s:if>
+    <s:elseif test="%{#response == 'rmi'}">
+        <div class='alert alert-danger alert-dismissable'>
+            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+            <strong>Error!</strong> An internal error occurred during topic submission
+        </div>
+    </s:elseif>
+    <s:elseif test="%{#response == 'topicExists'}">
+        <div class='alert alert-danger alert-dismissable'>
+            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+            <strong>Error!</strong> Topic already exists
+        </div>
+    </s:elseif>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-pencil" style="margin-right: 3px;"> </i> Submit new topic</h3>
+        </div>
+        <div class="panel-body">
+            <form action="submitTopicAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
+                <fieldset>
+                    <input type="text" class="form-control" name="topicText" placeholder="Topic text">
+                    <button type="submit" id="submiTopic" class="btn btn-default" style="background-color: #007765; color: #f5f5f5;"><strong>Submit</strong></button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
 
     <div class="panel panel-default">
         <!-- Default panel contents -->
