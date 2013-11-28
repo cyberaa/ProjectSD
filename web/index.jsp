@@ -19,6 +19,9 @@
 <body background="assets/textures/escheresque_ste.png">
 
 <div class="container">
+
+    <s:set name="responseLogin" value="responseLogin"/>
+
     <div style="text-align: center; margin-bottom: 80px;">
        <span class="fontBrand" style="font-size: 100px; color: #FFF;">IDEA BROKER</span>
     </div>
@@ -31,12 +34,23 @@
                 <div class="panel-body">
                     <form action="loginAction.action" accept-charset="UTF-8" role="form" method="POST">
                         <fieldset>
-                            <div class="form-group">
-                                <input class="form-control" placeholder="E-mail" name="username" type="text">
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" placeholder="Password" name="password" type="password" value="">
-                            </div>
+                            <s:if test="%{#responseLogin == 'failedAuth'}">
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="loginUsername">Username or password incorrect</label>
+                                    <input class="form-control" placeholder="E-mail" name="username" type="text" id="loginUsername">
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                </div>
+                            </s:if>
+                            <s:else>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="E-mail" name="username" type="text">
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                </div>
+                            </s:else>
                             <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
                         </fieldset>
                     </form>

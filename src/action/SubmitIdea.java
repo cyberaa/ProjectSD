@@ -17,7 +17,7 @@ public class SubmitIdea extends Client {
     private String text;
     private String investment;
 
-    private String response;
+    private String responseIdea;
 
 
     @Override
@@ -32,14 +32,14 @@ public class SubmitIdea extends Client {
             user.submitIdea(topics, text, investment);
         } catch (IOException e) {
             System.out.println("IO Exception" + e);
-            response = "rmi";
+            responseIdea = "rmi";
             return SUCCESS;
         } catch (SQLException e) {
             System.out.println("SQL Exception");
-            response = "rmi";
+            responseIdea = "rmi";
             return SUCCESS;
         }
-        response = "success";
+        responseIdea = "success";
         return SUCCESS;
     }
 
@@ -55,9 +55,9 @@ public class SubmitIdea extends Client {
         this.investment = investment;
     }
 
-    public String getResponse() {
+    public String getResponseIdea() {
         System.out.println("Entrei nisto");
-        return this.response;
+        return this.responseIdea;
     }
 
 

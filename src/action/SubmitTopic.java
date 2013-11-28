@@ -16,23 +16,23 @@ public class SubmitTopic extends Client {
 
     private String topicText;
 
-    private String response;
+    private String responseTopic;
 
     public String execute() {
         super.execute();
         try {
             user.submitTopic(topicText);
         } catch (ExistingTopicException e) {
-            response = "topicExists";
+            responseTopic = "topicExists";
             return SUCCESS;
         } catch (RemoteException e) {
-            response = "rmi";
+            responseTopic = "rmi";
             return SUCCESS;
         } catch (SQLException e) {
-            response = "rmi";
+            responseTopic = "rmi";
             return SUCCESS;
         }
-        response = "success";
+        responseTopic = "success";
         return  SUCCESS;
     }
 
@@ -40,7 +40,7 @@ public class SubmitTopic extends Client {
         this.topicText = topicText;
     }
 
-    public String getResponse() {
-        return this.response;
+    public String getresponseTopic() {
+        return this.responseTopic;
     }
 }

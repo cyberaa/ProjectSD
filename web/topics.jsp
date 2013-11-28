@@ -73,7 +73,7 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
-    <s:set name="response" value="response"/>
+    <s:set name="responseTopic" value="responseTopic"/>
     <s:if test="%{#response == 'success'}">
         <div class='alert alert-success alert-dismissable'>
             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>

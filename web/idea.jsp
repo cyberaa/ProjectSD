@@ -74,14 +74,14 @@
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
     <div id="alertDiv">
-        <s:set name="response" value="response"/>
-        <s:if test="%{#response == 'success'}">
+        <s:set name="responseIdea" value="responseIdea"/>
+        <s:if test="%{#responseIdea == 'success'}">
             <div class='alert alert-success alert-dismissable'>
                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
                 <strong>Success!</strong> Idea submitted successfully
             </div>
         </s:if>
-        <s:elseif test="%{#response == 'rmi'}">
+        <s:elseif test="%{#responseIdea == 'rmi'}">
             <div class='alert alert-danger alert-dismissable'>
                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
                 <strong>Error!</strong> An internal error occurred during topic submission

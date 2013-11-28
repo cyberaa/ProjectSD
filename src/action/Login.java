@@ -1,5 +1,10 @@
 package action;
 
+import common.rmi.UserAuthenticationException;
+
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: joaosimoes
@@ -12,7 +17,7 @@ public class Login extends Client {
     private String username;
     private String password;
 
-    private String response;
+    private String responseLogin;
 
     @Override
     public String execute() {
@@ -20,11 +25,17 @@ public class Login extends Client {
         super.execute();
         try {
             user.authenticateUser(username,password);
-        } catch (Exception e) {
-            System.out.println("Error 3" + e);
-            response = "error";
+        } catch (RemoteException e) {
+            responseLogin = "rmi";
+            return ERROR;
+        } catch (UserAuthenticationException e) {
+            responseLogin = "failedAuth";
+            return ERROR;
+        } catch (SQLException e) {
+            responseLogin = "rmi";
             return ERROR;
         }
+        responseLogin = "success";
         return SUCCESS;
     }
 
@@ -42,5 +53,9 @@ public class Login extends Client {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getResponseLogin() {
+        return this.responseLogin;
     }
 }
