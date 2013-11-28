@@ -1,5 +1,7 @@
 package model;
 
+import common.IdeaInfo;
+import common.TopicInfo;
 import common.rmi.*;
 
 import java.io.IOException;
@@ -64,6 +66,30 @@ public class UserBean {
 
     public void submitTopic(String topic) throws ExistingTopicException, RemoteException, SQLException {
         topics.newTopic(topic);
+    }
+
+    public void buyShares() {
+
+    }
+
+    public IdeaInfo[] watchlist() {
+        return null;
+    }
+
+    public IdeaInfo[] searchIdea(String ideaKey) {
+        return null;
+    }
+
+    public TopicInfo[] searchTopic(String topicKey) {
+        return null;
+    }
+
+    public IdeaInfo[] portfolio() {
+        return null;
+    }
+
+    public IdeaInfo[] hallOfFame() {
+        return null;
     }
 
 }
