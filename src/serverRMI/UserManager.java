@@ -40,12 +40,13 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 */
 	public int authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException
 	{
-        Connection db = ServerRMI.pool.connectionCheck();
+
+		Connection db = ServerRMI.pool.connectionCheck();
 
 		int tries = 0, maxTries = 3;
 
 		PreparedStatement queryUser = null;
-		ResultSet resultSet;
+		ResultSet resultSet = null;
 
 		String query = "SELECT id FROM sduser WHERE username LIKE ? AND password LIKE ?";
 
@@ -88,9 +89,9 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 * @throws ExistingUserException
 	 * @throws SQLException
 	 */
-	public void register(String name, String pass, String nameAlias) throws RemoteException, ExistingUserException, SQLException
+	public void register(String name, String pass) throws RemoteException, ExistingUserException, SQLException
 	{
-        Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.pool.connectionCheck();
 
 		int tries = 0, maxTries = 3;
 
@@ -99,7 +100,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		ResultSet resultSet = null;
 
 		String query = "SELECT id FROM sduser WHERE username LIKE ?";
-		String insert = "INSERT INTO sduser (id, username, password, cash) VALUES(seq_sduser.nextval,?,?,?)";
+		String insert = "INSERT INTO sduser (id, username, password, cash, is_root) VALUES(seq_sduser.nextval,?,?,?,?)";
 
 		//See if username is already in use.
 		while(tries < maxTries)
@@ -132,6 +133,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 			insertUser.setString(1, name);
 			insertUser.setString(2, hashPassword(pass));
 			insertUser.setInt(3, startCash);
+			insertUser.setInt(4, 1);
 
 			insertUser.executeQuery();
 
@@ -183,6 +185,6 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 		return hashText;*/
 
-        return pass;
+		return pass;
 	}
 }
