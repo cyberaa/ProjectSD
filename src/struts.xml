@@ -28,11 +28,22 @@
         <action name="loginAction" class="action.Login"
                 method="execute">
             <result name="success">/idea.jsp</result>
+            <result name="error">/index.jsp</result>
         </action>
 
         <action name="registerAction" class="action.Register"
                 method="execute">
             <result name="success">/index.jsp</result>
+        </action>
+
+        <action name="submitIdeaAction" class="action.SubmitIdea"
+                method="execute">
+            <result name="success">/idea.jsp</result>
+        </action>
+
+        <action name="submitTopicAction" class="action.SubmitTopic"
+                method="execute">
+            <result name="success">/topics.jsp</result>
         </action>
 
     </package>

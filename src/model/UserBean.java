@@ -1,8 +1,6 @@
 package model;
 
-import common.rmi.ExistingUserException;
-import common.rmi.RemoteUserManager;
-import common.rmi.UserAuthenticationException;
+import common.rmi.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -10,6 +8,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,12 +22,16 @@ public class UserBean {
     String rmiAddress = "rmi://127.0.0.1:7777/";
 
     private RemoteUserManager um;
+    private RemoteIdeas ideas;
+    private RemoteTopics topics;
     private int userID;
 
     public UserBean() {
 
         try {
             um =  (RemoteUserManager) Naming.lookup(rmiAddress+"UserManager");
+            ideas = (RemoteIdeas) Naming.lookup(rmiAddress+"Ideas");
+            topics= (RemoteTopics) Naming.lookup(rmiAddress+"Topics");
         } catch (NotBoundException e) {
             System.out.println("NotBoundException");
         } catch (MalformedURLException e) {
@@ -53,6 +56,14 @@ public class UserBean {
 
     public int getUserID() {
         return userID;
+    }
+
+    public void submitIdea(ArrayList<String> topics, String text, String investment) throws IOException, SQLException {
+        ideas.submitIdea(topics, userID, Double.parseDouble(investment), text, null, "-", 0);
+    }
+
+    public void submitTopic(String topic) throws ExistingTopicException, RemoteException, SQLException {
+        topics.newTopic(topic);
     }
 
 }

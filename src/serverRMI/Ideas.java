@@ -32,15 +32,12 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
      * Insert new idea in database.
      * @param topics Topic text. If topic not exists, a new topic is created.
      * @param user_id User who posted idea.
-     * @param parent_id
-     * @param number_parts
-     * @param part_val
-     * @param stance
+     * @param investment
      * @param text
      * @throws RemoteException
      * @throws SQLException
      */
-    public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text, byte[] fileData, String filename, int current) throws RemoteException, SQLException, IOException
+    public void submitIdea(ArrayList<String> topics, int user_id, double investment, String text, byte[] fileData, String filename, int current) throws RemoteException, SQLException, IOException
     {
         if (!filename.equals("-")) {
             FileOutputStream fos = new FileOutputStream("assets/"+filename);
@@ -67,7 +64,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    try {
 			    stmt = db.prepareStatement(query);
 			    stmt.setInt(1, user_id);
-			    stmt.setInt(2, number_parts);
+			    stmt.setInt(2, 100000);
 			    stmt.setInt(3, 1);
 			    stmt.setString(4, text);
 			    stmt.setString(5, filename);
@@ -111,17 +108,16 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    }
 
 		    //Insert idea.
-		    query = "INSERT INTO idea (id,user_id,number_parts,stance,active,text,attach) VALUES (idea_id_inc.nextval,?,?,?,?,?,?,?)";
+		    query = "INSERT INTO idea (id,user_id,number_parts,active,text,attach,in_hall) VALUES (seq_idea.nextval,?,?,?,?,?,?)";
 
             try {
                 stmt = db.prepareStatement(query);
                 stmt.setInt(1, user_id);
-                stmt.setInt(2, parent_id);
-                stmt.setInt(3, number_parts);
-                stmt.setInt(4, stance);
-                stmt.setInt(5, 1);
-                stmt.setString(6, text);
-                stmt.setString(7, filename);
+                stmt.setInt(2, 100000);
+                stmt.setInt(3, 1);
+                stmt.setString(4, text);
+                stmt.setString(5, filename);
+                stmt.setInt(6, 0);
 
                 stmt.executeQuery();
             } catch (SQLException e) {
@@ -137,7 +133,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
             int idea_id = 0;
 
-            query = "SELECT idea_id_inc.currval as id FROM dual";
+            query = "SELECT seq_idea.currval as id FROM dual";
 
             try {
                 stmt = db.prepareStatement(query);
@@ -184,14 +180,14 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    }
 
             //Insert initial share of idea
-            query = "INSERT INTO shares (id,idea_id,user_id,parts,value) VALUES (shares_id_inc.nextval,?,?,?,?)";
+            query = "INSERT INTO idea_share (id,idea_id,user_id,parts,VALUE) VALUES (seq_idea_share.nextval,?,?,?,?)";
 
             try {
                 stmt = db.prepareStatement(query);
-                stmt.setInt(1,idea_id);
-                stmt.setInt(2,user_id);
-                stmt.setInt(3,number_parts);
-                stmt.setInt(4,part_val);
+                stmt.setInt(1, idea_id);
+                stmt.setInt(2, user_id);
+                stmt.setInt(3, 100000);
+                stmt.setDouble(4, investment / 100000);
 
                 stmt.executeQuery();
             } catch (SQLException e) {

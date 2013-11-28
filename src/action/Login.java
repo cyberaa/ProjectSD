@@ -12,6 +12,8 @@ public class Login extends Client {
     private String username;
     private String password;
 
+    private String response;
+
     @Override
     public String execute() {
         System.out.print(username+"   "+password);
@@ -20,6 +22,7 @@ public class Login extends Client {
             user.authenticateUser(username,password);
         } catch (Exception e) {
             System.out.println("Error 3" + e);
+            response = "error";
             return ERROR;
         }
         return SUCCESS;

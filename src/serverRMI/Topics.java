@@ -61,14 +61,14 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 	        if(stmt != null)
 		        stmt.close();
 
-            query = "INSERT INTO topic (id, text) VALUES (topic_id_inc.nextval,?)";
+            query = "INSERT INTO topic (id, text) VALUES (seq_topic.nextval,?)";
 
             stmt = db.prepareStatement(query);
             stmt.setString(1,name);
 
             stmt.executeQuery();
 
-            query = "SELECT topic_id_inc.currval as id FROM dual";
+            query = "SELECT seq_topic.currval as id FROM dual";
 
 	        if(stmt != null)
 		        stmt.close();
