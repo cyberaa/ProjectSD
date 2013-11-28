@@ -41,7 +41,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	public int authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException
 	{
 
-        Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.pool.connectionCheck();
 
 		int tries = 0, maxTries = 3;
 
@@ -91,7 +91,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 */
 	public void register(String name, String pass) throws RemoteException, ExistingUserException, SQLException
 	{
-        Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.pool.connectionCheck();
 
 		int tries = 0, maxTries = 3;
 
@@ -133,7 +133,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 			insertUser.setString(1, name);
 			insertUser.setString(2, hashPassword(pass));
 			insertUser.setInt(3, startCash);
-            insertUser.setInt(4, 1);
+			insertUser.setInt(4, 1);
 
 			insertUser.executeQuery();
 
@@ -185,6 +185,6 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 		return hashText;*/
 
-        return pass;
+		return pass;
 	}
 }
