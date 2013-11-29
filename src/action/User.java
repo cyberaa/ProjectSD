@@ -13,7 +13,7 @@ import java.util.Map;
  * Time: 7:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Client extends ActionSupport implements SessionAware {
+public class User extends ActionSupport implements SessionAware {
 
     protected Map<String, Object> session;
 

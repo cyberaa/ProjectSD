@@ -7,7 +7,7 @@ package action;
  * Time: 11:32 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Register extends Client {
+public class Register extends User {
 
     private String username;
     private String password;

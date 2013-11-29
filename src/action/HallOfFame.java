@@ -9,7 +9,7 @@ import common.IdeaInfo;
  * Time: 7:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HallOfFame extends Client {
+public class HallOfFame extends User {
 
     private IdeaInfo[] ideas;
 

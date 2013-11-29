@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * Time: 8:05 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Login extends Client {
+public class Login extends User {
 
     private String username;
     private String password;

@@ -7,7 +7,7 @@ package action;
  * Time: 7:23 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BuyShares extends Client {
+public class BuyShares extends User {
 
     private String idea;
     private String share_num;

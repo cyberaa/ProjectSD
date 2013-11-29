@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * Time: 7:53 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SubmitIdea extends Client {
+public class SubmitIdea extends User {
 
     private String topic;
     private String text;

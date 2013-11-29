@@ -9,7 +9,7 @@ import common.IdeaInfo;
  * Time: 7:37 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Portfolio extends Client {
+public class Portfolio extends User {
 
     private IdeaInfo[] ideas;
 

@@ -9,7 +9,7 @@ import common.TopicInfo;
  * Time: 7:37 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SearchTopic extends Client {
+public class SearchTopic extends User {
 
     private String topicKey;
     private TopicInfo[] topics;
