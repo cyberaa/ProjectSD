@@ -139,9 +139,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			for(int i=0; i < shares.size(); i++)
 			{
 				aux1 = shares.get(i);
-				if(aux1.user_id == user_id)
+				if(aux1.getUser_id() == user_id)
 				{
-					updateShare(db, aux1.id, aux1.parts + share_num, new_price_share);
+					updateShare(db, aux1.getId(), aux1.getParts() + share_num, new_price_share);
 					updated = true;
 					break;
 				}
@@ -255,7 +255,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				while(rs.next())
 				{
-					ret.add(new ShareInfo(rs.getInt("id"), rs.getInt("idea_id"), rs.getInt("user_id"), rs.getInt("parts"), rs.getInt("value")));
+					ret.add(new ShareInfo(rs.getInt("id"), rs.getInt("idea_id"), rs.getInt("user_id"), rs.getInt("parts"), rs.getInt("value"), ""));
 				}
 
 				break;
@@ -331,26 +331,26 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			aux = shares.get(i);
 
 			//User cannot buy shares from himself.
-			if(aux.user_id == user_id)
+			if(aux.getUser_id() == user_id)
 				continue;
 
-			auxPrice = aux.value;
-			auxNum = aux.parts;
+			auxPrice = aux.getValue();
+			auxNum = aux.getParts();
 
 			//Verify that shares can be bought at desired price.
 			if(price_per_share >= auxPrice)
 			{
 				if(counterShares + auxNum <= share_num) //Need more shares than the ones this user has.
 				{
-					sharesToBuy.add(new ShareToBuy(aux.id, aux.user_id, aux.parts, aux.parts, aux.value));
-					counterShares += aux.parts;
+					sharesToBuy.add(new ShareToBuy(aux.getId(), aux.getUser_id(), aux.getParts(), aux.getParts(), aux.getValue()));
+					counterShares += aux.getParts();
 
 					if(counterShares == share_num)
 						break;
 				}
 				else //With the amount of shares this user has the original request can be fulfilled.
 				{
-					sharesToBuy.add(new ShareToBuy(aux.id, aux.user_id, share_num - counterShares, aux.parts, aux.value));
+					sharesToBuy.add(new ShareToBuy(aux.getId(), aux.getUser_id(), share_num - counterShares, aux.getParts(), aux.getValue()));
 					counterShares += share_num - counterShares;
 
 					break;
@@ -614,7 +614,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		ResultSet rs;
 		ArrayList<ShareInfo> ret = new ArrayList<ShareInfo>();
 
-		String shares = "SELECT * FROM shares WHERE idea_id = ? ORDER BY value ASC";
+		String shares = "SELECT idea_share.*, sduser.username FROM idea_share, sduser WHERE idea_share.idea_id = ? AND idea_share.user_id = sduser.id ORDER BY value ASC";
 
 		while(tries < maxTries)
 		{
@@ -626,7 +626,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				while(rs.next())
 				{
-					ret.add(new ShareInfo(rs.getInt("id"), rs.getInt("idea_id"), rs.getInt("user_id"), rs.getInt("parts"), rs.getInt("value")));
+					ret.add(new ShareInfo(rs.getInt("id"), rs.getInt("idea_id"), rs.getInt("user_id"), rs.getInt("parts"), rs.getInt("value"), rs.getString("username")));
 				}
 
 				break;

@@ -22,7 +22,9 @@ public interface RemoteIdeas extends Remote
 
 	public void deleteIdea(int idea_id, int user_id) throws RemoteException, SQLException, NotFullOwnerException;
 
-	public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id) throws RemoteException, SQLException;
+	public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id, int user_id) throws RemoteException, SQLException;
 
-	public IdeasNestedPack viewIdeasNested(int idea_id, boolean loadAttach) throws RemoteException, SQLException, NonExistingIdeaException, IOException;
+    public void addToWatchlist(int user_id, int idea_id) throws RemoteException, SQLException;
+
+    public ArrayList<IdeaInfo> viewWatchlist(int user_id) throws RemoteException, SQLException;
 }

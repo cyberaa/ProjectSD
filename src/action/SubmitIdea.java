@@ -1,5 +1,8 @@
 package action;
 
+import com.opensymphony.xwork2.ActionSupport;
+import common.IdeaInfo;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,6 +20,8 @@ public class SubmitIdea extends User {
     private String text;
     private String investment;
 
+    private IdeaInfo[] ideas;
+
     private String responseIdea;
 
 
@@ -25,7 +30,6 @@ public class SubmitIdea extends User {
         System.out.println(topic);
         System.out.println(text);
         System.out.println(investment);
-        super.execute();
         ArrayList<String> topics = new ArrayList<String>();
         topics.add(topic);
         try {

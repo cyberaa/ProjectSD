@@ -8,6 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -27,10 +28,10 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="dropdown active">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-lightbulb-o"> </i> Ideas<!--<b class="caret"></b>--></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"><i class="fa fa-flash"></i> New idea</a></li>
+                        <li><a href="<s:url action='ideaAction'/>"><i class="fa fa-flash"></i> New idea</a></li>
                         <li class="divider"></li>
                         <li><a href="<s:url action='watchlistAction'/>"><i class="fa fa-star"></i> Watchlist</a></li>
                         <li><a href="#"><i class="fa fa-trophy"></i> Hall of fame</a></li>
@@ -73,62 +74,29 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
-    <div id="alertDiv">
-        <s:set name="responseIdea" value="responseIdea"/>
-        <s:if test="%{#responseIdea == 'success'}">
-            <div class='alert alert-success alert-dismissable'>
-                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-                <strong>Success!</strong> Idea submitted successfully
-            </div>
-        </s:if>
-        <s:elseif test="%{#responseIdea == 'rmi'}">
-            <div class='alert alert-danger alert-dismissable'>
-                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-                <strong>Error!</strong> An internal error occurred during topic submission
-            </div>
-        </s:elseif>
+    <div class="well well-sm">
+        <h4><i class="fa fa-lightbulb-o"></i> ${ideaText} </h4>
     </div>
 
-    <!-- Submit new idea panel -->
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-flash" style="margin-right: 3px;"> </i> What's your idea?</h3>
+            <h3 class="panel-title"><i class="fa fa-money" style="margin-right: 3px;"> </i> Buy Shares</h3>
         </div>
         <div class="panel-body">
-            <form action="submitIdeaAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
+            <form action="submitTopicAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
                 <fieldset>
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th style="text-align: center">Related Topics</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <th>
-                            <input type="text" class="form-control" placeholder="Topic" name="topic" id="topic">
-                        </th>
-                        </tbody>
-                    </table>
-
-                    <textarea style="resize: vertical;" class="form-control" rows="3" id="ideaText" name="text"></textarea>
-
-                    <div class="row" style="margin-top: 20px;">
-                        <div class="col-md-2">
-                            <div class="form-group" style="margin-bottom: 30px;">
-                                <label class="control-label" for="investment">Investment</label>
-                                <input type="text" class="form-control" id="investment" name="investment">
-                            </div>
-
-                            <button type="submit" id="submitIdea" class="btn btn-default" style="background-color: #007765; color: #f5f5f5;"><strong>Submit</strong></button>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="numberOfShares">Number of Shares</label>
+                            <input type="text" id="numberOfShares" class="form-control" name="numberOfShares" placeholder="">
                         </div>
-                        <div class="col-md-5">
-
+                        <div class="col-md-4">
+                            <label for="pricePerShare">Price per Share</label>
+                            <input type="text" id="pricePerShare" class="form-control" name="pricePerShare" placeholder="">
                         </div>
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label for="attach">Attach file</label>
-                                <input type="file" id="attach">
-                                <p class="help-block">Only images</p>
+                        <div class="col-md-4">
+                            <div style="padding-top: 25px;">
+                                <button type="submit" class="btn btn-default" style="background-color: #007765; color: #f5f5f5; width: 100%;"><strong>Buy</strong></button>
                             </div>
                         </div>
                     </div>
@@ -137,12 +105,34 @@
         </div>
     </div>
 
-    <!-- Show some ideas panel -->
     <div class="panel panel-default">
         <div class="panel-body">
-            Basic panel example
+
+
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr style="text-align: center;">
+                    <th style="text-align: center;">User</th>
+                    <th style="text-align: center;">Number of Share</th>
+                    <th style="text-align: center;">Price per share</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="share" items="${shares}">
+                    <tr style="text-align: center;">
+                        <td>${share.username}</td>
+                        <td>${share.parts}</td>
+                        <td>${share.value}</td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+
+
         </div>
     </div>
+
+
 
 </div>
 

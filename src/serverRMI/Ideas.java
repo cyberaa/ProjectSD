@@ -341,9 +341,11 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-    public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id) throws RemoteException, SQLException
+    public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id, int user_id) throws RemoteException, SQLException
     {
         Connection db = ServerRMI.pool.connectionCheck();
+
+        db.setAutoCommit(false);
 
         int tries = 0;
         int maxTries = 3;
@@ -351,22 +353,29 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         ResultSet rs;
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
-        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, idea_has_topic, sduser WHERE topic_id = ? AND idea_id = idea.id AND idea.user_id = sduser.id AND idea.parent_id = 0 AND idea.active = 1";
+        String query = "SELECT lol.id, lol.text, lol.username, lol.sduser_id, lol.idea_id FROM (SELECT idea.id, idea.text, sduser.username, lol.sduser_id, lol.idea_id FROM idea LEFT OUTER JOIN (Select watchlist.* FROM watchlist where sduser_id = ?) lol ON idea.id = lol.idea_id LEFT OUTER JOIN sduser ON sduser.id = idea.user_id) lol, idea_has_topic WHERE lol.id = idea_has_topic.idea_id AND idea_has_topic.topic_id = ?";
 
         while(tries < maxTries)
         {
             try {
                 stmt = db.prepareStatement(query);
-                stmt.setInt(1, topic_id);
+                stmt.setInt(1, user_id);
+                stmt.setInt(2, topic_id);
 
                 rs = stmt.executeQuery();
 
                 while(rs.next()) {
-                    ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("namealias"), rs.getString("text"), rs.getInt("stance")));
+                    if(rs.getString("sduser_id") == null) {
+                        ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("username"), rs.getString("text"), 0));
+                    }
+                    else {
+                        ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("username"), rs.getString("text"), 1));
+                    }
 
                 }
                 break;
             } catch (SQLException e) {
+                System.out.println(e);
                 if(tries++ > maxTries) {
                     throw e;
                 }
@@ -379,71 +388,26 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         return ideas;
     }
 
-	/**
-	 *
-	 * @param idea_id
-	 * @return
-	 * @throws RemoteException
-	 * @throws SQLException
-	 * @throws NonExistingIdeaException
-	 */
-    public IdeasNestedPack viewIdeasNested(int idea_id, boolean loadAttach) throws RemoteException, SQLException, NonExistingIdeaException, IOException {
-
+    public void addToWatchlist(int user_id, int idea_id) throws SQLException
+    {
         Connection db = ServerRMI.pool.connectionCheck();
 
         int tries = 0;
         int maxTries = 3;
         PreparedStatement stmt = null;
-        ResultSet rs;
-        String query;
-        ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
-        byte[] fileData = null;
-        int fileLength = 0;
 
-        if (loadAttach) {
-            try {
-                query = "SELECT idea.attach as attach FROM idea WHERE idea.id = ?";
-                stmt = db.prepareStatement(query);
-                stmt.setInt(1, idea_id);
+        System.out.println(user_id+" "+idea_id);
 
-                rs = stmt.executeQuery();
-
-                rs.next();
-
-                String attachPath = rs.getString("attach");
-
-                File fileToSend = new File("assets/"+attachPath);
-                fileLength = (int)fileToSend.length();
-                fileData = new byte[fileLength];
-                FileInputStream fis = new FileInputStream(fileToSend);
-                BufferedInputStream bis = new BufferedInputStream(fis);
-                bis.read(fileData,0,fileData.length);
-            } catch (SQLException e) {
-                System.out.println(e);
-            } catch (IOException ioe) {
-                System.out.println(ioe);
-            }
-        }
-
-
-        query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, sduser WHERE parent_id = ? AND idea.user_id = sduser.id AND idea.active = 1";
+        String query = "INSERT INTO watchlist (idea_id,sduser_id) values (?,?)";
 
         while(tries < maxTries)
         {
             try {
                 stmt = db.prepareStatement(query);
                 stmt.setInt(1, idea_id);
+                stmt.setInt(2, user_id);
 
-                rs = stmt.executeQuery();
-
-                if(!rs.next()) {
-                    break;
-                }
-
-                do {
-                    ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("namealias"), rs.getString("text"), rs.getInt("stance")));
-                } while(rs.next());
-
+                stmt.executeQuery();
                 break;
             } catch (SQLException e) {
                 System.out.println(e);
@@ -451,13 +415,59 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                     throw e;
                 }
             } finally {
-	            if(stmt != null)
-		            stmt.close();
+                if(stmt != null)
+                    stmt.close();
             }
         }
+    }
 
-        IdeasNestedPack pack = new IdeasNestedPack(ideas, fileData, fileLength);
+    public ArrayList<IdeaInfo> viewWatchlist(int user_id) throws SQLException, RemoteException {
 
-        return pack;
+        Connection db = ServerRMI.pool.connectionCheck();
+
+        ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
+
+        try {
+            int tries = 0;
+            int maxTries = 3;
+            PreparedStatement stmt = null;
+            ResultSet rs;
+
+            db.setAutoCommit(false);
+
+            String verify = "SELECT idea.id, idea.text, sduser.username FROM watchlist, idea, sduser WHERE watchlist.sduser_id = ? AND idea.id = watchlist.idea_id AND idea.user_id = sduser.id";
+
+            while(tries < maxTries)
+            {
+                try {
+                    stmt = db.prepareStatement(verify);
+                    stmt.setInt(1, user_id);
+
+                    rs = stmt.executeQuery();
+
+                    while(rs.next())
+                    {
+                         ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("username"), rs.getString("text"), 1));
+                    }
+                    break;
+                } catch (SQLException e) {
+                    System.out.println(e);
+                    if(tries++ > maxTries) {
+                        throw e;
+                    }
+                } finally {
+                    if(stmt != null)
+                        stmt.close();
+                }
+            }
+            db.commit();
+        } catch (SQLException e) {
+            System.out.println(e);
+            if(db != null)
+                db.rollback();
+        } finally {
+            db.setAutoCommit(true);
+        }
+        return ideas;
     }
 }

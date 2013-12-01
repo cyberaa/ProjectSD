@@ -3,12 +3,10 @@ package serverRMI;
 import common.rmi.ExistingUserException;
 import common.rmi.RemoteUserManager;
 import common.rmi.UserAuthenticationException;
+import common.UserInfo;
 
-import java.math.BigInteger;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,7 +36,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 * @throws UserAuthenticationException
 	 * @throws SQLException
 	 */
-	public int authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException
+	public UserInfo authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException
 	{
 
 		Connection db = ServerRMI.pool.connectionCheck();
@@ -48,7 +46,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		PreparedStatement queryUser = null;
 		ResultSet resultSet = null;
 
-		String query = "SELECT id FROM sduser WHERE username LIKE ? AND password LIKE ?";
+		String query = "SELECT id, username FROM sduser WHERE username LIKE ? AND password LIKE ?";
 
 		while(tries < maxTries)
 		{
@@ -65,7 +63,10 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 					throw new UserAuthenticationException();
 				}
 
-				return resultSet.getInt("id");
+                int userId = resultSet.getInt("id");
+                String username = resultSet.getString("username");
+
+				return new UserInfo(userId,username);
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
@@ -78,7 +79,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 		ServerRMI.pool.releaseConnection(db);
 
-		return -1;
+		return new UserInfo(-1,"");
 	}
 
 	/**

@@ -8,6 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -27,10 +28,10 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="dropdown active">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-lightbulb-o"> </i> Ideas<!--<b class="caret"></b>--></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"><i class="fa fa-flash"></i> New idea</a></li>
+                        <li><a href="<s:url action='ideaAction'/>"><i class="fa fa-flash"></i> New idea</a></li>
                         <li class="divider"></li>
                         <li><a href="<s:url action='watchlistAction'/>"><i class="fa fa-star"></i> Watchlist</a></li>
                         <li><a href="#"><i class="fa fa-trophy"></i> Hall of fame</a></li>
@@ -73,82 +74,54 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
-    <div id="alertDiv">
-        <s:set name="responseIdea" value="responseIdea"/>
-        <s:if test="%{#responseIdea == 'success'}">
-            <div class='alert alert-success alert-dismissable'>
-                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-                <strong>Success!</strong> Idea submitted successfully
-            </div>
-        </s:if>
-        <s:elseif test="%{#responseIdea == 'rmi'}">
-            <div class='alert alert-danger alert-dismissable'>
-                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-                <strong>Error!</strong> An internal error occurred during topic submission
-            </div>
-        </s:elseif>
-    </div>
+   <div class="well well-sm">
+       <h3><i class="fa fa-tags"></i> ${topicText}</h3>
+   </div>
 
-    <!-- Submit new idea panel -->
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-flash" style="margin-right: 3px;"> </i> What's your idea?</h3>
-        </div>
-        <div class="panel-body">
-            <form action="submitIdeaAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
-                <fieldset>
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th style="text-align: center">Related Topics</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <th>
-                            <input type="text" class="form-control" placeholder="Topic" name="topic" id="topic">
-                        </th>
-                        </tbody>
-                    </table>
+   <c:set var="count" value="0" scope="page" />
 
-                    <textarea style="resize: vertical;" class="form-control" rows="3" id="ideaText" name="text"></textarea>
-
-                    <div class="row" style="margin-top: 20px;">
-                        <div class="col-md-2">
-                            <div class="form-group" style="margin-bottom: 30px;">
-                                <label class="control-label" for="investment">Investment</label>
-                                <input type="text" class="form-control" id="investment" name="investment">
-                            </div>
-
-                            <button type="submit" id="submitIdea" class="btn btn-default" style="background-color: #007765; color: #f5f5f5;"><strong>Submit</strong></button>
-                        </div>
-                        <div class="col-md-5">
-
-                        </div>
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label for="attach">Attach file</label>
-                                <input type="file" id="attach">
-                                <p class="help-block">Only images</p>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
-    </div>
-
-    <!-- Show some ideas panel -->
-    <div class="panel panel-default">
-        <div class="panel-body">
-            Basic panel example
-        </div>
-    </div>
+   <c:forEach var="idea" items="${ideas}">
+       <c:url value="buySharesAction.action" var="buySharesTag">
+           <c:param name="ideaId" value="${idea.idea_id}"/>
+           <c:param name="ideaText" value="${idea.text}" />
+       </c:url>
+       <c:url value="addFavoriteAction.action" var="addFavoriteTag">
+           <c:param name="ideaId" value="${idea.idea_id}" />
+           <c:param name="topicText" value="${topicText}" />
+           <c:param name="topicId" value="${topicId}" />
+       </c:url>
+       <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
+           <div class="panel panel-default">
+               <div class="panel-body" style="">
+                   <div style="text-align: right; margin-bottom: 10px;">
+                       <i class="fa fa-user"></i> <strong>${idea.ideaOwner}</strong>
+                   </div>
+                   <span style="">${idea.text}</span>
+               </div>
+               <div class="panel-heading" id="${count}" style="display: none;">
+                   <div style="text-align: right">
+                       <c:choose>
+                           <c:when test="${idea.isFavorite == 0}">
+                               <button type="button" class="btn btn-warning" onclick="location.href='<c:out value="${addFavoriteTag}"/>'">Add to Watchlist</button>
+                           </c:when>
+                           <c:when test="${idea.isFavorite == 1}">
+                               <button type="button" class="btn btn-warning" onclick="location.href=''">Remove from Watchlist</button>
+                           </c:when>
+                       </c:choose>
+                       <button type="button" class="btn btn-danger" onclick="location.href='<c:out value="${buySharesTag}"/>'">Buy Shares</button>
+                   </div>
+               </div>
+           </div>
+       </a>
+       <c:set var="count" value="${count + 1}" scope="page"/>
+   </c:forEach>
 
 </div>
 
 
 <script src="assets/jquery.js"></script>
 <script src="assets/dist/js/bootstrap.min.js"></script>
+<script src="assets/jquery-ui-1.10.3/ui/jquery-ui.js"></script>
 <script src="assets/custom.js"></script>
 
 

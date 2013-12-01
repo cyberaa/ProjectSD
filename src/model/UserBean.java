@@ -1,7 +1,9 @@
 package model;
 
 import common.IdeaInfo;
+import common.ShareInfo;
 import common.TopicInfo;
+import common.UserInfo;
 import common.rmi.*;
 
 import java.io.IOException;
@@ -26,7 +28,9 @@ public class UserBean {
     private RemoteUserManager um;
     private RemoteIdeas ideas;
     private RemoteTopics topics;
+    private RemoteTransactions transactions;
     private int userID;
+    private String username;
 
     public UserBean() {
 
@@ -34,6 +38,7 @@ public class UserBean {
             um =  (RemoteUserManager) Naming.lookup(rmiAddress+"UserManager");
             ideas = (RemoteIdeas) Naming.lookup(rmiAddress+"Ideas");
             topics= (RemoteTopics) Naming.lookup(rmiAddress+"Topics");
+            transactions = (RemoteTransactions) Naming.lookup(rmiAddress+"Transactions");
         } catch (NotBoundException e) {
             System.out.println("NotBoundException");
         } catch (MalformedURLException e) {
@@ -45,8 +50,11 @@ public class UserBean {
     }
 
     public boolean authenticateUser(String username, String password) throws RemoteException, UserAuthenticationException, SQLException {
-        int rmiResponse = this.userID = um.authenticate(username,password);
-        if(rmiResponse == -1)
+        UserInfo rmiResponse = um.authenticate(username,password);
+        this.userID = rmiResponse.getUserId();
+        this.username = rmiResponse.getUsername();
+
+        if(userID == -1)
             return false;
         else
             return true;
@@ -60,6 +68,18 @@ public class UserBean {
         return userID;
     }
 
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void submitIdea(ArrayList<String> topics, String text, String investment) throws IOException, SQLException {
         ideas.submitIdea(topics, userID, Double.parseDouble(investment), text, null, "-", 0);
     }
@@ -68,12 +88,28 @@ public class UserBean {
         topics.newTopic(topic);
     }
 
+    public ArrayList<TopicInfo> showTopics() throws RemoteException, SQLException {
+        return topics.listTopics();
+    }
+
+    public ArrayList<IdeaInfo> showTopicIdeas(int topicId) throws RemoteException, SQLException {
+        return ideas.viewIdeasTopic(topicId, userID);
+    }
+
+    public ArrayList<ShareInfo> showIdeaShares(int idea_id) throws RemoteException, SQLException {
+        return transactions.getShares(idea_id);
+    }
+
+    public void addToWatchlist(int idea_id) throws SQLException, RemoteException {
+        ideas.addToWatchlist(userID,idea_id);
+    }
+
     public void buyShares() {
 
     }
 
-    public IdeaInfo[] watchlist() {
-        return null;
+    public ArrayList<IdeaInfo> watchlist() throws RemoteException, SQLException {
+         return ideas.viewWatchlist(userID);
     }
 
     public IdeaInfo[] searchIdea(String ideaKey) {

@@ -1,6 +1,7 @@
 package action;
 
 import com.opensymphony.xwork2.ActionSupport;
+import interceptors.UserAware;
 import model.UserBean;
 import org.apache.struts2.interceptor.SessionAware;
 
@@ -13,25 +14,27 @@ import java.util.Map;
  * Time: 7:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class User extends ActionSupport implements SessionAware {
+public class User extends ActionSupport implements SessionAware, UserAware {
 
     protected Map<String, Object> session;
 
     protected UserBean user;
 
     public void getUserSession() {
-        if (!session.containsKey("user")) {
-            this.user = new UserBean();
-            session.put("user", user);
-        }
-        else {
-            this.user = (UserBean) session.get("user");
-        }
+        this.user = (UserBean) session.get("user");
     }
 
     @Override
     public void setSession(Map<String, Object> session) {
           this.session = session;
+    }
+
+    public void setUser(UserBean user) {
+        this.user = user;
+    }
+
+    public UserBean getUser() {
+        return this.user;
     }
 
     public String execute() {

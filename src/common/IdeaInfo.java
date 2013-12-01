@@ -1,6 +1,7 @@
 package common;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,48 +14,63 @@ public class IdeaInfo implements Serializable
 {
 	private static final long serialVersionUID = 1470130151433907211L;
 
+    private ArrayList<TopicInfo> relatedTopics;
 	private int idea_id;
-    private String namealias;
     private String text;
-    private int stance;
+    private String ideaOwner;
+    private int isFavorite;
+
 
     /**
      *
      * @param idea_id
-     * @param namealias
+     * @param ideaOwner
      * @param text
-     * @param stance
      */
-    public IdeaInfo(int idea_id, String namealias, String text, int stance) {
+    public IdeaInfo(int idea_id, String ideaOwner, String text, int isFavorite) {
         this.idea_id = idea_id;
-        this.namealias = namealias;
         this.text = text;
-        this.stance = stance;
+        this.ideaOwner = ideaOwner;
+        this.isFavorite = isFavorite;
     }
 
-    public int getIdeaId() {
-        return this.idea_id;
+    public void setRelatedTopics(ArrayList<TopicInfo> relatedTopics) {
+        this.relatedTopics = relatedTopics;
     }
 
-    public String getIdeaUser() {
-        return this.namealias;
+    public void setIdea_id(int idea_id) {
+        this.idea_id = idea_id;
     }
 
-    public String getIdeaText() {
-        return this.text;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public int getIdeaStance() {
-        return this.stance;
+    public void setIdeaOwner(String ideaOwner) {
+        this.ideaOwner = ideaOwner;
     }
 
-    @Override
-    public String toString() {
-        return "IdeaInfo{" +
-                "idea_id=" + idea_id +
-                ", namealias='" + namealias + '\'' +
-                ", text='" + text + '\'' +
-                ", stance=" + stance +
-                '}';
+    public ArrayList<TopicInfo> getRelatedTopics() {
+        return relatedTopics;
+    }
+
+    public int getIdea_id() {
+        return idea_id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public String getIdeaOwner() {
+        return ideaOwner;
+    }
+
+    public int getisFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(int favorite) {
+        isFavorite = favorite;
     }
 }

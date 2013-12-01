@@ -1,5 +1,7 @@
 package common.rmi;
 
+import common.UserInfo;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -13,7 +15,7 @@ import java.sql.SQLException;
  */
 public interface RemoteUserManager extends Remote
 {
-	public int authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException;
+	public UserInfo authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException;
 
 	public void register(String name, String pass) throws RemoteException, ExistingUserException, SQLException;
 }

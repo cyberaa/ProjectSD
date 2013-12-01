@@ -23,19 +23,24 @@ public class Login extends User {
     public String execute() {
         System.out.print(username+"   "+password);
         super.execute();
+        System.out.println("Sai");
         try {
             user.authenticateUser(username,password);
         } catch (RemoteException e) {
             responseLogin = "rmi";
+            System.out.println(responseLogin + e);
             return ERROR;
         } catch (UserAuthenticationException e) {
             responseLogin = "failedAuth";
+            System.out.println(responseLogin + e);
             return ERROR;
         } catch (SQLException e) {
             responseLogin = "rmi";
+            System.out.println(responseLogin + e);
             return ERROR;
         }
         responseLogin = "success";
+        System.out.println(responseLogin);
         return SUCCESS;
     }
 

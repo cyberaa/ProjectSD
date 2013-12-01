@@ -9,40 +9,76 @@
 
     <package name="basicstruts2" extends="struts-default">
 
-        <action name="idea">
+        <interceptors>
+            <interceptor name="authentication" class="interceptors.AuthenticationInterceptor" />
+
+            <interceptor-stack name="authStack">
+                <interceptor-ref name="authentication" />
+                <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
+        </interceptors>
+
+        <default-action-ref name="ideaAction" />
+
+        <global-results>
+            <result name="login" type="redirect">login.action</result>
+        </global-results>
+
+        <action name="ideaAction">
+            <interceptor-ref name="authStack" />
             <result>/idea.jsp</result>
         </action>
 
-        <action name="topics">
-            <result>/topics.jsp</result>
+        <action name="buySharesAction" class="action.ViewIdeaShares" method="execute">
+            <interceptor-ref name="authStack" />
+            <result name="success">/buyShares.jsp</result>
         </action>
 
-        <action name="index">
-            <result>/index.jsp</result>
+        <action name="topicIdeasAction" class="action.ViewTopicIdeas" method="execute">
+            <interceptor-ref name="authStack" />
+            <result name="success">/viewTopicIdeas.jsp</result>
+        </action>
+
+        <action name="topicsAction" class="action.ListTopics" method="execute">
+            <interceptor-ref name="authStack" />
+            <result name="success">/topics.jsp</result>
+        </action>
+
+        <action name="addFavoriteAction" class="action.AddToFavorites">
+            <interceptor-ref name="authStack" />
+            <result name="success">/viewTopicIdeas.jsp</result>
+        </action>
+
+        <action name="watchlistAction" class="action.Watchlist">
+            <interceptor-ref name="authStack" />
+            <result name="success">/watchlist.jsp</result>
+        </action>
+
+        <action name="login">
+            <result>/login.jsp</result>
         </action>
 
         <action name="register">
             <result>/register.jsp</result>
         </action>
 
-        <action name="loginAction" class="action.Login"
-                method="execute">
+        <action name="loginAction" class="action.Login" method="execute">
             <result name="success">/idea.jsp</result>
-            <result name="error">/index.jsp</result>
+            <result name="error">/login.jsp</result>
         </action>
 
-        <action name="registerAction" class="action.Register"
-                method="execute">
-            <result name="success">/index.jsp</result>
+        <action name="registerAction" class="action.Register" method="execute">
+            <interceptor-ref name="authStack" />
+            <result name="success">/login.jsp</result>
         </action>
 
-        <action name="submitIdeaAction" class="action.SubmitIdea"
-                method="execute">
+        <action name="submitIdeaAction" class="action.SubmitIdea" method="execute">
+            <interceptor-ref name="authStack" />
             <result name="success">/idea.jsp</result>
         </action>
 
-        <action name="submitTopicAction" class="action.SubmitTopic"
-                method="execute">
+        <action name="submitTopicAction" class="action.SubmitTopic" method="execute">
+            <interceptor-ref name="authStack" />
             <result name="success">/topics.jsp</result>
         </action>
 

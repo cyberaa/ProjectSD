@@ -8,12 +8,14 @@
 
 
 function togglePanel(pID) {
+    var options = {};
     if ($('#'+pID).css('display') == 'none') {
-        $("#"+pID).show();
+        $("#"+pID).show("blind", options, 4000);
     }
     else {
-        $("#"+pID).hide();
+        $("#"+pID).hide("blind", options, 4000);
     }
+    return false;
 }
 
 /*$("#submitIdea").click(function() {

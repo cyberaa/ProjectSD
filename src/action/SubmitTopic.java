@@ -19,7 +19,6 @@ public class SubmitTopic extends User {
     private String responseTopic;
 
     public String execute() {
-        super.execute();
         try {
             user.submitTopic(topicText);
         } catch (ExistingTopicException e) {

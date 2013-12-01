@@ -26,4 +26,12 @@ public class TopicInfo implements Serializable
 	{
 		return "id = "+id+"\ttext = "+text;
 	}
+
+    public int getId() {
+        return id;
+    }
+
+    public String getText() {
+        return text;
+    }
 }
