@@ -10,10 +10,10 @@
 function togglePanel(pID) {
     var options = {};
     if ($('#'+pID).css('display') == 'none') {
-        $("#"+pID).show("blind", options, 4000);
+        $("#"+pID).show("blind", options, 1000);
     }
     else {
-        $("#"+pID).hide("blind", options, 4000);
+        $("#"+pID).hide("blind", options, 1000);
     }
     return false;
 }
