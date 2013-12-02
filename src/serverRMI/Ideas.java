@@ -48,7 +48,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
             bos.close();
         }
 
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
         int tries = 0;
         int maxTries = 3;
@@ -102,7 +102,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                         topicIds.add(topic_id);
                     }
 			    } catch (ExistingTopicException ete) {
-                    ServerRMI.pool.releaseConnection(db);
+                    db.close();
 				    // Topic already exists
 			    }
 		    }
@@ -209,7 +209,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    throw e;
 	    } finally {
 		    db.setAutoCommit(true);
-		    ServerRMI.pool.releaseConnection(db);
+		    db.close();
 	    }
 	}
 
@@ -223,7 +223,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	 */
     public void deleteIdea(int idea_id, int user_id) throws RemoteException, SQLException, NotFullOwnerException
     {
-	    Connection db = ServerRMI.pool.connectionCheck();
+	    Connection db = ServerRMI.getConnection();
 
 	    try {
 		    //Verify that user owns all shares.
@@ -343,7 +343,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	 */
     public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id, int user_id) throws RemoteException, SQLException
     {
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
         db.setAutoCommit(false);
 
@@ -390,7 +390,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
     public void addToWatchlist(int user_id, int idea_id) throws SQLException
     {
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
         int tries = 0;
         int maxTries = 3;
@@ -423,7 +423,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
     public ArrayList<IdeaInfo> viewWatchlist(int user_id) throws SQLException, RemoteException {
 
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
@@ -472,7 +472,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
     }
 
     public ArrayList<IdeaInfo> viewHallOfFame() throws RemoteException, SQLException {
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
@@ -520,7 +520,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
     }
 
     public ArrayList<IdeaInfo> viewPortfolio(int user_id) throws SQLException, RemoteException {
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 

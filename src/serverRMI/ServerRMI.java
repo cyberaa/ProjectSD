@@ -12,6 +12,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -31,7 +33,6 @@ public class ServerRMI
 	protected static int rmiPort;
 	protected static Registry rmiRegistry;
 
-	public static ConnectionPool pool;
 	protected static String dbURL;
 
 	protected static UserManager um;
@@ -59,15 +60,6 @@ public class ServerRMI
 		//Connect to database.
 		dbURL = "jdbc:oracle:thin:@" + args[1] +":1521:XE";
 
-        //Create pool of connections
-        try {
-            pool = new ConnectionPool(dbURL, dbUser, dbPass);
-            System.out.println("Server connected to database.");
-        } catch (SQLException se) {
-            System.out.print("Error creating pool of connections.\n" + se);
-            return;
-        }
-
 		//Create remote RMI objects and bind them.
 		createAndBindObjects();
 
@@ -86,11 +78,12 @@ public class ServerRMI
             else if (command.equals("dburl")) {
                 System.out.println("\n Database URL: "+dbURL);
             }
-            else if (command.equals("nconnections")) {
-                System.out.println("\n Number of active connections to database: "+pool.connectionsUsed.size());
-            }
             else if (command.equals("help")) {
-                System.out.println("\n Commands: \n \t \t rmiport -> See RMI registry port. \n \t \t dburl -> See database url. \n \t \t nconnections -> Check number of active connections to database. \n \t \t exit -> Shutdown server.");
+                System.out.println("\n" +
+		                                   " Commands: \n" +
+		                                   " \t \t rmiport -> See RMI registry port. \n" +
+		                                   " \t \t dburl -> See database url. \n" +
+		                                   " \t \t exit -> Shutdown server.");
             }
             else if (command.equals("exit")) {
 	            break;
@@ -184,5 +177,15 @@ public class ServerRMI
 		} catch (NotBoundException nbe) {
 			//Do nothing, if it's already unbound we don't have to unbind it.
 		}
+	}
+
+	/**
+	 * Get a new connection to the database.
+	 * @return Connection to the database.
+	 * @throws SQLException
+	 */
+	public static Connection getConnection() throws SQLException
+	{
+		return DriverManager.getConnection(dbURL, dbUser, dbPass);
 	}
 }

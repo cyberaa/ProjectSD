@@ -36,7 +36,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 
 		String query = "INSERT INTO notifications VALUES (notifications_id_inc.nextval, ?, ?)";
 
-		Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.getConnection();
 
 		try {
 			insert = db.prepareStatement(query);
@@ -53,7 +53,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			if(insert != null)
 				insert.close();
 
-			ServerRMI.pool.releaseConnection(db);
+			db.close();
 		}
 	}
 
@@ -68,7 +68,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	{
 		ArrayList<NotificationInfo> ret = new ArrayList<NotificationInfo>();
 
-		Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.getConnection();
 
 		PreparedStatement getNotifications = null;
 		String query = "SELECT * FROM notifications WHERE user_id = ?";
@@ -87,7 +87,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			if(getNotifications != null)
 				getNotifications.close();
 
-			ServerRMI.pool.releaseConnection(db);
+			db.close();
 		}
 
 		return ret;
@@ -104,7 +104,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 		PreparedStatement remove = null;
 		String query = "DELETE FROM notifications WHERE id = ?";
 
-		Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.getConnection();
 
 		try {
 			for(int i=0; i < not_ids.size(); i++)
@@ -124,7 +124,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			if(remove != null)
 				remove.close();
 
-			ServerRMI.pool.releaseConnection(db);
+			db.close();
 		}
 	}
 
@@ -142,7 +142,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	{
 		String buyer, seller;
 
-		Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.getConnection();
 
 		PreparedStatement getNotifications = null;
 		String query = "SELECT username FROM sduser WHERE id = ?";
@@ -169,7 +169,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			if(getNotifications != null)
 				getNotifications.close();
 
-			ServerRMI.pool.releaseConnection(db);
+			db.close();
 		}
 
 		return buyer + " bought " + parts + " from " + seller + " (idea " + idea_id +") for a total of " + totalPrice + " coins.";

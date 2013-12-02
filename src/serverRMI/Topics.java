@@ -33,7 +33,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
      */
     public int newTopic(String name) throws RemoteException, ExistingTopicException, SQLException {
 
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
         PreparedStatement stmt = null;
         String query;
@@ -94,7 +94,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
             db.setAutoCommit(true);
         }
 
-	    ServerRMI.pool.releaseConnection(db);
+	    db.close();
 
         return topic_id;
     }
@@ -107,7 +107,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
      */
     public ArrayList<TopicInfo> listTopics() throws RemoteException, SQLException {
 
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
         ArrayList<TopicInfo> topics = new ArrayList<TopicInfo>();
         int tries = 0;
@@ -141,7 +141,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
             }
 	    }
 
-	    ServerRMI.pool.releaseConnection(db);
+	    db.close();
 
         return topics;
     }
@@ -156,7 +156,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 	 */
     public int getTopicID(String text) throws RemoteException, SQLException, ExistingTopicException {
 
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
         int tries = 0;
         int maxTries = 3;
@@ -187,7 +187,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
             }
         }
 
-	    ServerRMI.pool.releaseConnection(db);
+	    db.close();
 
         return -1;
     }

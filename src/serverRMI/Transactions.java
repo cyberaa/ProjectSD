@@ -37,7 +37,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	public void setShareValue(int user_id, int idea_id, int new_value) throws RemoteException, SQLException
 	{
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
 		PreparedStatement updateValue = null;
 
@@ -68,7 +68,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			db.setAutoCommit(true);
 		}
 
-		ServerRMI.pool.releaseConnection(db);
+		db.close();
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	public int buyShares(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share, boolean fromQueue) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException
 	{
-        Connection db = ServerRMI.pool.connectionCheck();
+        Connection db = ServerRMI.getConnection();
 
 		try {
 			db.setAutoCommit(false);
@@ -182,7 +182,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			throw e;
 		} finally {
 			db.setAutoCommit(true);
-			ServerRMI.pool.releaseConnection(db);
+			db.close();
 
 			return -1;
 		}
@@ -606,7 +606,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	public ArrayList<ShareInfo> getShares(int idea_id) throws RemoteException, SQLException
 	{
-		Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.getConnection();
 
 		int tries = 0;
 		int maxTries = 3;
@@ -644,7 +644,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 	public ArrayList<TransactionInfo> showHistory(int user_id) throws RemoteException, SQLException
 	{
-		Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.getConnection();
 
 		ArrayList<TransactionInfo> ret = new ArrayList<TransactionInfo>();
 
@@ -679,7 +679,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			}
 		}
 
-		ServerRMI.pool.releaseConnection(db);
+		db.close();
 
 		return ret;
 	}

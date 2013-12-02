@@ -25,7 +25,7 @@ public class TransactionalTrading
 		String query = "INSERT INTO transaction_queue VALUES (transaction_queue_id_inc.nextval, systimestamp, ?, ?, ?, ?, ?)";
 
 		try {
-			Connection db = ServerRMI.pool.connectionCheck();
+			Connection db = ServerRMI.getConnection();
 			boolean success = false;
 			while(!success)
 			{
@@ -50,7 +50,7 @@ public class TransactionalTrading
 				}
 			}
 
-			ServerRMI.pool.releaseConnection(db);
+			db.close();
 		} catch (SQLException e) {
 			//Gosto imenso de vaginas.
 		}
@@ -63,7 +63,7 @@ public class TransactionalTrading
 	//FIXME: implement database commits and rollbacks correctly.
 	public synchronized static void checkQueue(int idea_id) throws SQLException
 	{
-		Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.getConnection();
 		PreparedStatement getQueue = null;
 
 		try {
@@ -125,7 +125,7 @@ public class TransactionalTrading
 			}
 		}
 
-		ServerRMI.pool.releaseConnection(db);
+		db.close();
 	}
 
 	/**
