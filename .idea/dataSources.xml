@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="3568957206">
+  <component name="DataSourceManagerImpl" format="xml" hash="96127542">
     <data-source source="LOCAL" name="SD-DataBase" product="Oracle" version="Oracle Database 11g Express Edition Release 11.2.0.2.0 - Production" jdbc-version="11.2" driver-name="Oracle JDBC driver" driver-version="11.2.0.3.0" uuid="8d904f14-132f-4e97-9faf-7b4731bda35b">
       <extra-name-characters>$#</extra-name-characters>
       <identifier-quote-string>&quot;</identifier-quote-string>
       <synchronize>true</synchronize>
       <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
-      <jdbc-url>jdbc:oracle:thin:@192.168.1.75:1521:XE</jdbc-url>
+      <jdbc-url>jdbc:oracle:thin:@10.42.0.57:1521:XE</jdbc-url>
       <user-name>sd2</user-name>
       <user-password>dfd9dfcedf98</user-password>
       <libraries>

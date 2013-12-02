@@ -79,17 +79,14 @@
     </div>
 
     <c:forEach var="idea" items="${ideas}">
-        <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
-            <div class="panel panel-default">
-                <div class="panel-body" style="">
-                    <div style="text-align: right; margin-bottom: 10px;">
-                        <i class="fa fa-user"></i> <strong>${idea.ideaOwner}</strong>
-                    </div>
-                    <span style="">${idea.text}</span>
+        <div class="panel panel-default">
+            <div class="panel-body" style="">
+                <div style="text-align: right; margin-bottom: 10px;">
+                    <i class="fa fa-user"></i> <strong>${idea.ideaOwner}</strong>
                 </div>
-
+                <span style="">${idea.text}</span>
             </div>
-        </a>
+        </div>
     </c:forEach>
 
 </div>

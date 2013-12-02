@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class UserBean {
 
-    String rmiAddress = "rmi://127.0.0.1:7777/";
+    String rmiAddress = "rmi://10.42.0.1:7777/";
 
     private RemoteUserManager um;
     private RemoteIdeas ideas;
