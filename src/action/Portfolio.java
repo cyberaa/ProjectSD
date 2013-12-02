@@ -2,6 +2,10 @@ package action;
 
 import common.IdeaInfo;
 
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: joaosimoes
@@ -11,14 +15,25 @@ import common.IdeaInfo;
  */
 public class Portfolio extends User {
 
-    private IdeaInfo[] ideas;
+    private ArrayList<IdeaInfo> ideas;
 
     public String execute() {
+        super.execute();
+        try {
+            ideas = user.portfolio();
+        } catch (SQLException e) {
+            return ERROR;
+        } catch (RemoteException e) {
+            return ERROR;
+        }
         return SUCCESS;
     }
 
-    public IdeaInfo[] getIdeas() {
-        return this.ideas;
+    public ArrayList<IdeaInfo> getIdeas() {
+        return ideas;
     }
 
+    public void setIdeas(ArrayList<IdeaInfo> ideas) {
+        this.ideas = ideas;
+    }
 }

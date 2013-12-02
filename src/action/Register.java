@@ -15,6 +15,7 @@ public class Register extends User {
     @Override
     public String execute() {
         super.execute();
+        System.out.println(username+"   "+password);
         try {
             user.registerUser(username,password);
         } catch (Exception e) {

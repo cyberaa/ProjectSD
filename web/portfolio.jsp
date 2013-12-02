@@ -38,7 +38,7 @@
                     </ul>
                 </li>
                 <li><a href="<s:url action='topicsAction'/>"> <i class="fa fa-bars"></i> Topics </a></li>
-                <li><a href="<s:url action='portfolioAction'/>"> <i class="fa fa-tasks"></i> Portfolio </a></li>
+                <li class="active"><a href="<s:url action='portfolioAction'/>"> <i class="fa fa-tasks"></i> Portfolio </a></li>
             </ul>
             <form class="navbar-form navbar-left" role="search">
                 <div class="form-group">
@@ -74,48 +74,55 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
-   <div class="well well-sm">
-       <h3><i class="fa fa-tags"></i> ${topicText}</h3>
-   </div>
+    <div class="well well-sm">
+        <h3><i class="fa fa-tasks"></i> Your Portfolio</h3>
+    </div>
 
-   <c:set var="count" value="0" scope="page" />
+    <c:set var="count" value="0" scope="page" />
 
-   <c:forEach var="idea" items="${ideas}">
-       <c:url value="viewSharesAction.action" var="buySharesTag">
-           <c:param name="ideaId" value="${idea.idea_id}"/>
-           <c:param name="ideaText" value="${idea.text}" />
-           <c:param name="ideaOwner" value="${idea.ideaOwner}" />
-       </c:url>
-       <c:url value="addFavoriteAction.action" var="addFavoriteTag">
-           <c:param name="ideaId" value="${idea.idea_id}" />
-           <c:param name="topicText" value="${topicText}" />
-           <c:param name="topicId" value="${topicId}" />
-       </c:url>
-       <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
-           <div class="panel panel-default">
-               <div class="panel-body" style="">
-                   <div style="text-align: right; margin-bottom: 10px;">
-                       <i class="fa fa-user"></i> <strong>${idea.ideaOwner}</strong>
-                   </div>
-                   <span style="">${idea.text}</span>
-               </div>
-               <div class="panel-heading" id="${count}" style="display: none;">
-                   <div style="text-align: right">
-                       <c:choose>
-                           <c:when test="${idea.isFavorite == 0}">
-                               <button type="button" class="btn btn-warning" onclick="location.href='<c:out value="${addFavoriteTag}"/>'">Add to Watchlist</button>
-                           </c:when>
-                           <c:when test="${idea.isFavorite == 1}">
-                               <button type="button" class="btn btn-warning" onclick="location.href=''">Remove from Watchlist</button>
-                           </c:when>
-                       </c:choose>
-                       <button type="button" class="btn btn-danger" onclick="location.href='<c:out value="${buySharesTag}"/>'">Buy Shares</button>
-                   </div>
-               </div>
-           </div>
-       </a>
-       <c:set var="count" value="${count + 1}" scope="page"/>
-   </c:forEach>
+    <c:forEach var="idea" items="${ideas}">
+        <c:url value="viewSharesAction.action" var="buySharesTag">
+            <c:param name="ideaId" value="${idea.idea_id}"/>
+            <c:param name="ideaText" value="${idea.text}" />
+            <c:param name="ideaOwner" value="${idea.ideaOwner}" />
+        </c:url>
+
+            <div class="panel panel-default">
+                <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
+                    <div class="panel-body" style="">
+                        <div style="text-align: right; margin-bottom: 10px;">
+                            <i class="fa fa-user"></i> <strong>${idea.ideaOwner}</strong>
+                        </div>
+                        <span style="">${idea.text}</span>
+                    </div>
+                </a>
+                <div class="panel-heading" id="${count}" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-3" style="padding-top: 8px;">
+                            <strong>Share Price:</strong> ${idea.value}
+                        </div>
+                        <div class="col-md-3" style="padding-top: 8px;">
+                            <strong>Shares:</strong> ${idea.parts}
+                        </div>
+                        <div class="col-md-2" style="padding-right: 0px;">
+                            <div class="form-group" style="text-align: right;">
+                                <input type="text" class="form-control" id="sharePrice" placeholder="Share Price">
+                            </div>
+                        </div>
+                        <div class="col-md-1" style="text-align: left; padding-left: 5px;">
+                            <button type="submit" class="btn btn-info" style=""><strong>Set</strong></button>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2" style="">
+                            <div style="text-align: right">
+                                <button type="button" class="btn btn-danger" onclick="location.href='<c:out value="${buySharesTag}"/>'">Buy Shares</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <c:set var="count" value="${count + 1}" scope="page"/>
+    </c:forEach>
 
 </div>
 
@@ -124,6 +131,7 @@
 <script src="assets/dist/js/bootstrap.min.js"></script>
 <script src="assets/jquery-ui-1.10.3/ui/jquery-ui.js"></script>
 <script src="assets/custom.js"></script>
+
 
 
 </body>

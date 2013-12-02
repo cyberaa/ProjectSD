@@ -28,7 +28,7 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="dropdown">
+                <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-lightbulb-o"> </i> Ideas<!--<b class="caret"></b>--></a>
                     <ul class="dropdown-menu">
                         <li><a href="<s:url action='ideaAction'/>"><i class="fa fa-flash"></i> New idea</a></li>
@@ -74,48 +74,23 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
-   <div class="well well-sm">
-       <h3><i class="fa fa-tags"></i> ${topicText}</h3>
-   </div>
+    <div class="well well-sm">
+        <h3><i class="fa fa-star"></i> Hall of Fame</h3>
+    </div>
 
-   <c:set var="count" value="0" scope="page" />
+    <c:forEach var="idea" items="${ideas}">
+        <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
+            <div class="panel panel-default">
+                <div class="panel-body" style="">
+                    <div style="text-align: right; margin-bottom: 10px;">
+                        <i class="fa fa-user"></i> <strong>${idea.ideaOwner}</strong>
+                    </div>
+                    <span style="">${idea.text}</span>
+                </div>
 
-   <c:forEach var="idea" items="${ideas}">
-       <c:url value="viewSharesAction.action" var="buySharesTag">
-           <c:param name="ideaId" value="${idea.idea_id}"/>
-           <c:param name="ideaText" value="${idea.text}" />
-           <c:param name="ideaOwner" value="${idea.ideaOwner}" />
-       </c:url>
-       <c:url value="addFavoriteAction.action" var="addFavoriteTag">
-           <c:param name="ideaId" value="${idea.idea_id}" />
-           <c:param name="topicText" value="${topicText}" />
-           <c:param name="topicId" value="${topicId}" />
-       </c:url>
-       <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
-           <div class="panel panel-default">
-               <div class="panel-body" style="">
-                   <div style="text-align: right; margin-bottom: 10px;">
-                       <i class="fa fa-user"></i> <strong>${idea.ideaOwner}</strong>
-                   </div>
-                   <span style="">${idea.text}</span>
-               </div>
-               <div class="panel-heading" id="${count}" style="display: none;">
-                   <div style="text-align: right">
-                       <c:choose>
-                           <c:when test="${idea.isFavorite == 0}">
-                               <button type="button" class="btn btn-warning" onclick="location.href='<c:out value="${addFavoriteTag}"/>'">Add to Watchlist</button>
-                           </c:when>
-                           <c:when test="${idea.isFavorite == 1}">
-                               <button type="button" class="btn btn-warning" onclick="location.href=''">Remove from Watchlist</button>
-                           </c:when>
-                       </c:choose>
-                       <button type="button" class="btn btn-danger" onclick="location.href='<c:out value="${buySharesTag}"/>'">Buy Shares</button>
-                   </div>
-               </div>
-           </div>
-       </a>
-       <c:set var="count" value="${count + 1}" scope="page"/>
-   </c:forEach>
+            </div>
+        </a>
+    </c:forEach>
 
 </div>
 

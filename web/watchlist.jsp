@@ -28,17 +28,17 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="dropdown">
+                <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-lightbulb-o"> </i> Ideas<!--<b class="caret"></b>--></a>
                     <ul class="dropdown-menu">
                         <li><a href="<s:url action='ideaAction'/>"><i class="fa fa-flash"></i> New idea</a></li>
                         <li class="divider"></li>
-                        <li><a href="#"><i class="fa fa-star"></i> Watchlist</a></li>
-                        <li><a href="<s:url action='watchlistAction'/>"><i class="fa fa-trophy"></i> Hall of fame</a></li>
+                        <li><a href="<s:url action='watchlistAction'/>"><i class="fa fa-star"></i> Watchlist</a></li>
+                        <li><a href="<s:url action='hallOfFameAction'/>"><i class="fa fa-trophy"></i> Hall of fame</a></li>
                     </ul>
                 </li>
                 <li><a href="<s:url action='topicsAction'/>"> <i class="fa fa-bars"></i> Topics </a></li>
-                <li><a href="#"> <i class="fa fa-tasks"></i> Portfolio </a></li>
+                <li><a href="<s:url action='portfolioAction'/>"> <i class="fa fa-tasks"></i> Portfolio </a></li>
             </ul>
             <form class="navbar-form navbar-left" role="search">
                 <div class="form-group">
@@ -75,15 +75,16 @@
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
     <div class="well well-sm">
-        <h3><i class="fa fa-star"></i> Your watchlist</h3>
+        <h3><i class="fa fa-star"></i> Your Watchlist</h3>
     </div>
 
     <c:set var="count" value="0" scope="page" />
 
     <c:forEach var="idea" items="${ideas}">
-        <c:url value="buySharesAction.action" var="buySharesTag">
+        <c:url value="viewSharesAction.action" var="buySharesTag">
             <c:param name="ideaId" value="${idea.idea_id}"/>
             <c:param name="ideaText" value="${idea.text}" />
+            <c:param name="ideaOwner" value="${idea.ideaOwner}" />
         </c:url>
         <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
             <div class="panel panel-default">

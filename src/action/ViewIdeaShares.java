@@ -17,6 +17,7 @@ public class ViewIdeaShares extends User {
 
     private int ideaId;
     private String ideaText;
+    private String ideaOwner;
     private ArrayList<ShareInfo> shares;
 
     public String execute() {
@@ -53,5 +54,13 @@ public class ViewIdeaShares extends User {
 
     public void setIdeaText(String ideaText) {
         this.ideaText = ideaText;
+    }
+
+    public String getIdeaOwner() {
+        return ideaOwner;
+    }
+
+    public void setIdeaOwner(String ideaOwner) {
+        this.ideaOwner = ideaOwner;
     }
 }

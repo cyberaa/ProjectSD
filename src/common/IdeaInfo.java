@@ -19,6 +19,8 @@ public class IdeaInfo implements Serializable
     private String text;
     private String ideaOwner;
     private int isFavorite;
+    private int parts;
+    private double value;
 
 
     /**
@@ -32,6 +34,15 @@ public class IdeaInfo implements Serializable
         this.text = text;
         this.ideaOwner = ideaOwner;
         this.isFavorite = isFavorite;
+    }
+
+    public IdeaInfo(int idea_id, String ideaOwner, String text, int isFavorite, int parts, double value) {
+        this.idea_id = idea_id;
+        this.text = text;
+        this.ideaOwner = ideaOwner;
+        this.isFavorite = isFavorite;
+        this.parts = parts;
+        this.value = value;
     }
 
     public void setRelatedTopics(ArrayList<TopicInfo> relatedTopics) {
@@ -72,5 +83,21 @@ public class IdeaInfo implements Serializable
 
     public void setFavorite(int favorite) {
         isFavorite = favorite;
+    }
+
+    public int getParts() {
+        return parts;
+    }
+
+    public void setParts(int parts) {
+        this.parts = parts;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
     }
 }

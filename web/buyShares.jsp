@@ -34,11 +34,11 @@
                         <li><a href="<s:url action='ideaAction'/>"><i class="fa fa-flash"></i> New idea</a></li>
                         <li class="divider"></li>
                         <li><a href="<s:url action='watchlistAction'/>"><i class="fa fa-star"></i> Watchlist</a></li>
-                        <li><a href="#"><i class="fa fa-trophy"></i> Hall of fame</a></li>
+                        <li><a href="<s:url action='hallOfFameAction'/>"><i class="fa fa-trophy"></i> Hall of fame</a></li>
                     </ul>
                 </li>
                 <li><a href="<s:url action='topicsAction'/>"> <i class="fa fa-bars"></i> Topics </a></li>
-                <li><a href="#"> <i class="fa fa-tasks"></i> Portfolio </a></li>
+                <li><a href="<s:url action='portfolioAction'/>"> <i class="fa fa-tasks"></i> Portfolio </a></li>
             </ul>
             <form class="navbar-form navbar-left" role="search">
                 <div class="form-group">
@@ -74,8 +74,14 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
-    <div class="well well-sm">
-        <h4><i class="fa fa-lightbulb-o"></i> ${ideaText} </h4>
+    <div class="panel panel-default">
+        <div class="panel-body" style="">
+            <div style="text-align: right; margin-bottom: 10px;">
+                <i class="fa fa-user"></i> <strong>${ideaOwner}</strong>
+            </div>
+            <span style="">${ideaText}</span>
+        </div>
+
     </div>
 
     <div class="panel panel-default">
@@ -104,35 +110,24 @@
             </form>
         </div>
     </div>
-
-    <div class="panel panel-default">
-        <div class="panel-body">
-
-
-            <table class="table table-hover table-condensed">
-                <thead>
-                <tr style="text-align: center;">
-                    <th style="text-align: center;">User</th>
-                    <th style="text-align: center;">Number of Share</th>
-                    <th style="text-align: center;">Price per share</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="share" items="${shares}">
-                    <tr style="text-align: center;">
-                        <td>${share.username}</td>
-                        <td>${share.parts}</td>
-                        <td>${share.value}</td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-
-
-        </div>
-    </div>
-
-
+    <table class="table table-hover table-condensed table-bordered" style="border-radius: 10px;">
+        <thead>
+        <tr style="text-align: center;">
+            <th style="text-align: center;">User</th>
+            <th style="text-align: center;">Number of Share</th>
+            <th style="text-align: center;">Price per share</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach var="share" items="${shares}">
+            <tr style="text-align: center;">
+                <td>${share.username}</td>
+                <td>${share.parts}</td>
+                <td>${share.value}</td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
 
 </div>
 

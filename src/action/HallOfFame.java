@@ -2,6 +2,10 @@ package action;
 
 import common.IdeaInfo;
 
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: joaosimoes
@@ -11,13 +15,21 @@ import common.IdeaInfo;
  */
 public class HallOfFame extends User {
 
-    private IdeaInfo[] ideas;
+    private ArrayList<IdeaInfo> ideas;
 
     public String execute() {
+        super.execute();
+        try {
+            ideas = user.hallOfFame();
+        } catch (RemoteException e) {
+            return ERROR;
+        } catch (SQLException e) {
+            return ERROR;
+        }
         return SUCCESS;
     }
 
-    public IdeaInfo[] getIdeas() {
+    public ArrayList getIdeas() {
         return this.ideas;
     }
 

@@ -29,7 +29,7 @@
             <result>/idea.jsp</result>
         </action>
 
-        <action name="buySharesAction" class="action.ViewIdeaShares" method="execute">
+        <action name="viewSharesAction" class="action.ViewIdeaShares" method="execute">
             <interceptor-ref name="authStack" />
             <result name="success">/buyShares.jsp</result>
         </action>
@@ -47,6 +47,11 @@
         <action name="addFavoriteAction" class="action.AddToFavorites">
             <interceptor-ref name="authStack" />
             <result name="success">/viewTopicIdeas.jsp</result>
+        </action>
+
+        <action name="portfolioAction" class="action.Portfolio">
+            <interceptor-ref name="authStack" />
+            <result name="success">/portfolio.jsp</result>
         </action>
 
         <action name="watchlistAction" class="action.Watchlist">
@@ -67,8 +72,12 @@
             <result name="error">/login.jsp</result>
         </action>
 
-        <action name="registerAction" class="action.Register" method="execute">
+        <action name="hallOfFameAction" class="action.HallOfFame">
             <interceptor-ref name="authStack" />
+            <result name="success">/hallOfFame.jsp</result>
+        </action>
+
+        <action name="registerAction" class="action.Register" method="execute">
             <result name="success">/login.jsp</result>
         </action>
 

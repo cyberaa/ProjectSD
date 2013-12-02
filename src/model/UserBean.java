@@ -120,12 +120,12 @@ public class UserBean {
         return null;
     }
 
-    public IdeaInfo[] portfolio() {
-        return null;
+    public ArrayList<IdeaInfo> portfolio() throws SQLException, RemoteException {
+        return ideas.viewPortfolio(userID);
     }
 
-    public IdeaInfo[] hallOfFame() {
-        return null;
+    public ArrayList<IdeaInfo> hallOfFame() throws RemoteException, SQLException {
+        return ideas.viewHallOfFame();
     }
 
 }

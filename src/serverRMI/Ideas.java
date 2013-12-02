@@ -353,7 +353,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         ResultSet rs;
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
-        String query = "SELECT lol.id, lol.text, lol.username, lol.sduser_id, lol.idea_id FROM (SELECT idea.id, idea.text, sduser.username, lol.sduser_id, lol.idea_id FROM idea LEFT OUTER JOIN (Select watchlist.* FROM watchlist where sduser_id = ?) lol ON idea.id = lol.idea_id LEFT OUTER JOIN sduser ON sduser.id = idea.user_id) lol, idea_has_topic WHERE lol.id = idea_has_topic.idea_id AND idea_has_topic.topic_id = ?";
+        String query = "SELECT lol.id, lol.text, lol.username, lol.sduser_id, lol.idea_id FROM (SELECT idea.id, idea.text, sduser.username, lol.sduser_id, lol.idea_id, idea.in_hall FROM idea LEFT OUTER JOIN (Select watchlist.* FROM watchlist where sduser_id = ?) lol ON idea.id = lol.idea_id LEFT OUTER JOIN sduser ON sduser.id = idea.user_id) lol, idea_has_topic WHERE lol.id = idea_has_topic.idea_id AND idea_has_topic.topic_id = ? AND lol.in_hall = 0";
 
         while(tries < maxTries)
         {
@@ -435,7 +435,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
             db.setAutoCommit(false);
 
-            String verify = "SELECT idea.id, idea.text, sduser.username FROM watchlist, idea, sduser WHERE watchlist.sduser_id = ? AND idea.id = watchlist.idea_id AND idea.user_id = sduser.id";
+            String verify = "SELECT idea.id, idea.text, sduser.username FROM watchlist, idea, sduser WHERE watchlist.sduser_id = ? AND idea.id = watchlist.idea_id AND idea.user_id = sduser.id AND idea.in_hall = 0";
 
             while(tries < maxTries)
             {
@@ -448,6 +448,104 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                     while(rs.next())
                     {
                          ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("username"), rs.getString("text"), 1));
+                    }
+                    break;
+                } catch (SQLException e) {
+                    System.out.println(e);
+                    if(tries++ > maxTries) {
+                        throw e;
+                    }
+                } finally {
+                    if(stmt != null)
+                        stmt.close();
+                }
+            }
+            db.commit();
+        } catch (SQLException e) {
+            System.out.println(e);
+            if(db != null)
+                db.rollback();
+        } finally {
+            db.setAutoCommit(true);
+        }
+        return ideas;
+    }
+
+    public ArrayList<IdeaInfo> viewHallOfFame() throws RemoteException, SQLException {
+        Connection db = ServerRMI.pool.connectionCheck();
+
+        ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
+
+        try {
+            int tries = 0;
+            int maxTries = 3;
+            PreparedStatement stmt = null;
+            ResultSet rs;
+
+            db.setAutoCommit(false);
+
+            String verify = "SELECT idea.id, idea.text, sduser.username FROM idea, sduser WHERE idea.in_hall = 1 AND idea.user_id = sduser.id";
+
+            while(tries < maxTries)
+            {
+                try {
+                    stmt = db.prepareStatement(verify);
+
+                    rs = stmt.executeQuery();
+
+                    while(rs.next())
+                    {
+                        ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("username"), rs.getString("text"), 1));
+                    }
+                    break;
+                } catch (SQLException e) {
+                    System.out.println(e);
+                    if(tries++ > maxTries) {
+                        throw e;
+                    }
+                } finally {
+                    if(stmt != null)
+                        stmt.close();
+                }
+            }
+            db.commit();
+        } catch (SQLException e) {
+            System.out.println(e);
+            if(db != null)
+                db.rollback();
+        } finally {
+            db.setAutoCommit(true);
+        }
+        return ideas;
+    }
+
+    public ArrayList<IdeaInfo> viewPortfolio(int user_id) throws SQLException, RemoteException {
+        Connection db = ServerRMI.pool.connectionCheck();
+
+        ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
+
+        try {
+            int tries = 0;
+            int maxTries = 3;
+            PreparedStatement stmt = null;
+            ResultSet rs;
+
+            db.setAutoCommit(false);
+
+            String verify = "SELECT idea.id, idea.text, sduser.username, idea_share.parts, idea_share.value FROM idea, idea_share, sduser WHERE idea.user_id = sduser.id AND idea_share.user_id = ? AND idea_share.idea_id = idea.id";
+
+            while(tries < maxTries)
+            {
+                try {
+                    stmt = db.prepareStatement(verify);
+
+                    stmt.setInt(1, user_id);
+
+                    rs = stmt.executeQuery();
+
+                    while(rs.next())
+                    {
+                        ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("username"), rs.getString("text"), 1, rs.getInt("parts"), rs.getDouble("value")));
                     }
                     break;
                 } catch (SQLException e) {

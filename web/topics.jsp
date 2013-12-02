@@ -34,11 +34,11 @@
                     <li><a href="<s:url action='ideaAction'/>"><i class="fa fa-flash"></i> New idea</a></li>
                     <li class="divider"></li>
                     <li><a href="<s:url action='watchlistAction'/>"><i class="fa fa-star"></i> Watchlist</a></li>
-                    <li><a href="#"><i class="fa fa-trophy"></i> Hall of fame</a></li>
+                    <li><a href="<s:url action='hallOfFameAction'/>"><i class="fa fa-trophy"></i> Hall of fame</a></li>
                 </ul>
             </li>
             <li class="active"><a href="<s:url action='topicsAction'/>"> <i class="fa fa-bars"></i> Topics </a></li>
-            <li><a href="#"> <i class="fa fa-tasks"></i> Portfolio </a></li>
+            <li><a href="<s:url action='portfolioAction'/>"> <i class="fa fa-tasks"></i> Portfolio </a></li>
         </ul>
         <form class="navbar-form navbar-left" role="search">
             <div class="form-group">
@@ -102,7 +102,7 @@
             <form action="submitTopicAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
                 <fieldset>
                     <input type="text" class="form-control" name="topicText" placeholder="Topic text">
-                    <button type="submit" id="submiTopic" class="btn btn-default" style="background-color: #007765; color: #f5f5f5;"><strong>Submit</strong></button>
+                    <button type="submit" id="submitTopic" class="btn btn-default" style="background-color: #007765; color: #f5f5f5;"><strong>Submit</strong></button>
                 </fieldset>
             </form>
         </div>

@@ -33,11 +33,11 @@
                         <li><a href="#"><i class="fa fa-flash"></i> New idea</a></li>
                         <li class="divider"></li>
                         <li><a href="<s:url action='watchlistAction'/>"><i class="fa fa-star"></i> Watchlist</a></li>
-                        <li><a href="#"><i class="fa fa-trophy"></i> Hall of fame</a></li>
+                        <li><a href="<s:url action='hallOfFameAction'/>"><i class="fa fa-trophy"></i> Hall of fame</a></li>
                     </ul>
                 </li>
                 <li><a href="<s:url action='topicsAction'/>"> <i class="fa fa-bars"></i> Topics </a></li>
-                <li><a href="#"> <i class="fa fa-tasks"></i> Portfolio </a></li>
+                <li><a href="<s:url action='portfolioAction'/>"> <i class="fa fa-tasks"></i> Portfolio </a></li>
             </ul>
             <form class="navbar-form navbar-left" role="search">
                 <div class="form-group">
