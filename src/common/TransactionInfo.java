@@ -13,11 +13,11 @@ public class TransactionInfo implements Serializable
 {
 	private static final long serialVersionUID = -6346265992255318206L;
 
-	String seller;
-	String buyer;
+	private String seller;
+	private String buyer;
 
-	int parts;
-	int total;
+	private int parts;
+	private int total;
 
 	public TransactionInfo(String seller, String buyer, int parts, int total)
 	{
@@ -31,4 +31,36 @@ public class TransactionInfo implements Serializable
 	{
 		return "Seller: "+seller+"\tBuyer: "+buyer+"\tParts: "+parts+"\tTotal: "+total;
 	}
+
+    public String getSeller() {
+        return seller;
+    }
+
+    public void setSeller(String seller) {
+        this.seller = seller;
+    }
+
+    public String getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(String buyer) {
+        this.buyer = buyer;
+    }
+
+    public int getParts() {
+        return parts;
+    }
+
+    public void setParts(int parts) {
+        this.parts = parts;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
 }

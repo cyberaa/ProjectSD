@@ -1,9 +1,6 @@
 package model;
 
-import common.IdeaInfo;
-import common.ShareInfo;
-import common.TopicInfo;
-import common.UserInfo;
+import common.*;
 import common.rmi.*;
 
 import java.io.IOException;
@@ -23,7 +20,7 @@ import java.util.ArrayList;
  */
 public class UserBean {
 
-    String rmiAddress = "rmi://10.42.0.1:7777/";
+    String rmiAddress = "rmi://127.0.0.1:7777/";
 
     private RemoteUserManager um;
     private RemoteIdeas ideas;
@@ -126,6 +123,14 @@ public class UserBean {
 
     public ArrayList<IdeaInfo> hallOfFame() throws RemoteException, SQLException {
         return ideas.viewHallOfFame();
+    }
+
+    public ArrayList<TransactionInfo> userTransactions(int idea_id) throws RemoteException, SQLException {
+        return transactions.showHistory(userID, idea_id);
+    }
+
+    public ArrayList<TransactionInfo> ideaTransactions(int idea_id) throws RemoteException, SQLException {
+        return transactions.showIdeaHistory(idea_id);
     }
 
 }

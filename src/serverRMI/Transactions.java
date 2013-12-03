@@ -642,7 +642,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		return ret;
 	}
 
-	public ArrayList<TransactionInfo> showHistory(int user_id) throws RemoteException, SQLException
+	public ArrayList<TransactionInfo> showHistory(int user_id, int idea_id) throws RemoteException, SQLException
 	{
 		Connection db = ServerRMI.getConnection();
 
@@ -653,7 +653,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		PreparedStatement gTransactions = null;
 		ResultSet rs;
 
-		String transactions = "SELECT u1.username as buyer, u2.username as seller, idea_transaction.number_parts, idea_transaction.VALUE FROM sduser u1, sduser u2, idea_transaction WHERE u1.id = idea_transaction.buyer_id AND u2.id = idea_transaction.seller_id AND (seller_id = ? OR buyer_id = ?)";
+		String transactions = "SELECT u1.username as buyer, u2.username as seller, idea_transaction.number_parts, idea_transaction.value FROM sduser u1, sduser u2, idea_transaction, idea WHERE u1.id = idea_transaction.buyer_id AND u2.id = idea_transaction.seller_id AND (seller_id = ? OR buyer_id = ?) AND idea.id = idea_transaction.idea_id AND idea_transaction.idea_id = ?";
 
 		while(tries < maxTries)
 		{
@@ -661,6 +661,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				gTransactions = db.prepareStatement(transactions);
 				gTransactions.setInt(1, user_id);
 				gTransactions.setInt(2, user_id);
+                gTransactions.setInt(3, idea_id);
 
 				rs = gTransactions.executeQuery();
 
@@ -683,4 +684,45 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 		return ret;
 	}
+
+    public ArrayList<TransactionInfo> showIdeaHistory(int idea_id) throws RemoteException, SQLException
+    {
+        Connection db = ServerRMI.getConnection();
+
+        ArrayList<TransactionInfo> ret = new ArrayList<TransactionInfo>();
+
+        int tries = 0;
+        int maxTries = 3;
+        PreparedStatement gTransactions = null;
+        ResultSet rs;
+
+        String transactions = "SELECT u1.username as buyer, u2.username as seller, idea_transaction.number_parts, idea_transaction.value FROM sduser u1, sduser u2, idea_transaction, idea WHERE u1.id = idea_transaction.buyer_id AND u2.id = idea_transaction.seller_id AND idea.id = idea_transaction.idea_id AND idea_transaction.idea_id = ?";
+
+        while(tries < maxTries)
+        {
+            try {
+                gTransactions = db.prepareStatement(transactions);
+                gTransactions.setInt(1, idea_id);
+
+                rs = gTransactions.executeQuery();
+
+                while(rs.next())
+                    ret.add(new TransactionInfo(rs.getString("seller"), rs.getString("buyer"), rs.getInt("parts"), rs.getInt("value")));
+
+                break;
+            } catch (SQLException e) {
+                System.out.println(e);
+                if(tries++ > maxTries)
+                    throw e;
+            }
+            finally {
+                if(gTransactions != null)
+                    gTransactions.close();
+            }
+        }
+
+        db.close();
+
+        return ret;
+    }
 }
