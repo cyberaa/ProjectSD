@@ -100,6 +100,9 @@
                             <label for="pricePerShare">Price per Share</label>
                             <input type="text" id="pricePerShare" class="form-control" name="pricePerShare" placeholder="">
                         </div>
+                        <input type="hidden" name="ideaText" value="${ideaText}">
+                        <input type="hidden" name="ideaOwner" value="${ideaOwner}">
+                        <input type="hidden" name="ideaId" value="${ideaId}">
                         <div class="col-md-4">
                             <div style="padding-top: 25px;">
                                 <button type="submit" class="btn btn-default" style="background-color: #007765; color: #f5f5f5; width: 100%;"><strong>Buy</strong></button>

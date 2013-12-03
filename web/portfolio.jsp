@@ -104,14 +104,19 @@
                         <div class="col-md-3" style="padding-top: 8px;">
                             <strong>Shares:</strong> ${idea.parts}
                         </div>
-                        <div class="col-md-2" style="padding-right: 0px;">
-                            <div class="form-group" style="text-align: right;">
-                                <input type="text" class="form-control" id="sharePrice" placeholder="Share Price">
-                            </div>
-                        </div>
-                        <div class="col-md-1" style="text-align: left; padding-left: 5px;">
-                            <button type="submit" class="btn btn-info" style=""><strong>Set</strong></button>
-                        </div>
+                        <form action="SetValueAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
+                            <fieldset>
+                                <div class="col-md-2" style="padding-right: 0px;">
+                                    <div class="form-group" style="text-align: right;">
+                                        <input type="text" class="form-control" id="sharePrice" name="sharePrice" placeholder="Share Price">
+                                    </div>
+                                </div>
+                                <input type="hidden" name="ideaId" value="${idea.idea_id}">
+                                <div class="col-md-1" style="text-align: left; padding-left: 5px;">
+                                    <button type="submit" class="btn btn-info" style=""><strong>Set</strong></button>
+                                </div>
+                            </fieldset>
+                        </form>
                         <div class="col-md-1"></div>
                         <div class="col-md-2" style="">
                             <div style="text-align: right">
