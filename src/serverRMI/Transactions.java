@@ -88,7 +88,10 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	public int buyShares(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share, boolean fromQueue) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException
 	{
+		int ret = -1;
+		System.out.println("\nGetting connection...");
         Connection db = ServerRMI.getConnection();
+		System.out.println("Got connection: "+db);
 
 		try {
 			db.setAutoCommit(false);
@@ -98,29 +101,29 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			if(userCash < share_num * price_per_share) {
 				throw new NotEnoughCashException();
             }
+			System.out.println("Has enough cash.");
 
 			//Verify that the idea has enough shares to be bought.
-			int totalShares = getNumberShares(db, idea_id);
-			if(share_num > totalShares) {
+			int amountShares = getNumberShares(db, idea_id);
+			if(share_num > amountShares) {
 				throw new NotEnoughSharesException();
             }
+			System.out.println("Has enough shares.");
 
 			//Get list of idea shares
 			ArrayList<ShareInfo> shares = _getShares(db, idea_id);
 
+			System.out.println("Size: "+shares.size());
+			for(int k=0; k < shares.size(); k++) //DEBUG
+				System.out.println(shares.get(k));
+
 			//Select ideas to be bought and add them to sharesToBuy.
 			ArrayList<ShareToBuy> sharesToBuy;
-			try {
-				sharesToBuy = getSharesToBuy(shares, share_num, price_per_share, user_id);
-			} catch (NotEnoughSharesAtDesiredPriceException e) {
-				if(!fromQueue)
-				{
-					TransactionalTrading.enqueue(user_id, idea_id, share_num, price_per_share, new_price_share);
-                    return -1;
-				}
-				else
-					return 0;
-			}
+			sharesToBuy = getSharesToBuy(shares, share_num, price_per_share, user_id);
+
+			System.out.println("Size: "+sharesToBuy.size());
+			for(int k=0; k < sharesToBuy.size(); k++) //DEBUG
+				System.out.println(sharesToBuy.get(k));
 
 			//Remove (or update) all selected shares to be bought.
 			int lastIndex = sharesToBuy.size() -1;
@@ -132,6 +135,8 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				deleteShare(db, lastShare.id);
 			else
 				updateShare(db, lastShare.id, lastShare.total - lastShare.numToBuy, lastShare.value);
+
+			System.out.println("Shares updated/removed.");
 
 			//Create new share for the buyer or update previous amount of shares.
 			ShareInfo aux1;
@@ -149,16 +154,18 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			if(!updated)
 				createShare(db, idea_id, user_id, share_num, new_price_share);
 
-			//Remove money from buyer.
-			giveOrTakeUserCash(db, user_id, share_num * price_per_share, false);
+			System.out.println("New shares created/Old shares updated.");
 
 			//Give money to sellers and update transaction history.
 			ShareToBuy aux2;
 			int transactionMoney;
+			int totalCash=0, totalShares=0;
 			for(int i=0; i < sharesToBuy.size(); i++)
 			{
 				aux2 = sharesToBuy.get(i);
-				transactionMoney = aux2.numToBuy * price_per_share;
+				transactionMoney = aux2.numToBuy * aux2.value;
+				totalCash += transactionMoney;
+				totalShares += aux2.numToBuy;
 
 				//Give money to sellers.
 				giveOrTakeUserCash(db, aux2.user_id, transactionMoney, true);
@@ -166,15 +173,41 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				createTransaction(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
 
 				//Create and store notification.
-				ServerRMI.notifications.insertNotification(user_id, ServerRMI.notifications.createNotificationString(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
-				ServerRMI.notifications.insertNotification(aux2.user_id, ServerRMI.notifications.createNotificationString(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
+				ServerRMI.notifications.insertNotification(db, user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
+				ServerRMI.notifications.insertNotification(db, aux2.user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
             }
 
-			//Check queue.
+			System.out.println("Money given to sellers and transaction history updated.");
+
+			//Remove money from buyer.
+			giveOrTakeUserCash(db, user_id, totalCash, false);
+
+			System.out.println("Money taken from buyer.");
+
+			//Transactional trading stuff.
 			if(!fromQueue)
-				TransactionalTrading.checkQueue(idea_id);
+			{
+				if(totalShares < share_num)
+				{
+					System.out.println("Queueing...");
+					TransactionalTrading.enqueue(db, user_id, idea_id, share_num-totalShares, price_per_share, price_per_share);
+				}
+
+				if(totalShares != 0)
+				{
+					System.out.println("Checking queue...");
+					TransactionalTrading.checkQueue(idea_id);
+				}
+			}
+			else
+			{
+				ret = share_num-totalShares;
+			}
+
+			System.out.println("Transactional trading finished.");
 
 			db.commit();
+			System.out.println("Changes committed.");
 		} catch (SQLException e) {
 			System.out.println(e);
 			if(db != null)
@@ -184,7 +217,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			db.setAutoCommit(true);
 			db.close();
 
-			return -1;
+			return ret;
 		}
 	}
 
@@ -236,14 +269,13 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	protected ArrayList<ShareInfo> _getShares(Connection db, int idea_id) throws RemoteException, SQLException
 	{
-
         int tries = 0;
 		int maxTries = 3;
 		PreparedStatement gShares = null;
 		ResultSet rs;
 		ArrayList<ShareInfo> ret = new ArrayList<ShareInfo>();
 
-		String shares = "SELECT * FROM shares WHERE idea_id = ? ORDER BY value ASC";
+		String shares = "SELECT * FROM idea_share WHERE idea_id = ? ORDER BY value ASC";
 
 		while(tries < maxTries)
 		{
@@ -297,7 +329,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
                 return x;
             }
         } catch (SQLException e) {
-            System.out.println( e);
+            System.out.println(e);
             if(tries++ > maxTries)
                 throw e;
         } finally {
@@ -320,7 +352,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @return <em>ArrayList</em> containing all the shares to be bought.
 	 * @throws NotEnoughSharesAtDesiredPriceException
 	 */
-	protected ArrayList<ShareToBuy> getSharesToBuy(ArrayList<ShareInfo> shares, int share_num, int price_per_share, int user_id) throws  NotEnoughSharesAtDesiredPriceException, NotEnoughSharesException
+	protected ArrayList<ShareToBuy> getSharesToBuy(ArrayList<ShareInfo> shares, int share_num, int price_per_share, int user_id) throws NotEnoughSharesException
 	{
         ShareInfo aux;
 		int auxPrice, auxNum;
@@ -357,7 +389,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				}
 			}
 			else
-				throw new NotEnoughSharesAtDesiredPriceException();
+				break;
 		}
 
 		if(counterShares != share_num)
@@ -378,7 +410,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		int maxTries = 3;
 		PreparedStatement dShare = null;
 
-		String share = "DELETE FROM shares WHERE id = ?";
+		String share = "DELETE FROM idea_share WHERE id = ?";
 
 		while(tries < maxTries)
 		{
@@ -412,7 +444,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		int maxTries = 3;
 		PreparedStatement uShare = null;
 
-		String share = "UPDATE shares SET parts = ?, value = ? WHERE id = ?";
+		String share = "UPDATE idea_share SET parts = ?, value = ? WHERE id = ?";
 
 		while(tries < maxTries)
 		{
@@ -450,7 +482,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		int maxTries = 3;
 		PreparedStatement cShare = null;
 
-		String share = "INSERT INTO shares VALUES (shares_id_inc.nextval, ?, ?, ?, ?)";
+		String share = "INSERT INTO idea_share VALUES (seq_idea_share.nextval, ?, ?, ?, ?)";
 
 		while(tries < maxTries)
 		{
@@ -571,7 +603,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		int maxTries = 3;
 		PreparedStatement cShare = null;
 
-		String share = "INSERT INTO idea_transaction VALUES (transaction_id_inc.nextval, ?, ?, ?, ?, ?, systimestamp)";
+		String share = "INSERT INTO idea_transaction VALUES (seq_idea_transaction.nextval, ?, ?, ?, ?, ?, systimestamp)";
 
 		while(tries < maxTries)
 		{
