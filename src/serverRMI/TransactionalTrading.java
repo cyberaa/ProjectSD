@@ -19,7 +19,7 @@ public class TransactionalTrading
 	 * @param price_per_share
 	 * @param new_price_share
 	 */
-	public synchronized static void enqueue(Connection db, int user_id, int idea_id, int share_num, int price_per_share, int new_price_share)
+	public synchronized static void enqueue(Connection db, int user_id, int idea_id, int share_num, double price_per_share, double new_price_share)
 	{
 		PreparedStatement enqueue = null;
 		String query = "INSERT INTO transaction_queue VALUES (seq_transaction_queue.nextval, ?, ?, ?, ?, ?, systimestamp)";
@@ -33,8 +33,8 @@ public class TransactionalTrading
 					enqueue.setInt(1, user_id);
 					enqueue.setInt(2, idea_id);
 					enqueue.setInt(3, share_num);
-					enqueue.setInt(4, price_per_share);
-					enqueue.setInt(5, new_price_share);
+					enqueue.setDouble(4, price_per_share);
+					enqueue.setDouble(5, new_price_share);
 
 					enqueue.executeQuery();
 

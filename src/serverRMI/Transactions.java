@@ -35,7 +35,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public void setShareValue(int user_id, int idea_id, int new_value) throws RemoteException, SQLException
+	public void setShareValue(int user_id, int idea_id, double new_value) throws RemoteException, SQLException
 	{
         Connection db = ServerRMI.getConnection();
 
@@ -47,7 +47,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			db.setAutoCommit(false);
 
 			updateValue = db.prepareStatement(query);
-			updateValue.setInt(1, new_value);
+			updateValue.setDouble(1, new_value);
 			updateValue.setInt(2, user_id);
 			updateValue.setInt(3, idea_id);
 
@@ -86,7 +86,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @throws NotEnoughSharesException
 	 * @throws NotEnoughSharesAtDesiredPriceException
 	 */
-	public int buyShares(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share, boolean fromQueue) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException
+	public int buyShares(int user_id, int idea_id, int share_num, double price_per_share, double new_price_share, boolean fromQueue) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException
 	{
 		int ret = -1;
 		System.out.println("\nGetting connection...");
@@ -97,7 +97,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			db.setAutoCommit(false);
 
 			//Check if user has enough cash.
-			int userCash = getCash(db, user_id);
+			double userCash = getCash(db, user_id);
 			if(userCash < share_num * price_per_share) {
 				throw new NotEnoughCashException();
             }
@@ -227,7 +227,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @return The amount of cash the user identified by <em>user_id</em> has available.
 	 * @throws SQLException
 	 */
-	protected int getCash(Connection db, int user_id) throws SQLException
+	protected double getCash(Connection db, int user_id) throws SQLException
 	{
 		int tries = 0;
 		int maxTries = 3;
@@ -352,7 +352,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @return <em>ArrayList</em> containing all the shares to be bought.
 	 * @throws NotEnoughSharesAtDesiredPriceException
 	 */
-	protected ArrayList<ShareToBuy> getSharesToBuy(ArrayList<ShareInfo> shares, int share_num, int price_per_share, int user_id) throws NotEnoughSharesException
+	protected ArrayList<ShareToBuy> getSharesToBuy(ArrayList<ShareInfo> shares, int share_num, double price_per_share, double user_id) throws NotEnoughSharesException
 	{
         ShareInfo aux;
 		int auxPrice, auxNum;
@@ -438,7 +438,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @param newNumParts The number of parts of the idea the user will now have.
 	 * @throws SQLException
 	 */
-	protected void updateShare(Connection db, int id, int newNumParts, int value) throws SQLException
+	protected void updateShare(Connection db, int id, int newNumParts, double value) throws SQLException
 	{
 		int tries = 0;
 		int maxTries = 3;
@@ -451,7 +451,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			try {
 				uShare = db.prepareStatement(share);
 				uShare.setInt(1, newNumParts);
-				uShare.setInt(2, value);
+				uShare.setDouble(2, value);
 				uShare.setInt(3, id);
 
 				uShare.executeQuery();
@@ -476,7 +476,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @param price The price at which the shares will be sold.
 	 * @throws SQLException
 	 */
-	public void createShare(Connection db, int idea_id, int user_id, int share_num, int price) throws SQLException
+	public void createShare(Connection db, int idea_id, int user_id, int share_num, double price) throws SQLException
 	{
         int tries = 0;
 		int maxTries = 3;
@@ -491,7 +491,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				cShare.setInt(1, idea_id);
 				cShare.setInt(2, user_id);
 				cShare.setInt(3, share_num);
-				cShare.setInt(4, price);
+				cShare.setDouble(4, price);
 
 				cShare.executeQuery();
 				break;
