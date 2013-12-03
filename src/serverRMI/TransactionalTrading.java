@@ -19,13 +19,12 @@ public class TransactionalTrading
 	 * @param price_per_share
 	 * @param new_price_share
 	 */
-	public synchronized static void enqueue(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share)
+	public synchronized static void enqueue(Connection db, int user_id, int idea_id, int share_num, int price_per_share, int new_price_share)
 	{
 		PreparedStatement enqueue = null;
-		String query = "INSERT INTO transaction_queue VALUES (transaction_queue_id_inc.nextval, systimestamp, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO transaction_queue VALUES (seq_transaction_queue.nextval, ?, ?, ?, ?, ?, systimestamp)";
 
 		try {
-			Connection db = ServerRMI.getConnection();
 			boolean success = false;
 			while(!success)
 			{
@@ -38,7 +37,6 @@ public class TransactionalTrading
 					enqueue.setInt(5, new_price_share);
 
 					enqueue.executeQuery();
-					db.commit();
 
 					success = true;
 				} catch (SQLException e) {
@@ -49,8 +47,6 @@ public class TransactionalTrading
 						enqueue.close();
 				}
 			}
-
-			db.close();
 		} catch (SQLException e) {
 			//Gosto imenso de vaginas.
 		}
@@ -82,6 +78,7 @@ public class TransactionalTrading
 
 					success = true;
 				} catch (SQLException e) {
+					System.out.println(e);
 					success = false;
 				} finally {
 					if(!success && getQueue != null)
@@ -99,10 +96,11 @@ public class TransactionalTrading
 				try {
 					int res = ServerRMI.transactions.buyShares(rs.getInt("user_id"), rs.getInt("idea_id"), rs.getInt("share_num"), rs.getInt("price_per_share"), rs.getInt("new_price_share"), true);
 
-					if(res == -1)
-					{
+					if(res == 0)
 						removeFromQueue(db, rs.getInt("id"));
-					}
+					else if(res > 0)
+						updateInQueue(db, rs.getInt("id"), res);
+
 				} catch (Exception e) {
 					System.out.println(e);
 					continue;
@@ -146,6 +144,42 @@ public class TransactionalTrading
 				try {
 					dequeue = db.prepareStatement(query);
 					dequeue.setInt(1, id);
+
+					dequeue.executeQuery();
+					db.commit();
+
+					success = true;
+				} catch (SQLException e) {
+					success = false;
+				} finally {
+					if(dequeue != null)
+						dequeue.close();
+				}
+			} catch (SQLException e) {
+				success = false;
+			}
+		}
+	}
+
+	/**
+	 *
+	 * @param db
+	 * @param id
+	 */
+	protected synchronized static void updateInQueue(Connection db, int id, int remaining)
+	{
+		PreparedStatement dequeue = null;
+		String query = "UPDATE transaction_queue SET share_num = ? WHERE id = ?";
+
+		boolean success = false;
+		while(!success)
+		{
+			try {
+
+				try {
+					dequeue = db.prepareStatement(query);
+					dequeue.setInt(1, remaining);
+					dequeue.setInt(2, id);
 
 					dequeue.executeQuery();
 					db.commit();

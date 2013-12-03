@@ -384,7 +384,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		            stmt.close();
             }
         }
-        System.out.println(ideas.size());
+
         return ideas;
     }
 

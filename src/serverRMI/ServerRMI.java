@@ -67,7 +67,15 @@ public class ServerRMI
         String command;
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("\nType \"help\" to see help menu.");
+		//Debug
+		try {
+		transactions.buyShares(2, 2, 10, 5, 5, false);
+		} catch (Exception e) {
+			System.out.println("Bode:\n"+e);
+		}
+		//~Debug
+
+		System.out.println("\nType \"help\" to see help menu.");
 
         while(true) {
             System.out.print("\n>> ");

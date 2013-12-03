@@ -4,6 +4,7 @@ import common.NotificationInfo;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  */
 public interface RemoteNotifications extends Remote
 {
-	public void insertNotification(int user_id, String not) throws RemoteException, SQLException;
+	public void insertNotification(Connection db, int user_id, String not) throws RemoteException, SQLException;
 
 	public ArrayList<NotificationInfo> getNotifications(int user_id) throws RemoteException, SQLException;
 

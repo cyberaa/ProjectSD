@@ -30,13 +30,11 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public void insertNotification(int user_id, String not) throws RemoteException, SQLException
+	public void insertNotification(Connection db, int user_id, String not) throws RemoteException, SQLException
 	{
 		PreparedStatement insert = null;
 
-		String query = "INSERT INTO notifications VALUES (notifications_id_inc.nextval, ?, ?)";
-
-		Connection db = ServerRMI.getConnection();
+		String query = "INSERT INTO notification VALUES (seq_notification.nextval, ?, ?)";
 
 		try {
 			insert = db.prepareStatement(query);
@@ -44,7 +42,6 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			insert.setString(2, not);
 
 			insert.executeQuery();
-			db.commit();
 		} catch (SQLException e) {
 			System.out.println(e);
 			if(db != null)
@@ -52,8 +49,6 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 		} finally {
 			if(insert != null)
 				insert.close();
-
-			db.close();
 		}
 	}
 
@@ -71,7 +66,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 		Connection db = ServerRMI.getConnection();
 
 		PreparedStatement getNotifications = null;
-		String query = "SELECT * FROM notifications WHERE user_id = ?";
+		String query = "SELECT * FROM notification WHERE user_id = ?";
 		ResultSet rs = null;
 
 		try {
@@ -102,7 +97,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	public void removeNotifications(ArrayList<NotificationInfo> not_ids) throws RemoteException, SQLException
 	{
 		PreparedStatement remove = null;
-		String query = "DELETE FROM notifications WHERE id = ?";
+		String query = "DELETE FROM notification WHERE id = ?";
 
 		Connection db = ServerRMI.getConnection();
 
@@ -138,11 +133,9 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	 * @param totalPrice The total amount of money involved in the transaction.
 	 * @return A <em>String</em> describing the transaction.
 	 */
-	public String createNotificationString(int idea_id, int seller_id, int buyer_id, int parts, int totalPrice) throws SQLException
+	public String createNotificationString(Connection db, int idea_id, int seller_id, int buyer_id, int parts, int totalPrice) throws SQLException
 	{
 		String buyer, seller;
-
-		Connection db = ServerRMI.getConnection();
 
 		PreparedStatement getNotifications = null;
 		String query = "SELECT username FROM sduser WHERE id = ?";
@@ -168,8 +161,6 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 		} finally {
 			if(getNotifications != null)
 				getNotifications.close();
-
-			db.close();
 		}
 
 		return buyer + " bought " + parts + " from " + seller + " (idea " + idea_id +") for a total of " + totalPrice + " coins.";
