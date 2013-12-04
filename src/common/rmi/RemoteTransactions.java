@@ -26,4 +26,6 @@ public interface RemoteTransactions extends Remote
 	public ArrayList<TransactionInfo> showHistory(int user_id, int idea_id) throws RemoteException, SQLException;
 
     public ArrayList<TransactionInfo> showIdeaHistory(int idea_id) throws RemoteException, SQLException;
+
+	public void takeover(int user_id, int idea_id) throws RemoteException, SQLException;
 }

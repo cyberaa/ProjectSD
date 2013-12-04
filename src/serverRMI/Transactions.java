@@ -56,7 +56,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			db.commit();
 
 			//Check queue.
-			TransactionalTrading.checkQueue(idea_id);
+			TransactionalTrading.checkQueue(db, idea_id);
 		} catch (SQLException e) {
 			System.out.println("\n"+e+"\n");
 			if(db != null)
@@ -158,8 +158,8 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 			//Give money to sellers and update transaction history.
 			ShareToBuy aux2;
-			int transactionMoney;
-			int totalCash=0, totalShares=0;
+			double transactionMoney, totalCash=0;
+			int totalShares=0;
 			for(int i=0; i < sharesToBuy.size(); i++)
 			{
 				aux2 = sharesToBuy.get(i);
@@ -196,7 +196,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				if(totalShares != 0)
 				{
 					System.out.println("Checking queue...");
-					TransactionalTrading.checkQueue(idea_id);
+					TransactionalTrading.checkQueue(db, idea_id);
 				}
 			}
 			else
@@ -224,6 +224,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	/**
 	 *
 	 * @param user_id The user identifier.
+	 * @param db The connection to the database.
 	 * @return The amount of cash the user identified by <em>user_id</em> has available.
 	 * @throws SQLException
 	 */
@@ -262,6 +263,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	/**
 	 * Query the database for all the shares of the idea identified by <em>idea_id</em> and return them
 	 * in a <em>ShareInfo</em> <em>ArrayList</em>.
+	 * @param db The connection to the database.
 	 * @param idea_id The identifier of the idea whose shares will be returned.
 	 * @return Shares of the idea identified by <em>idea_id</em>.
 	 * @throws RemoteException
@@ -305,6 +307,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 	/**
 	 * Get the number of share parts of the idea identified by <em>idea_id</em>.
+	 * @param db The connection to the database.
 	 * @param idea_id The identifier of the idea whose number of parts we want to retrieve.
 	 * @return The number of parts of the idea identified by <em>idea_id</em>.
 	 * @throws SQLException
@@ -401,6 +404,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	/**
 	 * Deletes the share identified by <em>id</em>.
 	 * <p>NOTE: this function does not commit the changes to the database!</p>
+	 * @param db The connection to the database.
 	 * @param id The identifier of the share to delete.
 	 * @throws SQLException
 	 */
@@ -434,6 +438,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	/**
 	 * Updates the amount of parts a user has of the share identified by <em>id</em>.
 	 * <p>NOTE: this function does not commit the changes to the database!</p>
+	 * @param db The connection to the database.
 	 * @param id The identifier of the share to update.
 	 * @param newNumParts The number of parts of the idea the user will now have.
 	 * @throws SQLException
@@ -470,6 +475,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	/**
 	 * Creates a new share with the given values.
 	 * <p>NOTE: this function does not commit the changes to the database!</p>
+	 * @param db The connection to the database.
 	 * @param idea_id The id of the idea the share is of.
 	 * @param user_id The id of the user the shares belong to.
 	 * @param share_num The number of parts of the idea the user has.
@@ -509,11 +515,12 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	/**
 	 * Removes <em>money</em> amount of cash from user identified by <em>user_id</em>.
 	 * <p>NOTE: this function does not commit the changes to the database!</p>
+	 * @param db The connection to the database.
 	 * @param user_id The id of the user from whom to withdraw cash.
 	 * @param money The amount of cash to withdraw.
 	 * @throws SQLException
 	 */
-	protected void giveOrTakeUserCash(Connection db, int user_id, int money, boolean give) throws SQLException
+	protected void giveOrTakeUserCash(Connection db, int user_id, double money, boolean give) throws SQLException
 	{
         //Get current cash.
 		int curCash = 0;
@@ -555,11 +562,12 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	/**
 	 * Updates the user's cash to <em>cash</em>. The user is identified by <em>user_id</em>.
 	 * <p>NOTE: this function does not commit the changes to the database!</p>
+	 * @param db The connection to the database.
 	 * @param user_id The id of the user whose cash will be updated.
 	 * @param cash The new amount of cash the user will have.
 	 * @throws SQLException
 	 */
-	protected void updateUserCash(Connection db, int user_id, int cash) throws SQLException
+	protected void updateUserCash(Connection db, int user_id, double cash) throws SQLException
 	{
 		int tries = 0;
 		int maxTries = 3;
@@ -571,7 +579,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		{
 			try {
 				uShare = db.prepareStatement(share);
-				uShare.setInt(1, cash);
+				uShare.setDouble(1, cash);
 				uShare.setInt(2, user_id);
 
 				uShare.executeQuery();
@@ -590,6 +598,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 	/**
 	 * Create a new transaction for the transactions history with the given values.
+	 * @param db The connection to the database.
 	 * @param idea_id The id of the idea from which shares where transacted.
 	 * @param seller_id The id of the user who sold shares.
 	 * @param buyer_id The id of the user who bought shares.
@@ -597,7 +606,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @param transactionMoney The total money involved in the transaction.
 	 * @throws SQLException
 	 */
-	protected void createTransaction(Connection db, int idea_id, int seller_id, int buyer_id, int share_num, int transactionMoney) throws SQLException
+	protected void createTransaction(Connection db, int idea_id, int seller_id, int buyer_id, int share_num, double transactionMoney) throws SQLException
 	{
 		int tries = 0;
 		int maxTries = 3;
@@ -613,7 +622,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				cShare.setInt(2, seller_id);
 				cShare.setInt(3, buyer_id);
 				cShare.setInt(4, share_num);
-				cShare.setInt(5, transactionMoney);
+				cShare.setDouble(5, transactionMoney);
 
 				cShare.executeQuery();
 				break;
@@ -757,4 +766,243 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
         return ret;
     }
+
+	/**
+	 * If the user is root (is_root == 1), buy all shares of an idea for the price paid
+	 * in the last transaction of shares of that idea. The idea is then moved to the
+	 * hall of fame.
+	 * @param user_id The id of the user giving the takeover order.
+	 * @param idea_id The identifier of the idea whose shares will be bought.
+	 * @throws RemoteException
+	 */
+	public void takeover(int user_id, int idea_id) throws RemoteException, SQLException
+	{
+		Connection db = ServerRMI.getConnection();
+
+		try {
+			db.setAutoCommit(false);
+
+			//Check if user is root.
+			if(!isRoot(db, user_id))
+				return;
+
+			//Get shares' stock value.
+			double price = stockValue(db, idea_id);
+			if(price == 0)
+				return;
+
+			//Get list of idea shares
+			ArrayList<ShareInfo> shares = _getShares(db, idea_id);
+
+			//Remove all idea shares.
+			for(int i=0; i < shares.size(); i++)
+				deleteShare(db, shares.get(i).getId());
+
+			//Give money to sellers and update transaction history.
+			ShareInfo aux2;
+			double transactionMoney;
+			for(int i=0; i < shares.size(); i++)
+			{
+				aux2 = shares.get(i);
+				transactionMoney = aux2.getParts() * price;
+
+				//Give money to sellers.
+				giveOrTakeUserCash(db, aux2.getUser_id(), transactionMoney, true);
+				//Update transaction history.
+				createTransaction(db, idea_id, aux2.getUser_id(), user_id, aux2.getParts(), transactionMoney);
+
+				//Create and store notification.
+				ServerRMI.notifications.insertNotification(db, user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.getUser_id(), user_id, aux2.getParts(), transactionMoney));
+			}
+
+			System.out.println("Money given to sellers and transaction history updated.");
+
+			//Put idea in hall of fame
+			putInHall(db, idea_id);
+
+			System.out.println("Idea is now in the Hall of Fame.");
+
+			//Remove everything related to this idea from queue.
+			TransactionalTrading.removeAllByIdea(db, idea_id);
+
+			System.out.println("Queue cleaned.");
+
+			db.commit();
+		} catch (SQLException e) {
+			System.out.println(e);
+			if(db != null)
+				db.rollback();
+			throw e;
+		} finally {
+			db.setAutoCommit(true);
+			db.close();
+		}
+	}
+
+	/**
+	 * Returns true if user is root, false otherwise.
+	 * @param db The connection to the database.
+	 * @param user_id The id of the user.
+	 * @return True if user is root, false otherwise.
+	 * @throws SQLException
+	 */
+	protected boolean isRoot(Connection db, int user_id) throws SQLException
+	{
+		boolean ret = false;
+
+		int tries = 0;
+		int maxTries = 3;
+		PreparedStatement gRoot = null;
+		ResultSet rs;
+
+		String query = "SELECT is_root FROM sduser WHERE id = ?";
+
+		while(tries < maxTries)
+		{
+			try {
+				gRoot = db.prepareStatement(query);
+				gRoot.setInt(1, user_id);
+
+				rs = gRoot.executeQuery();
+
+				if(rs.next())
+				{
+					if (rs.getInt("is_root") == 1)
+						ret = true;
+				}
+
+				break;
+			} catch (SQLException e) {
+				if(tries++ > maxTries)
+					throw e;
+			} finally {
+				if(gRoot != null)
+					gRoot.close();
+			}
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Returns the stock value of the shares of the given idea. This stock
+	 * value is given by the value of the last transaction of shares of this
+	 * idea. If there was no transaction
+	 * @param db The connection to the database.
+	 * @param idea_id The identifier of the idea.
+	 * @return Stock value of the shares of the given idea.
+	 * @throws SQLException
+	 */
+	protected double stockValue(Connection db, int idea_id) throws SQLException
+	{
+		double ret = 0;
+
+		int tries = 0;
+		int maxTries = 3;
+		PreparedStatement sValue = null;
+		ResultSet rs;
+
+		String query = "SELECT number_parts, value, timestamp FROM idea_transaction WHERE idea_id = ? ORDER BY timestamp DESC";
+
+		while(tries < maxTries)
+		{
+			try {
+				sValue = db.prepareStatement(query);
+				sValue.setInt(1, idea_id);
+
+				rs = sValue.executeQuery();
+
+				if(rs.next())
+					ret = rs.getDouble("value") / rs.getInt("number_parts");
+				else
+					ret = getShareValue(db, idea_id);
+
+				break;
+			} catch (SQLException e) {
+				if(tries++ > maxTries)
+					throw e;
+			} finally {
+				if(sValue != null)
+					sValue.close();
+			}
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Get the value of the shares of the given idea.
+	 * @param db The connection to the database.
+	 * @param idea_id The identifier of the idea.
+	 * @return Value of the shares.
+	 * @throws SQLException
+	 */
+	protected double getShareValue(Connection db, int idea_id) throws SQLException
+	{
+		double ret = 0;
+
+		int tries = 0;
+		int maxTries = 3;
+		PreparedStatement sValue = null;
+		ResultSet rs;
+
+		String query = "SELECT value FROM idea_share WHERE idea_id = ?";
+
+		while(tries < maxTries)
+		{
+			try {
+				sValue = db.prepareStatement(query);
+				sValue.setInt(1, idea_id);
+
+				rs = sValue.executeQuery();
+
+				if(rs.next())
+					ret = rs.getInt("value");
+
+				break;
+			} catch (SQLException e) {
+				if(tries++ > maxTries)
+					throw e;
+			} finally {
+				if(sValue != null)
+					sValue.close();
+			}
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Marks the given idea as being in the Hall of Fame.
+	 * @param db The connection to the database.
+	 * @param idea_id The identifier of the idea.
+	 * @throws SQLException
+	 */
+	protected void putInHall(Connection db, int idea_id) throws  SQLException
+	{
+		int tries = 0;
+		int maxTries = 3;
+		PreparedStatement pHall = null;
+		ResultSet rs;
+
+		String query = "UPDATE idea SET in_hall = 1 WHERE id = ?";
+
+		while(tries < maxTries)
+		{
+			try {
+				pHall = db.prepareStatement(query);
+				pHall.setInt(1, idea_id);
+
+				pHall.executeQuery();
+
+				break;
+			} catch (SQLException e) {
+				if(tries++ > maxTries)
+					throw e;
+			} finally {
+				if(pHall != null)
+					pHall.close();
+			}
+		}
+	}
 }

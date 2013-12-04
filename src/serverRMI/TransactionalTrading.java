@@ -12,7 +12,8 @@ import java.sql.*;
 public class TransactionalTrading
 {
 	/**
-	 *
+	 * Put the request in the queue.
+	 * @param db The connection to the database.
 	 * @param user_id
 	 * @param idea_id
 	 * @param share_num
@@ -53,13 +54,12 @@ public class TransactionalTrading
 	}
 
 	/**
-	 *
+	 * Check the queue for request that may now be fulfilled.
+	 * @param db The connection to the database.
 	 * @param idea_id
 	 */
-	//FIXME: implement database commits and rollbacks correctly.
-	public synchronized static void checkQueue(int idea_id) throws SQLException
+	public synchronized static void checkQueue(Connection db, int idea_id) throws SQLException
 	{
-		Connection db = ServerRMI.getConnection();
 		PreparedStatement getQueue = null;
 
 		try {
@@ -110,8 +110,6 @@ public class TransactionalTrading
 			db.commit();
 		} catch (SQLException e) {
 			System.out.println("\n"+e+"\n");
-			if(db != null)
-				db.rollback();
 		} finally {
 			if(getQueue != null)
 			{
@@ -122,14 +120,12 @@ public class TransactionalTrading
 				}
 			}
 		}
-
-		db.close();
 	}
 
 	/**
-	 *
-	 * @param db
-	 * @param id
+	 * Remove a certain request from the queue.
+	 * @param db The connection to the database.
+	 * @param id The identifier of the request.
 	 */
 	protected synchronized static void removeFromQueue(Connection db, int id)
 	{
@@ -162,9 +158,9 @@ public class TransactionalTrading
 	}
 
 	/**
-	 *
-	 * @param db
-	 * @param id
+	 * Update a certain request in the queue.
+	 * @param db The connection to the database.
+	 * @param id The identifier of the request.
 	 */
 	protected synchronized static void updateInQueue(Connection db, int id, int remaining)
 	{
@@ -195,5 +191,41 @@ public class TransactionalTrading
 				success = false;
 			}
 		}
+	}
+
+	/**
+	 * Remove from the queue all occurrences of requests related to the given idea.
+	 * @param db The connection to the database.
+	 * @param idea_id The identifier of the idea.
+	 */
+	public synchronized static void removeAllByIdea(Connection db, int idea_id)
+	{
+		PreparedStatement dequeue = null;
+		String query = "DELETE FROM transaction_queue WHERE idea_id = ?";
+
+		boolean success = false;
+		while(!success)
+		{
+			try {
+
+				try {
+					dequeue = db.prepareStatement(query);
+					dequeue.setInt(1, idea_id);
+
+					dequeue.executeQuery();
+					db.commit();
+
+					success = true;
+				} catch (SQLException e) {
+					success = false;
+				} finally {
+					if(dequeue != null)
+						dequeue.close();
+				}
+			} catch (SQLException e) {
+				success = false;
+			}
+		}
+
 	}
 }
