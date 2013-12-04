@@ -101,8 +101,8 @@ public class UserBean {
         ideas.addToWatchlist(userID,idea_id);
     }
 
-    public void buyShares() {
-
+    public void buyShares(int idea_id, int num_parts, double value, double new_value) throws RemoteException, SQLException, NotEnoughSharesException, NotEnoughCashException {
+        transactions.buyShares(userID,idea_id,num_parts,value,new_value,false);
     }
 
     public ArrayList<IdeaInfo> watchlist() throws RemoteException, SQLException {
@@ -131,6 +131,10 @@ public class UserBean {
 
     public ArrayList<TransactionInfo> ideaTransactions(int idea_id) throws RemoteException, SQLException {
         return transactions.showIdeaHistory(idea_id);
+    }
+
+    public void setShareValue(int idea_id, double price) throws RemoteException, SQLException {
+        transactions.setShareValue(userID,idea_id,price);
     }
 
 }
