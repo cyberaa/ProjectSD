@@ -96,34 +96,36 @@
                         <span style="">${idea.text}</span>
                     </div>
                 </a>
-                <div class="panel-heading" id="${count}" style="display: none;">
-                    <div class="row">
-                        <div class="col-md-3" style="padding-top: 8px;">
-                            <strong>Share Price:</strong> ${idea.value}
-                        </div>
-                        <div class="col-md-3" style="padding-top: 8px;">
-                            <strong>Shares:</strong> ${idea.parts}
-                        </div>
-                        <form action="SetValueAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
-                            <fieldset>
-                                <div class="col-md-2" style="padding-right: 0px;">
+                <div class="panel-heading" id="${count}" style="display: none; padding-bottom: 0px;">
+                    <form action="setValueAction.action" accept-charset="UTF-8" role="form" method="POST" role="form" style="margin-bottom: 0px;">
+                        <fieldset>
+                            <div class="row" style="margin-bottom: 0px;">
+                                <div class="col-md-3" style="padding-top: 8px;">
+                                    <strong>Share Price:</strong> ${idea.value}
+                                </div>
+                                <div class="col-md-3" style="padding-top: 8px; margin-bottom: 0px;">
+                                    <strong>Shares:</strong> ${idea.parts}
+                                </div>
+                                <div class="col-md-2" style="padding-right: 0px; margin-bottom: 0px;">
                                     <div class="form-group" style="text-align: right;">
                                         <input type="text" class="form-control" id="sharePrice" name="sharePrice" placeholder="Share Price">
                                     </div>
                                 </div>
-                                <input type="hidden" name="ideaId" value="${idea.idea_id}">
-                                <div class="col-md-1" style="text-align: left; padding-left: 5px;">
+                                <div class="col-md-1" style="text-align: left; padding-left: 5px; margin-bottom: 0px;">
+                                    <input type="hidden" value="${idea.idea_id}" name="ideaId">
                                     <button type="submit" class="btn btn-info" style=""><strong>Set</strong></button>
                                 </div>
-                            </fieldset>
-                        </form>
-                        <div class="col-md-1"></div>
-                        <div class="col-md-2" style="">
-                            <div style="text-align: right">
-                                <button type="button" class="btn btn-danger" onclick="location.href='<c:out value="${buySharesTag}"/>'">Buy Shares</button>
+
+
+                                <div class="col-md-1" style="margin-bottom: 0px;"></div>
+                                <div class="col-md-2" style="margin-bottom: 0px;">
+                                    <div style="text-align: right">
+                                        <button type="button" class="btn btn-danger" onclick="location.href='<c:out value="${buySharesTag}"/>'">Buy Shares</button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         <c:set var="count" value="${count + 1}" scope="page"/>

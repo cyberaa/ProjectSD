@@ -21,6 +21,8 @@ public class BuyShares extends User {
     private int share_num;
     private double price_share;
     private double new_price_share;
+    private String ideaText;
+    private String ideaOwner;
     private ArrayList<ShareInfo> shares;
 
     public String execute() {
@@ -78,5 +80,21 @@ public class BuyShares extends User {
 
     public void setShares(ArrayList<ShareInfo> shares) {
         this.shares = shares;
+    }
+
+    public String getIdeaText() {
+        return ideaText;
+    }
+
+    public void setIdeaText(String ideaText) {
+        this.ideaText = ideaText;
+    }
+
+    public String getIdeaOwner() {
+        return ideaOwner;
+    }
+
+    public void setIdeaOwner(String ideaOwner) {
+        this.ideaOwner = ideaOwner;
     }
 }

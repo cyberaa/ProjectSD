@@ -41,7 +41,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 		PreparedStatement updateValue = null;
 
-		String query = "UPDATE shares SET value = ? WHERE user_id = ? AND idea_id = ?";
+		String query = "UPDATE idea_share SET value = ? WHERE user_id = ? AND idea_id = ?";
 
 		try {
 			db.setAutoCommit(false);

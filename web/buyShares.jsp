@@ -89,21 +89,25 @@
             <h3 class="panel-title"><i class="fa fa-money" style="margin-right: 3px;"> </i> Buy Shares</h3>
         </div>
         <div class="panel-body">
-            <form action="submitTopicAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
+            <form action="buySharesAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
                 <fieldset>
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="numberOfShares">Number of Shares</label>
-                            <input type="text" id="numberOfShares" class="form-control" name="numberOfShares" placeholder="">
+                        <div class="col-md-3">
+                            <label for="numberOfShares">Shares</label>
+                            <input type="text" id="numberOfShares" class="form-control" name="share_num" placeholder="">
                         </div>
-                        <div class="col-md-4">
-                            <label for="pricePerShare">Price per Share</label>
-                            <input type="text" id="pricePerShare" class="form-control" name="pricePerShare" placeholder="">
+                        <div class="col-md-3">
+                            <label for="pricePerShare">Price</label>
+                            <input type="text" id="pricePerShare" class="form-control" name="price_share" placeholder="">
                         </div>
-                        <input type="hidden" name="ideaText" value="${ideaText}">
-                        <input type="hidden" name="ideaOwner" value="${ideaOwner}">
-                        <input type="hidden" name="ideaId" value="${ideaId}">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <label for="newPricePerShare">New Price</label>
+                            <input type="text" id="newPricePerShare" class="form-control" name="new_price_share" placeholder="">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="hidden" name="ideaText" value="${ideaText}">
+                            <input type="hidden" name="ideaOwner" value="${ideaOwner}">
+                            <input type="hidden" name="ideaId" value="${ideaId}">
                             <div style="padding-top: 25px;">
                                 <button type="submit" class="btn btn-default" style="background-color: #007765; color: #f5f5f5; width: 100%;"><strong>Buy</strong></button>
                             </div>

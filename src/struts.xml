@@ -97,7 +97,6 @@
         </action>
 
         <action name="setValueAction" class="action.SetShareValue" method="execute">
-            <interceptor-ref name="authStack" />
             <result name="success">/portfolio.jsp</result>
         </action>
 

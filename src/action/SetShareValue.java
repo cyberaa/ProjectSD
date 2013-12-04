@@ -20,6 +20,7 @@ public class SetShareValue extends User {
     private ArrayList<IdeaInfo> ideas;
 
     public String execute() {
+        System.out.println("\n\n Entrei \n");
         super.execute();
         try {
             user.setShareValue(ideaId,sharePrice);
