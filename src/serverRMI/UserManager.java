@@ -135,7 +135,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 			insertUser.setString(1, name);
 			insertUser.setString(2, hashPassword(pass));
 			insertUser.setInt(3, startCash);
-			insertUser.setInt(4, 1);
+			insertUser.setInt(4, 0);
 
 			insertUser.executeQuery();
 
