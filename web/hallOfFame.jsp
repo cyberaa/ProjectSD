@@ -84,11 +84,12 @@
     <c:set var="count" value="0" scope="page" />
 
     <c:forEach var="idea" items="${ideas}">
-        <c:url value="viewSharesAction.action" var="ideaTransactionsTag">
+        <c:url value="ideaTransactionsAction.action" var="ideaTransactionsTag">
             <c:param name="ideaId" value="${idea.idea_id}"/>
             <c:param name="ideaText" value="${idea.text}" />
             <c:param name="ideaOwner" value="${idea.ideaOwner}" />
         </c:url>
+    <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
         <div class="panel panel-default">
             <div class="panel-body" style="">
                 <div style="text-align: right; margin-bottom: 10px;">
@@ -98,11 +99,12 @@
             </div>
             <div class="panel-heading" id="${count}" style="display: none;">
                 <div style="text-align: right">
-                    <button type="button" class="btn btn-warning" onclick="location.href='<c:out value="${ideaTransactionsTag}"/>'">Remove from Watchlist</button>
+                    <button type="button" class="btn btn-warning" onclick="location.href='<c:out value="${ideaTransactionsTag}"/>'">Transactions History</button>
                 </div>
             </div>
         </div>
-        <c:set var="count" value="${count + 1}" scope="page"/>
+    </a>
+    <c:set var="count" value="${count + 1}" scope="page"/>
     </c:forEach>
 
 </div>

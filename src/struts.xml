@@ -117,6 +117,11 @@
             <result name="success">/idea.jsp</result>
         </action>
 
+        <action name="ideaTransactionsAction" class="action.IdeaTransactions" method="execute">
+            <interceptor-ref name="authStack" />
+            <result name="success">/ideaTransactions.jsp</result>
+        </action>
+
     </package>
 
 </struts>

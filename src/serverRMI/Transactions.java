@@ -748,7 +748,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
                 rs = gTransactions.executeQuery();
 
                 while(rs.next())
-                    ret.add(new TransactionInfo(rs.getString("seller"), rs.getString("buyer"), rs.getInt("parts"), rs.getInt("value")));
+                    ret.add(new TransactionInfo(rs.getString("seller"), rs.getString("buyer"), rs.getInt("number_parts"), rs.getInt("value")));
 
                 break;
             } catch (SQLException e) {

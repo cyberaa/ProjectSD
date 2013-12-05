@@ -30,6 +30,7 @@ public class SubmitIdea extends User {
         System.out.println(topic);
         System.out.println(text);
         System.out.println(investment);
+        super.execute();
         ArrayList<String> topics = new ArrayList<String>();
         topics.add(topic);
         try {

@@ -102,9 +102,9 @@
             <tr style="text-align: center;">
                 <td>${transaction.buyer}</td>
                 <td>${transaction.seller}</td>
-                <td>${transaction.value}</td>
+                <td>${transaction.total}</td>
                 <td>${transaction.parts}</td>
-                <td>${transaction.value * transaction.parts}</td>
+                <td>${transaction.total * transaction.parts}</td>
             </tr>
         </c:forEach>
         </tbody>
