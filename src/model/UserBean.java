@@ -28,7 +28,7 @@ public class UserBean {
     private RemoteTransactions transactions;
     private int userID;
     private String username;
-    private int isRoot;
+    private int root;
 
     public UserBean() {
 
@@ -51,7 +51,7 @@ public class UserBean {
         UserInfo rmiResponse = um.authenticate(username,password);
         this.userID = rmiResponse.getUserId();
         this.username = rmiResponse.getUsername();
-        this.isRoot = rmiResponse.getRoot();
+        this.root = rmiResponse.getRoot();
 
         if(userID == -1)
             return false;
@@ -77,6 +77,14 @@ public class UserBean {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getRoot() {
+        return root;
+    }
+
+    public void setRoot(int root) {
+        this.root = root;
     }
 
     public void submitIdea(ArrayList<String> topics, String text, String investment) throws IOException, SQLException {
@@ -137,5 +145,9 @@ public class UserBean {
 
     public  ArrayList<TopicInfo> searchTopic(String key) throws SQLException, RemoteException {
         return topics.searchTopic(key);
+    }
+
+    public void takeOver(int ideaId) throws RemoteException, SQLException {
+        transactions.takeover(userID,ideaId);
     }
 }

@@ -112,6 +112,11 @@
             <result name="success">/searchIdea.jsp</result>
         </action>
 
+        <action name="takeOverAction" class="action.TakeOver" method="execute">
+            <interceptor-ref name="authStack" />
+            <result name="success">/idea.jsp</result>
+        </action>
+
     </package>
 
 </struts>

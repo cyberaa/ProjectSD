@@ -1,5 +1,8 @@
 package action;
 
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: joaosimoes
@@ -13,6 +16,13 @@ public class TakeOver extends User {
 
     public String execute() {
         super.execute();
+        try {
+            user.takeOver(ideaId);
+        } catch (RemoteException e) {
+            return ERROR;
+        } catch (SQLException e) {
+            return ERROR;
+        }
         return SUCCESS;
     }
 }
