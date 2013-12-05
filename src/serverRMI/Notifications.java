@@ -133,7 +133,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	 * @param totalPrice The total amount of money involved in the transaction.
 	 * @return A <em>String</em> describing the transaction.
 	 */
-	public String createNotificationString(Connection db, int idea_id, int seller_id, int buyer_id, int parts, int totalPrice) throws SQLException
+	public String createNotificationString(Connection db, int idea_id, int seller_id, int buyer_id, int parts, double totalPrice) throws SQLException
 	{
 		String buyer, seller;
 
