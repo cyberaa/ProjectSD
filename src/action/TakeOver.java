@@ -25,4 +25,12 @@ public class TakeOver extends User {
         }
         return SUCCESS;
     }
+
+    public int getIdeaId() {
+        return ideaId;
+    }
+
+    public void setIdeaId(int ideaId) {
+        this.ideaId = ideaId;
+    }
 }
