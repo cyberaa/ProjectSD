@@ -28,6 +28,7 @@ public class UserBean {
     private RemoteTransactions transactions;
     private int userID;
     private String username;
+    private int isRoot;
 
     public UserBean() {
 
@@ -50,6 +51,7 @@ public class UserBean {
         UserInfo rmiResponse = um.authenticate(username,password);
         this.userID = rmiResponse.getUserId();
         this.username = rmiResponse.getUsername();
+        this.isRoot = rmiResponse.getRoot();
 
         if(userID == -1)
             return false;
@@ -109,14 +111,6 @@ public class UserBean {
          return ideas.viewWatchlist(userID);
     }
 
-    public IdeaInfo[] searchIdea(String ideaKey) {
-        return null;
-    }
-
-    public TopicInfo[] searchTopic(String topicKey) {
-        return null;
-    }
-
     public ArrayList<IdeaInfo> portfolio() throws SQLException, RemoteException {
         return ideas.viewPortfolio(userID);
     }
@@ -137,4 +131,11 @@ public class UserBean {
         transactions.setShareValue(userID,idea_id,price);
     }
 
+    public ArrayList<IdeaInfo> searchIdea(String key) throws SQLException, RemoteException {
+        return ideas.searchIdea(key, userID);
+    }
+
+    public  ArrayList<TopicInfo> searchTopic(String key) throws SQLException, RemoteException {
+        return topics.searchTopic(key);
+    }
 }

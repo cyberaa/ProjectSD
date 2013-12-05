@@ -97,7 +97,19 @@
         </action>
 
         <action name="setValueAction" class="action.SetShareValue" method="execute">
+            <interceptor-ref name="authStack" />
             <result name="success">/portfolio.jsp</result>
+        </action>
+
+        <action name="searchAction" class="action.Search" method="execute">
+            <interceptor-ref name="authStack" />
+            <result name="idea">/searchIdea.jsp</result>
+            <result name="topic">/searchTopic.jsp</result>
+        </action>
+
+        <action name="addToFavorite" class="action.AddFavoritesSearch" method="execute">
+            <interceptor-ref name="authStack" />
+            <result name="success">/searchIdea.jsp</result>
         </action>
 
     </package>

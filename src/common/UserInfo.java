@@ -15,10 +15,12 @@ public class UserInfo implements Serializable {
     private static final long serialVersionUID = 7964236110099079596L;
     private int userId;
     private String username;
+    private int root;
 
-    public UserInfo(int userId, String username) {
+    public UserInfo(int userId, String username, int root) {
         this.userId = userId;
         this.username = username;
+        this.root = root;
     }
 
     public String getUsername() {
@@ -35,5 +37,13 @@ public class UserInfo implements Serializable {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public int getRoot() {
+        return root;
+    }
+
+    public void setRoot(int root) {
+        this.root = root;
     }
 }

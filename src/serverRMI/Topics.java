@@ -191,4 +191,50 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 
         return -1;
     }
+
+    public ArrayList<TopicInfo> searchTopic(String topicKey) throws SQLException, RemoteException {
+        Connection db = ServerRMI.getConnection();
+
+        ArrayList<TopicInfo> topics = new ArrayList<TopicInfo>();
+        int tries = 0;
+        int maxTries = 3;
+        int id;
+        String text;
+        PreparedStatement stmt = null;
+        ResultSet rs;
+
+        String key = "%"+topicKey+"%";
+
+        String query = "SELECT topic.id, topic.text FROM topic WHERE topic.text LIKE ?";
+
+        while(tries < maxTries)
+        {
+            try {
+                stmt = db.prepareStatement(query);
+
+                stmt.setString(1,key);
+
+                rs = stmt.executeQuery();
+
+                while(rs.next()) {
+                    id = rs.getInt("id");
+                    text = rs.getString("text");
+                    topics.add(new TopicInfo(id,text));
+                }
+                break;
+            } catch (SQLException e) {
+                System.out.println(e);
+                if(tries++ > maxTries) {
+                    throw e;
+                }
+            } finally {
+                if(stmt != null)
+                    stmt.close();
+            }
+        }
+
+        db.close();
+
+        return topics;
+    }
 }

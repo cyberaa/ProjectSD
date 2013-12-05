@@ -46,7 +46,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		PreparedStatement queryUser = null;
 		ResultSet resultSet = null;
 
-		String query = "SELECT id, username FROM sduser WHERE username LIKE ? AND password LIKE ?";
+		String query = "SELECT id, username, is_root FROM sduser WHERE username LIKE ? AND password LIKE ?";
 
 		while(tries < maxTries)
 		{
@@ -65,8 +65,9 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
                 int userId = resultSet.getInt("id");
                 String username = resultSet.getString("username");
+                int isRoot = resultSet.getInt("is_root");
 
-				return new UserInfo(userId,username);
+				return new UserInfo(userId,username,isRoot);
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
@@ -79,7 +80,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 		db.close();
 
-		return new UserInfo(-1,"");
+		return new UserInfo(-1,"", 0);
 	}
 
 	/**

@@ -40,21 +40,24 @@
                 <li><a href="<s:url action='topicsAction'/>"> <i class="fa fa-bars"></i> Topics </a></li>
                 <li><a href="<s:url action='portfolioAction'/>"> <i class="fa fa-tasks"></i> Portfolio </a></li>
             </ul>
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search by topic or idea" size="45">
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default" style="height: 34px;"> <i class="fa fa-search"></i> </button>
-                    <button type="button" class="btn btn-default dropdown-toggle" style="height: 34px;" data-toggle="dropdown">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Topic</a></li>
-                        <li><a href="#">Idea</a></li>
-                    </ul>
-                </div>
+            <form action="searchAction.action" method="GET" class="navbar-form navbar-left" role="form">
+                <fieldset>
+                    <div class="form-group">
+                        <input type="text" name="searchKey" class="form-control" placeholder="Search by topic or idea" size="45">
+                        <input type="hidden" id="search" name="wat" value="Idea">
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-default" style="height: 34px;"> <i class="fa fa-search"></i> </button>
+                        <button type="button" class="btn btn-default dropdown-toggle" style="height: 34px;" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a onclick="javascript:document.getElementById('search').value = 'Topic'">Topic</a></li>
+                            <li><a onclick="javascript:document.getElementById('search').value = 'Idea'">Idea</a></li>
+                        </ul>
+                    </div>
+                </fieldset>
             </form>
             <ul class="nav navbar-nav navbar-right">
                 <li>
@@ -89,32 +92,42 @@
             <h3 class="panel-title"><i class="fa fa-money" style="margin-right: 3px;"> </i> Buy Shares</h3>
         </div>
         <div class="panel-body">
-            <form action="buySharesAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
-                <fieldset>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="numberOfShares">Shares</label>
-                            <input type="text" id="numberOfShares" class="form-control" name="share_num" placeholder="">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="pricePerShare">Price</label>
-                            <input type="text" id="pricePerShare" class="form-control" name="price_share" placeholder="">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="newPricePerShare">New Price</label>
-                            <input type="text" id="newPricePerShare" class="form-control" name="new_price_share" placeholder="">
-                        </div>
-                        <div class="col-md-3">
-                            <input type="hidden" name="ideaText" value="${ideaText}">
-                            <input type="hidden" name="ideaOwner" value="${ideaOwner}">
-                            <input type="hidden" name="ideaId" value="${ideaId}">
-                            <div style="padding-top: 25px;">
-                                <button type="submit" class="btn btn-default" style="background-color: #007765; color: #f5f5f5; width: 100%;"><strong>Buy</strong></button>
+            <s:if test="%{#session.user.username == 1}">
+                <form action="buySharesAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="numberOfShares">Shares</label>
+                                <input type="text" id="numberOfShares" class="form-control" name="share_num" placeholder="">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="pricePerShare">Price</label>
+                                <input type="text" id="pricePerShare" class="form-control" name="price_share" placeholder="">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="newPricePerShare">New Price</label>
+                                <input type="text" id="newPricePerShare" class="form-control" name="new_price_share" placeholder="">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="hidden" name="ideaText" value="${ideaText}">
+                                <input type="hidden" name="ideaOwner" value="${ideaOwner}">
+                                <input type="hidden" name="ideaId" value="${ideaId}">
+                                <div style="padding-top: 25px;">
+                                    <button type="submit" class="btn btn-default" style="background-color: #007765; color: #f5f5f5; width: 100%;"><strong>Buy</strong></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </fieldset>
-            </form>
+                    </fieldset>
+                </form>
+            </s:if>
+            <s:else>
+                <form action="buySharesAction.action" accept-charset="UTF-8" role="form" method="POST" role="form">
+                    <fieldset>
+                        <input type="hidden" name="ideaId" value="${ideaId}">
+                        <button type="submit" class="btn btn-default" style="background-color: #007765; color: #f5f5f5; width: 100%;"><strong>Buy</strong></button>
+                    </fieldset>
+                </form>
+            </s:else>
         </div>
     </div>
     <table class="table table-hover table-condensed table-bordered" style="border-radius: 10px;">

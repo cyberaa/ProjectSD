@@ -31,4 +31,6 @@ public interface RemoteIdeas extends Remote
     public ArrayList<IdeaInfo> viewHallOfFame() throws RemoteException, SQLException;
 
     public ArrayList<IdeaInfo> viewPortfolio(int user_id) throws SQLException, RemoteException;
+
+    public ArrayList<IdeaInfo> searchIdea(String ideaKey, int user_id) throws SQLException, RemoteException;
 }

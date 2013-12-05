@@ -568,4 +568,61 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         }
         return ideas;
     }
+
+    public ArrayList<IdeaInfo> searchIdea(String ideaKey, int user_id) throws SQLException, RemoteException {
+        Connection db = ServerRMI.getConnection();
+
+        ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
+
+        try {
+            int tries = 0;
+            int maxTries = 3;
+            PreparedStatement stmt = null;
+            ResultSet rs;
+
+            db.setAutoCommit(false);
+
+            String key = "%"+ideaKey+"%";
+
+            String verify = "SELECT lol.id, lol.text, lol.username, lol.sduser_id, lol.idea_id FROM (SELECT idea.id, idea.text, sduser.username, lol.sduser_id, lol.idea_id, idea.in_hall FROM idea LEFT OUTER JOIN (Select watchlist.* FROM watchlist where sduser_id = ?) lol ON idea.id = lol.idea_id LEFT OUTER JOIN sduser ON sduser.id = idea.user_id) lol WHERE lol.in_hall = 0 AND lol.text LIKE ?";
+
+            while(tries < maxTries)
+            {
+                try {
+                    stmt = db.prepareStatement(verify);
+                    stmt.setInt(1, user_id);
+                    stmt.setString(2, key);
+
+                    rs = stmt.executeQuery();
+
+                    while(rs.next())
+                    {
+                        if(rs.getString("sduser_id") == null) {
+                            ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("username"), rs.getString("text"), 0));
+                        }
+                        else {
+                            ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("username"), rs.getString("text"), 1));
+                        }
+                    }
+                    break;
+                } catch (SQLException e) {
+                    System.out.println(e);
+                    if(tries++ > maxTries) {
+                        throw e;
+                    }
+                } finally {
+                    if(stmt != null)
+                        stmt.close();
+                }
+            }
+            db.commit();
+        } catch (SQLException e) {
+            System.out.println(e);
+            if(db != null)
+                db.rollback();
+        } finally {
+            db.setAutoCommit(true);
+        }
+        return ideas;
+    }
 }

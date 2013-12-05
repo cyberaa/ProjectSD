@@ -40,21 +40,24 @@
                 <li><a href="<s:url action='topicsAction'/>"> <i class="fa fa-bars"></i> Topics </a></li>
                 <li><a href="<s:url action='portfolioAction'/>"> <i class="fa fa-tasks"></i> Portfolio </a></li>
             </ul>
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search by topic or idea" size="45">
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default" style="height: 34px;"> <i class="fa fa-search"></i> </button>
-                    <button type="button" class="btn btn-default dropdown-toggle" style="height: 34px;" data-toggle="dropdown">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Topic</a></li>
-                        <li><a href="#">Idea</a></li>
-                    </ul>
-                </div>
+            <form action="searchAction.action" method="GET" class="navbar-form navbar-left" role="form">
+                <fieldset>
+                    <div class="form-group">
+                        <input type="text" name="searchKey" class="form-control" placeholder="Search by topic or idea" size="45">
+                        <input type="hidden" id="search" name="wat" value="Idea">
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-default" style="height: 34px;"> <i class="fa fa-search"></i> </button>
+                        <button type="button" class="btn btn-default dropdown-toggle" style="height: 34px;" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a onclick="javascript:document.getElementById('search').value = 'Topic'">Topic</a></li>
+                            <li><a onclick="javascript:document.getElementById('search').value = 'Idea'">Idea</a></li>
+                        </ul>
+                    </div>
+                </fieldset>
             </form>
             <ul class="nav navbar-nav navbar-right">
                 <li>

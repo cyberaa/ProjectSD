@@ -37,7 +37,7 @@
                         <li><a href="<s:url action='hallOfFameAction'/>"><i class="fa fa-trophy"></i> Hall of fame</a></li>
                     </ul>
                 </li>
-                <li><a href="<s:url action='topicsAction'/>"> <i class="fa fa-bars"></i> Topics </a></li>
+                <li class="active"><a href="<s:url action='topicsAction'/>"> <i class="fa fa-bars"></i> Topics </a></li>
                 <li><a href="<s:url action='portfolioAction'/>"> <i class="fa fa-tasks"></i> Portfolio </a></li>
             </ul>
             <form action="searchAction.action" method="GET" class="navbar-form navbar-left" role="form">
@@ -77,39 +77,42 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
-    <div class="panel panel-default">
-        <div class="panel-body" style="">
-            <div style="text-align: right; margin-bottom: 10px;">
-                <i class="fa fa-user"></i> <strong>${ideaOwner}</strong>
-            </div>
-            <span style="">${ideaText}</span>
+    <s:set name="responseTopic" value="responseTopic"/>
+    <s:if test="%{#response == 'success'}">
+        <div class='alert alert-success alert-dismissable'>
+            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+            <strong>Success!</strong>  Topic submitted successfully
         </div>
+    </s:if>
+    <s:elseif test="%{#response == 'rmi'}">
+        <div class='alert alert-danger alert-dismissable'>
+            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+            <strong>Error!</strong> An internal error occurred during topic submission
+        </div>
+    </s:elseif>
+    <s:elseif test="%{#response == 'topicExists'}">
+        <div class='alert alert-danger alert-dismissable'>
+            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+            <strong>Error!</strong> Topic already exists
+        </div>
+    </s:elseif>
 
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <c:forEach var="topic" items="${topics}" >
+                <c:url value="topicIdeasAction.action" var="topicIdeasTag">
+                    <c:param name="topicId" value="${topic.id}"/>
+                    <c:param name="topicText" value="${topic.text}" />
+                </c:url>
+
+                <a style="cursor: pointer; text-decoration: none" href="<c:out value='${topicIdeasTag}'/>" >
+                    <div class="well well-sm" style="text-align: center">
+                        <h3> <span style="color: #007765; font-size: 18px;">${topic.text}</span></h3>
+                    </div>
+                </a>
+            </c:forEach>
+        </div>
     </div>
-
-    <table class="table table-hover table-condensed table-bordered" style="border-radius: 10px;">
-        <thead>
-        <tr style="text-align: center;">
-            <th style="text-align: center;">Buyer</th>
-            <th style="text-align: center;">Seller</th>
-            <th style="text-align: center;">Price per share</th>
-            <th style="text-align: center;">Total shares</th>
-            <th style="text-align: center;">Total</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="transaction" items="${transactions}">
-            <tr style="text-align: center;">
-                <td>${transaction.buyer}</td>
-                <td>${transaction.seller}</td>
-                <td>${transaction.value}</td>
-                <td>${transaction.parts}</td>
-                <td>${transaction.value * transaction.parts}</td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-
 </div>
 
 

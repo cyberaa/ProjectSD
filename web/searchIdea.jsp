@@ -77,44 +77,50 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
-    <div class="panel panel-default">
-        <div class="panel-body" style="">
-            <div style="text-align: right; margin-bottom: 10px;">
-                <i class="fa fa-user"></i> <strong>${ideaOwner}</strong>
+    <c:set var="count" value="0" scope="page" />
+
+    <c:forEach var="idea" items="${ideas}">
+        <c:url value="viewSharesAction.action" var="buySharesTag">
+            <c:param name="ideaId" value="${idea.idea_id}"/>
+            <c:param name="ideaText" value="${idea.text}" />
+            <c:param name="ideaOwner" value="${idea.ideaOwner}" />
+        </c:url>
+        <c:url value="addToFavorite.action" var="addFavoriteTag">
+            <c:param name="ideaId" value="${idea.idea_id}" />
+            <c:param name="key" value="${searchKey}" />
+        </c:url>
+        <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
+            <div class="panel panel-default">
+                <div class="panel-body" style="">
+                    <div style="text-align: right; margin-bottom: 10px;">
+                        <i class="fa fa-user"></i> <strong>${idea.ideaOwner}</strong>
+                    </div>
+                    <span style="">${idea.text}</span>
+                </div>
+                <div class="panel-heading" id="${count}" style="display: none;">
+                    <div style="text-align: right">
+                        <c:choose>
+                            <c:when test="${idea.isFavorite == 0}">
+                                <button type="button" class="btn btn-warning" onclick="location.href='<c:out value="${addFavoriteTag}"/>'">Add to Watchlist</button>
+                            </c:when>
+                            <c:when test="${idea.isFavorite == 1}">
+                                <button type="button" class="btn btn-warning" onclick="location.href=''">Remove from Watchlist</button>
+                            </c:when>
+                        </c:choose>
+                        <button type="button" class="btn btn-danger" onclick="location.href='<c:out value="${buySharesTag}"/>'">Buy Shares</button>
+                    </div>
+                </div>
             </div>
-            <span style="">${ideaText}</span>
-        </div>
-
-    </div>
-
-    <table class="table table-hover table-condensed table-bordered" style="border-radius: 10px;">
-        <thead>
-        <tr style="text-align: center;">
-            <th style="text-align: center;">Buyer</th>
-            <th style="text-align: center;">Seller</th>
-            <th style="text-align: center;">Price per share</th>
-            <th style="text-align: center;">Total shares</th>
-            <th style="text-align: center;">Total</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="transaction" items="${transactions}">
-            <tr style="text-align: center;">
-                <td>${transaction.buyer}</td>
-                <td>${transaction.seller}</td>
-                <td>${transaction.value}</td>
-                <td>${transaction.parts}</td>
-                <td>${transaction.value * transaction.parts}</td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
+        </a>
+        <c:set var="count" value="${count + 1}" scope="page"/>
+    </c:forEach>
 
 </div>
 
 
 <script src="assets/jquery.js"></script>
 <script src="assets/dist/js/bootstrap.min.js"></script>
+<script src="assets/jquery-ui-1.10.3/ui/jquery-ui.js"></script>
 <script src="assets/custom.js"></script>
 
 

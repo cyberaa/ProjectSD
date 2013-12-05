@@ -19,4 +19,6 @@ public interface RemoteTopics extends Remote
 	public int newTopic(String name) throws RemoteException, ExistingTopicException, SQLException;
 
 	public ArrayList<TopicInfo> listTopics() throws RemoteException, SQLException;
+
+    public ArrayList<TopicInfo> searchTopic(String topicKey) throws SQLException, RemoteException;
 }
