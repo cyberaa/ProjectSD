@@ -324,6 +324,15 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 			    }
 		    }
 
+		    //Remove from Watchlist.
+		    removeFromWatchlist(db, idea_id);
+
+		    //Remove from Hall of Fame.
+		    removeFromHallOfFame(db, idea_id);
+
+		    //Remove from Transaction Queue.
+		    TransactionalTrading.removeAllByIdea(db, idea_id);
+
 		    db.commit();
 	    } catch (SQLException e) {
 		    System.out.println(e);
@@ -332,6 +341,78 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	    } finally {
 		    db.setAutoCommit(true);
 	    }
+	}
+
+	/**
+	 * Remove idea from the watchlists of all users.
+	 * @param db The connection to the database.
+	 * @param idea_id The identifier of the idea.
+	 * @throws SQLException
+	 */
+	protected void removeFromWatchlist(Connection db, int idea_id) throws SQLException
+	{
+		PreparedStatement rWatch = null;
+		String query = "DELETE FROM watchlist WHERE id = ?";
+
+		boolean success = false;
+		while(!success)
+		{
+			try {
+
+				try {
+					rWatch = db.prepareStatement(query);
+					rWatch.setInt(1, idea_id);
+
+					rWatch.executeQuery();
+					db.commit();
+
+					success = true;
+				} catch (SQLException e) {
+					success = false;
+				} finally {
+					if(rWatch != null)
+						rWatch.close();
+				}
+			} catch (SQLException e) {
+				success = false;
+			}
+		}
+	}
+
+	/**
+	 * Remove an idea from the Hall of Fame
+	 * @param db The connection to the database.
+	 * @param idea_id The identifier of the idea.
+	 * @throws SQLException
+	 */
+	protected void removeFromHallOfFame(Connection db, int idea_id) throws SQLException
+	{
+		PreparedStatement rHall = null;
+		String query = "UPDATE idea SET in_hall = 0 WHERE id = ?";
+
+		boolean success = false;
+		while(!success)
+		{
+			try {
+
+				try {
+					rHall = db.prepareStatement(query);
+					rHall.setInt(1, idea_id);
+
+					rHall.executeQuery();
+					db.commit();
+
+					success = true;
+				} catch (SQLException e) {
+					success = false;
+				} finally {
+					if(rHall != null)
+						rHall.close();
+				}
+			} catch (SQLException e) {
+				success = false;
+			}
+		}
 	}
 
 	/**
