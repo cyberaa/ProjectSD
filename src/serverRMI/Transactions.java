@@ -809,6 +809,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				//Give money to sellers.
 				giveOrTakeUserCash(db, aux2.getUser_id(), transactionMoney, true);
 				//Update transaction history.
+				System.out.println("Seller: " + aux2.getUser_id() + "Buyer: " + user_id);
 				createTransaction(db, idea_id, aux2.getUser_id(), user_id, aux2.getParts(), transactionMoney);
 
 				//Create and store notification.
