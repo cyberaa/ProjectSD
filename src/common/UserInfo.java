@@ -16,11 +16,13 @@ public class UserInfo implements Serializable {
     private int userId;
     private String username;
     private int root;
+    private double money;
 
-    public UserInfo(int userId, String username, int root) {
+    public UserInfo(int userId, String username, int root, double money) {
         this.userId = userId;
         this.username = username;
         this.root = root;
+        this.money = money;
     }
 
     public String getUsername() {
@@ -45,5 +47,13 @@ public class UserInfo implements Serializable {
 
     public void setRoot(int root) {
         this.root = root;
+    }
+
+    public double getMoney() {
+        return money;
+    }
+
+    public void setMoney(double money) {
+        this.money = money;
     }
 }

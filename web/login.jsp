@@ -14,9 +14,46 @@
     <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
     <title>Idea Broker</title>
 </head>
 <body background="assets/textures/escheresque_ste.png">
+
+<script>
+    (function (d) {
+        var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+        if (d.getElementById(id)) { return; }
+        js = d.createElement('script'); js.id = id; js.async = true;
+        js.src="//connect.facebook.net/en_US/all.js";
+        ref.parentNode.insertBefore(js, ref);
+    }(document));
+
+
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId: 436480809808619,
+            channelUrl: '//' + window.location.hostname + '/channel',
+            status: true,
+            cookie: true,
+            xfbml: true
+        })
+
+        FB.Event.subscribe('auth.authResponseChange', function(response) {
+            document.getElementById('tokenFacebook').value = response.authResponse.accessToken;
+        })
+    }
+
+
+    function Login() {
+        FB.login(function(response) {
+            if(response.authResponse) {
+                FB.api('/me', function(response) {
+                    alert(response.id);
+                });
+            }
+        });
+    }
+</script>
 
 <div class="container">
 
@@ -32,9 +69,9 @@
                     <h3 class="panel-title">Please sign in or <a href="<s:url action='register'/>"> sign up </a> </h3>
                 </div>
                 <div class="panel-body">
-                    <form action="loginAction.action" accept-charset="UTF-8" role="form" method="POST">
+                    <form action="loginFAceAction.action" accept-charset="UTF-8" role="form" method="POST">
                         <fieldset>
-                            <s:if test="%{#responseLogin == 'failedAuth'}">
+                            <%--<s:if test="%{#responseLogin == 'failedAuth'}">
                                 <div class="form-group has-error">
                                     <label class="control-label" for="loginUsername">Username or password incorrect</label>
                                     <input class="form-control" placeholder="E-mail" name="username" type="text" id="loginUsername">
@@ -51,7 +88,10 @@
                                     <input class="form-control" placeholder="Password" name="password" type="password" value="">
                                 </div>
                             </s:else>
-                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
+                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">--%>
+                            <input type="hidden" name="token" value="" id="tokenFacebook">
+                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Login Facebook" onclick="Login();">
+
                         </fieldset>
                     </form>
                 </div>

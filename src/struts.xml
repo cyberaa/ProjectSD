@@ -122,6 +122,11 @@
             <result name="success">/ideaTransactions.jsp</result>
         </action>
 
+        <action name="loginFAceAction" class="action.LoginFacebook" method="execute">
+            <result name="success">/idea.jsp</result>
+            <result name="error">/login.jsp</result>
+        </action>
+
     </package>
 
 </struts>

@@ -61,7 +61,7 @@
         </form>
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a><strong><span style="">Balance: 3000</span></strong></a>
+                <a><strong><span style="">Balance: ${session.user.money}</span></strong></a>
             </li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <s:property value="%{#session.user.username}" /><!--<b class="caret"></b>--></a>

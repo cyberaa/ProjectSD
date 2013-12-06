@@ -46,7 +46,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		PreparedStatement queryUser = null;
 		ResultSet resultSet = null;
 
-		String query = "SELECT id, username, is_root FROM sduser WHERE username LIKE ? AND password LIKE ?";
+		String query = "SELECT id, username, is_root, cash FROM sduser WHERE username LIKE ? AND password LIKE ?";
 
 		while(tries < maxTries)
 		{
@@ -66,8 +66,9 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
                 int userId = resultSet.getInt("id");
                 String username = resultSet.getString("username");
                 int isRoot = resultSet.getInt("is_root");
+                double money = resultSet.getDouble("cash");
 
-				return new UserInfo(userId,username,isRoot);
+				return new UserInfo(userId,username,isRoot,money);
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
@@ -80,7 +81,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 		db.close();
 
-		return new UserInfo(-1,"", 0);
+		return new UserInfo(-1,"", 0,0);
 	}
 
 	/**
@@ -189,4 +190,48 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 		return pass;
 	}
+
+    public double getMoney(int userId) throws SQLException, RemoteException {
+        Connection db = ServerRMI.getConnection();
+
+        int tries = 0, maxTries = 3;
+
+        PreparedStatement queryUser = null;
+        ResultSet resultSet;
+
+        double money = 0;
+
+        String query = "SELECT sduser.cash FROM sduser WHERE sduser.id = ?";
+
+        System.out.println("Entrei RMI");
+        while(tries < maxTries)
+        {
+            try {
+                queryUser = db.prepareStatement(query);
+                queryUser.setInt(1, userId);
+
+                resultSet = queryUser.executeQuery();
+
+                if(resultSet.next()) {
+                    money = resultSet.getDouble("cash");
+                }
+
+                return money;
+            } catch (SQLException e) {
+                System.out.println(e);
+                if(tries++ > maxTries)
+                    throw e;
+            } finally {
+                if(queryUser != null)
+                    queryUser.close();
+            }
+        }
+
+        db.close();
+
+        System.out.println("Sai RMI"+"  "+money);
+
+
+        return money;
+    }
 }

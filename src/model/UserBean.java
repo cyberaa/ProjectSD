@@ -2,6 +2,15 @@ package model;
 
 import common.*;
 import common.rmi.*;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.scribe.builder.ServiceBuilder;
+import org.scribe.builder.api.FacebookApi;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import org.scribe.oauth.OAuthService;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -29,6 +38,9 @@ public class UserBean {
     private int userID;
     private String username;
     private int root;
+    private double money = 0;
+    private String AppSecret = "af8edf703b7a95f5966e9037b545b7ce";
+    private String id;
 
     public UserBean() {
 
@@ -52,6 +64,7 @@ public class UserBean {
         this.userID = rmiResponse.getUserId();
         this.username = rmiResponse.getUsername();
         this.root = rmiResponse.getRoot();
+        this.money = rmiResponse.getMoney();
 
         if(userID == -1)
             return false;
@@ -85,6 +98,14 @@ public class UserBean {
 
     public void setRoot(int root) {
         this.root = root;
+    }
+
+    public double getMoney() {
+        return money;
+    }
+
+    public void setMoney(double money) {
+        this.money = money;
     }
 
     public void submitIdea(ArrayList<String> topics, String text, String investment) throws IOException, SQLException {
@@ -149,5 +170,41 @@ public class UserBean {
 
     public void takeOver(int ideaId) throws RemoteException, SQLException {
         transactions.takeover(userID,ideaId);
+    }
+
+    public void getMoneyFromRMI() {
+        if(userID == -1 || userID == 0) {
+            return;
+        }
+        try {
+            this.money = um.getMoney(userID);
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (RemoteException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    public boolean authenticateFacebook(String token) {
+        OAuthService service = new ServiceBuilder()
+                .provider(FacebookApi.class)
+                .apiKey("436480809808619")
+                .apiSecret("af8edf703b7a95f5966e9037b545b7ce")
+                .callback("http://localhost:8080")   //should be the full URL to this action
+                .build();
+        OAuthRequest authRequest = new OAuthRequest(Verb.GET, "https://graph.facebook.com/me?access_token="+token);
+        Token token_final = new Token(token,AppSecret);
+        service.signRequest(token_final, authRequest);
+        Response authResponse = authRequest.send();
+        try {
+            id = new JSONObject(authResponse.getBody()).getString("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //FIXME WHAT TO DO WITH THIS?????
+        }
+        if (id == null)
+            return false;
+        System.out.println("O id e " + id);
+        return true;
     }
 }

@@ -12,6 +12,9 @@
           <element id="library" level="project" name="ojdbc6" />
           <element id="library" level="project" name="ojdbc6-11.2.0.3" />
           <element id="library" level="project" name="jstl-1.2" />
+          <element id="library" level="project" name="restfb-1.6.12" />
+          <element id="library" level="project" name="scribe-1.2.2" />
+          <element id="library" level="project" name="json-20090211" />
         </element>
       </element>
     </root>

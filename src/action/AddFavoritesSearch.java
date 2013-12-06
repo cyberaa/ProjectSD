@@ -21,7 +21,6 @@ public class AddFavoritesSearch extends User {
 
     public String execute() {
         super.execute();
-
         try {
             user.addToWatchlist(ideaId);
             ideas = user.searchIdea(key);

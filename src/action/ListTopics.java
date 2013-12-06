@@ -22,6 +22,7 @@ public class ListTopics extends User {
     public String execute() {
         System.out.println("Entrei Topicos");
         super.execute();
+        System.out.println("Passei Execute");
         try {
             topics = user.showTopics();
         } catch (Exception e) {
