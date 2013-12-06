@@ -41,6 +41,7 @@ public class UserBean {
     private double money = 0;
     private String AppSecret = "af8edf703b7a95f5966e9037b545b7ce";
     private String id;
+	private Notifications nots;
 
     public UserBean() {
 
@@ -60,7 +61,7 @@ public class UserBean {
     }
 
     public boolean authenticateUser(String username, String password) throws RemoteException, UserAuthenticationException, SQLException {
-        UserInfo rmiResponse = um.authenticate(username,password);
+        UserInfo rmiResponse = um.authenticate(username,password, nots);
         this.userID = rmiResponse.getUserId();
         this.username = rmiResponse.getUsername();
         this.root = rmiResponse.getRoot();

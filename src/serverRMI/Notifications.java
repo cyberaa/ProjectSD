@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Time: 10:32 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Notifications extends UnicastRemoteObject implements RemoteNotifications
+public class Notifications extends UnicastRemoteObject
 {
 	public Notifications() throws RemoteException{}
 
@@ -32,23 +32,29 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	 */
 	public void insertNotification(Connection db, int user_id, String not) throws RemoteException, SQLException
 	{
-		PreparedStatement insert = null;
+		RemoteNotifications nots = ServerRMI.userNotifications.get(user_id);
+		if(nots != null)
+			nots.pushNotification(not);
+		else
+		{
+			PreparedStatement insert = null;
 
-		String query = "INSERT INTO notification VALUES (seq_notification.nextval, ?, ?)";
+			String query = "INSERT INTO notification VALUES (seq_notification.nextval, ?, ?)";
 
-		try {
-			insert = db.prepareStatement(query);
-			insert.setInt(1, user_id);
-			insert.setString(2, not);
+			try {
+				insert = db.prepareStatement(query);
+				insert.setInt(1, user_id);
+				insert.setString(2, not);
 
-			insert.executeQuery();
-		} catch (SQLException e) {
-			System.out.println(e);
-			if(db != null)
-				db.rollback();
-		} finally {
-			if(insert != null)
-				insert.close();
+				insert.executeQuery();
+			} catch (SQLException e) {
+				System.out.println(e);
+				if(db != null)
+					db.rollback();
+			} finally {
+				if(insert != null)
+					insert.close();
+			}
 		}
 	}
 

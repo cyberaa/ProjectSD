@@ -1,13 +1,9 @@
 package serverRMI;
 
-import common.rmi.ExistingTopicException;
-import common.rmi.NotEnoughCashException;
-import common.rmi.NotEnoughSharesException;
+import common.rmi.RemoteNotifications;
 
-import java.io.IOException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -15,7 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -40,6 +36,7 @@ public class ServerRMI
     protected static Ideas ideas;
 	protected static Transactions transactions;
 	protected static Notifications notifications;
+	protected static HashMap<Integer, RemoteNotifications> userNotifications;
 
 	public static void main(String args[])
 	{
@@ -139,9 +136,6 @@ public class ServerRMI
 			transactions = new Transactions();
 			rmiRegistry.rebind("Transactions", transactions);
 
-			notifications = new Notifications();
-			rmiRegistry.rebind("Notifications", notifications);
-
 			System.out.println("Objects successfully bound to RMI registry.");
 		} catch (RemoteException e) {
 			System.out.println("Failed to create and bind RMI objects.\n" + e);
@@ -166,9 +160,6 @@ public class ServerRMI
 
 			rmiRegistry.unbind("Transactions");
 			UnicastRemoteObject.unexportObject(transactions, true);
-
-			rmiRegistry.unbind("Notifications");
-			UnicastRemoteObject.unexportObject(notifications, true);
 
 			System.out.println("Objects successfully unbound.");
 		} catch (RemoteException re) {

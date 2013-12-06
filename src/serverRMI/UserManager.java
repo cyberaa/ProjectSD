@@ -1,6 +1,7 @@
 package serverRMI;
 
 import common.rmi.ExistingUserException;
+import common.rmi.RemoteNotifications;
 import common.rmi.RemoteUserManager;
 import common.rmi.UserAuthenticationException;
 import common.UserInfo;
@@ -36,9 +37,8 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 * @throws UserAuthenticationException
 	 * @throws SQLException
 	 */
-	public UserInfo authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException
+	public UserInfo authenticate(String name, String pass, RemoteNotifications nots) throws RemoteException, UserAuthenticationException, SQLException
 	{
-
 		Connection db = ServerRMI.getConnection();
 
 		int tries = 0, maxTries = 3;
@@ -67,6 +67,8 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
                 String username = resultSet.getString("username");
                 int isRoot = resultSet.getInt("is_root");
                 double money = resultSet.getDouble("cash");
+
+				ServerRMI.userNotifications.put(userId, nots);
 
 				return new UserInfo(userId,username,isRoot,money);
 			} catch (SQLException e) {
