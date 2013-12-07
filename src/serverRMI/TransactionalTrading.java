@@ -94,7 +94,7 @@ public class TransactionalTrading
 			while(rs.next())
 			{
 				try {
-					int res = ServerRMI.transactions.buyShares(rs.getInt("user_id"), rs.getInt("idea_id"), rs.getInt("share_num"), rs.getInt("price_per_share"), rs.getInt("new_price_share"), true);
+					int res = ServerRMI.transactions.buyShares(rs.getInt("user_id"), rs.getInt("idea_id"), rs.getInt("share_num"), rs.getInt("price_per_share"), rs.getInt("new_price_share"), true, null, null);
 
 					if(res == 0)
 						removeFromQueue(db, rs.getInt("id"));

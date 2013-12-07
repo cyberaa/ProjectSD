@@ -15,6 +15,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.scribe.builder.ServiceBuilder;
+import org.scribe.builder.api.FacebookApi;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import org.scribe.oauth.OAuthService;
+
 /**
  * Created with IntelliJ IDEA.
  * User: joaonuno
@@ -37,7 +47,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
      * @throws RemoteException
      * @throws SQLException
      */
-    public void submitIdea(ArrayList<String> topics, int user_id, double investment, String text, byte[] fileData, String filename, int current) throws RemoteException, SQLException, IOException
+    public void submitIdea(ArrayList<String> topics, int user_id, double investment, String text, byte[] fileData, String filename, int current, String token, String username, String faceId) throws RemoteException, SQLException, IOException
     {
         if (!filename.equals("-")) {
             FileOutputStream fos = new FileOutputStream("assets/"+filename);
@@ -56,7 +66,11 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         ArrayList<Integer> topicIds = new ArrayList<Integer>();
         ResultSet rs;
 
-	    try {
+
+
+
+
+        try {
 		    db.setAutoCommit(false);
 
 		    String query = "SELECT * FROM idea WHERE user_id = ? AND number_parts = ? AND active = ? AND text LIKE ? AND attach LIKE ? AND in_hall LIKE ?";
@@ -107,8 +121,37 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 			    }
 		    }
 
+            System.out.println("Post in facebook");
+
+            //Post on facebook
+            OAuthService service = new ServiceBuilder()
+                    .provider(FacebookApi.class)
+                    .apiKey("436480809808619")
+                    .apiSecret("af8edf703b7a95f5966e9037b545b7ce")
+                    .callback("http://localhost:8080")   //should be the full URL to this action
+                    .build();
+
+            OAuthRequest authRequest = new OAuthRequest(Verb.POST, "https://graph.facebook.com/me/feed");
+            authRequest.addHeader("Content-Type", "text/html");
+            authRequest.addBodyParameter("message", username
+                    + " criou a seguinte ideia: \"" + text + "\"\nInvestiu " +
+                    investment + " DEICoins!");
+            Token token_final = new Token(token,"af8edf703b7a95f5966e9037b545b7ce");
+
+            service.signRequest(token_final, authRequest);
+            Response authResponse = authRequest.send();
+
+            String messageId = null;
+
+            try {
+                messageId = new JSONObject(authResponse.getBody()).getString("id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                //FIXME WHAT TO DO WITH THIS?????
+            }
+
 		    //Insert idea.
-		    query = "INSERT INTO idea (id,user_id,number_parts,active,text,attach,in_hall) VALUES (seq_idea.nextval,?,?,?,?,?,?)";
+		    query = "INSERT INTO idea (id,user_id,number_parts,active,text,attach,in_hall,face_id) VALUES (seq_idea.nextval,?,?,?,?,?,?,?)";
 
             try {
                 stmt = db.prepareStatement(query);
@@ -118,6 +161,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 stmt.setString(4, text);
                 stmt.setString(5, filename);
                 stmt.setInt(6, 0);
+                stmt.setString(7, messageId);
 
                 stmt.executeQuery();
             } catch (SQLException e) {

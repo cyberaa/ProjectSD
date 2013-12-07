@@ -89,9 +89,15 @@
                                 </div>
                             </s:else>
                             <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">--%>
-                            <input type="hidden" name="token" value="" id="tokenFacebook">
-                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Login Facebook" onclick="Login();">
+                            <input type="hidden" name="token" value="" id="tokenFacebook" >
+                                <input class="btn btn-lg btn-success btn-block" type="submit" value="Login Facebook" >
+                                <div id="auth-status">
+                                    <div id="auth-loggedout">
+                                        <div class="fb-login-button" autologoutlink="true" scope="email,user_checkins,publish_actions,publish_stream,read_stream">Login  with Facebook</div>
+                                    </div>
 
+                                    <div id="auth-loggedin" style="display: none"></div>
+                                </div>
                         </fieldset>
                     </form>
                 </div>

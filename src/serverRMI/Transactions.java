@@ -15,6 +15,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.scribe.builder.ServiceBuilder;
+import org.scribe.builder.api.FacebookApi;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import org.scribe.oauth.OAuthService;
+
 
 
 /**
@@ -86,7 +96,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @throws NotEnoughSharesException
 	 * @throws NotEnoughSharesAtDesiredPriceException
 	 */
-	public int buyShares(int user_id, int idea_id, int share_num, double price_per_share, double new_price_share, boolean fromQueue) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException
+	public int buyShares(int user_id, int idea_id, int share_num, double price_per_share, double new_price_share, boolean fromQueue, String token, String faceUserId) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException
 	{
 		int ret = -1;
 		System.out.println("\nGetting connection...");
@@ -206,6 +216,11 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 			System.out.println("Transactional trading finished.");
 
+            if(totalShares != 0)
+            {
+                notifyFacebook(db,token,totalShares,idea_id);
+            }
+
 			db.commit();
 			System.out.println("Changes committed.");
 		} catch (SQLException e) {
@@ -220,6 +235,82 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			return ret;
 		}
 	}
+
+    /**
+     * Post a comment to facebook in the thread previously created
+     * when the idea was submitted. This comment will contain the
+     * number of shares bought and will be posted by the user that
+     * bought them.
+     * @param db The connection to the database.
+     * @param token Facebook user token.
+     * @param nShares The number of shares bought.
+     * @param idea_id The identifier of the idea.
+     */
+    protected void notifyFacebook(Connection db, String token, int nShares, int idea_id) throws SQLException
+    {
+        String fbId = getFbIdeaID(db, idea_id);
+        System.out.println(fbId);
+        if(fbId == null)
+            return;
+
+        System.out.println("Comment");
+
+        //Post on facebook
+        OAuthService service = new ServiceBuilder()
+                .provider(FacebookApi.class)
+                .apiKey("436480809808619")
+                .apiSecret("af8edf703b7a95f5966e9037b545b7ce")
+                .callback("http://localhost:8080")   //should be the full URL to this action
+                .build();
+
+        OAuthRequest authRequest = new OAuthRequest(Verb.POST, "https://graph.facebook.com/" + fbId
+                + "/comments");
+        authRequest.addHeader("Content-Type", "text/html");
+        authRequest.addBodyParameter("message", "I bought " + nShares + " of idea" + idea_id);
+
+        Token token_final = new Token(token,"af8edf703b7a95f5966e9037b545b7ce");
+
+        service.signRequest(token_final, authRequest);
+        Response authResponse = authRequest.send();
+    }
+
+    /**
+     * Get the facebook id of the post made when the idea was created.
+     * @param db The connection to the database.
+     * @param idea_id The identifier of the idea.
+     * @return The facebook id of the idea.
+     */
+    protected String getFbIdeaID(Connection db, int idea_id) throws SQLException
+    {
+        int tries = 0;
+        int maxTries = 3;
+        PreparedStatement gFbId = null;
+        ResultSet rs;
+
+        String query = "SELECT idea.face_id FROM idea WHERE idea.id = ?";
+
+        while(tries < maxTries)
+        {
+            try {
+                gFbId = db.prepareStatement(query);
+                gFbId.setInt(1, idea_id);
+
+                rs = gFbId.executeQuery();
+
+                if(rs.next())
+                    return rs.getString("face_id");
+            } catch (SQLException e) {
+                System.out.println(e);
+                if(tries++ > maxTries)
+                    throw e;
+            } finally {
+                if(gFbId != null)
+                    gFbId.close();
+            }
+        }
+
+        return "";
+    }
 
 	/**
 	 *

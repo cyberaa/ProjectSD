@@ -1,5 +1,6 @@
 package serverRMI;
 
+import common.IdeaInfo;
 import common.rmi.ExistingUserException;
 import common.rmi.RemoteNotifications;
 import common.rmi.RemoteUserManager;
@@ -85,6 +86,120 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 		return new UserInfo(-1,"", 0,0);
 	}
+
+    public UserInfo authenticateFace(String user_face, String token, String username) throws UserAuthenticationException, SQLException, RemoteException {
+        Connection db = ServerRMI.getConnection();
+
+        int tries = 0, maxTries = 3;
+
+        PreparedStatement queryUser = null;
+        ResultSet resultSet = null;
+
+        String query = "SELECT id, face_id, username, is_root, cash FROM sduser WHERE face_id LIKE ?";
+
+        while(tries < maxTries)
+        {
+            try {
+                queryUser = db.prepareStatement(query);
+                queryUser.setString(1, user_face);
+
+                resultSet = queryUser.executeQuery();
+
+                if(!resultSet.next())
+                {
+                    UserInfo info = registerNewFace(user_face,token, username);
+                    return info;
+                }
+                int userId = resultSet.getInt("id");
+                int isRoot = resultSet.getInt("is_root");
+                double money = resultSet.getDouble("cash");
+
+                System.out.println(userId+" "+isRoot+" "+money);
+
+                //ServerRMI.userNotifications.put(userId, nots);
+
+                return new UserInfo(userId,username,isRoot,money);
+            } catch (SQLException e) {
+                System.out.println(e);
+                if(tries++ > maxTries)
+                    throw e;
+            } finally {
+                if(queryUser != null)
+                    queryUser.close();
+            }
+        }
+
+        db.close();
+
+        return new UserInfo(-1,"", 0,0);
+    }
+
+    public UserInfo registerNewFace(String user_face, String token, String username) throws SQLException, RemoteException {
+        Connection db = ServerRMI.getConnection();
+
+        int tries = 0, maxTries = 3;
+
+        PreparedStatement queryUser = null;
+        ResultSet resultSet = null;
+
+        String query = "INSERT INTO sduser (id, username, password, cash, is_root, face_id) VALUES(seq_sduser.nextval,?,?,?,?,?)";
+
+        while(tries < maxTries)
+        {
+            try {
+                queryUser = db.prepareStatement(query);
+                queryUser.setString(1, username);
+                queryUser.setString(2, "face");
+                queryUser.setDouble(3, 1000000);
+                queryUser.setInt(4, 0);
+                queryUser.setString(5, user_face);
+
+                queryUser.executeQuery();
+
+                break;
+            } catch (SQLException e) {
+                System.out.println(e);
+                if(tries++ > maxTries)
+                    throw e;
+            } finally {
+                if(queryUser != null)
+                    queryUser.close();
+            }
+        }
+
+        query = "SELECT id, is_root, cash FROM sduser WHERE face_id LIKE ?";
+
+        while(tries < maxTries)
+        {
+            try {
+                queryUser = db.prepareStatement(query);
+                queryUser.setString(1, user_face);
+
+                resultSet = queryUser.executeQuery();
+
+                resultSet.next();
+
+                int userId = resultSet.getInt("id");
+                int isRoot = resultSet.getInt("is_root");
+                double money = resultSet.getDouble("cash");
+
+                System.out.println("Register: " + userId + " " + isRoot + " " + money);
+
+                return new UserInfo(userId, "", isRoot, money);
+            } catch (SQLException e) {
+                System.out.println(e);
+                if(tries++ > maxTries)
+                    throw e;
+            } finally {
+                if(queryUser != null)
+                    queryUser.close();
+            }
+        }
+
+        db.close();
+
+        return new UserInfo(-1,"", 0,0);
+    }
 
 	/**
 	 * Registers a new user. If desired username is in use throws ExistingUserException
@@ -236,4 +351,6 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
         return money;
     }
+
+
 }

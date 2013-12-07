@@ -19,7 +19,7 @@ public interface RemoteTransactions extends Remote
 {
 	public void setShareValue(int user_id, int idea_id, double new_value) throws RemoteException, SQLException;
 
-	public int buyShares(int user_id, int idea_id, int share_num, double price_per_share, double new_price_share, boolean fromQueue) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException;
+    public int buyShares(int user_id, int idea_id, int share_num, double price_per_share, double new_price_share, boolean fromQueue, String token, String faceUserId) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException;
 
 	public ArrayList<ShareInfo> getShares(int idea_id) throws RemoteException, SQLException;
 

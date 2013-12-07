@@ -42,6 +42,7 @@ public class UserBean {
     private String AppSecret = "af8edf703b7a95f5966e9037b545b7ce";
     private String id;
 	private Notifications nots;
+    private String token;
 
     public UserBean() {
 
@@ -110,7 +111,7 @@ public class UserBean {
     }
 
     public void submitIdea(ArrayList<String> topics, String text, String investment) throws IOException, SQLException {
-        ideas.submitIdea(topics, userID, Double.parseDouble(investment), text, null, "-", 0);
+        ideas.submitIdea(topics, userID, Double.parseDouble(investment), text, null, "-", 0, token, username, id);
     }
 
     public void submitTopic(String topic) throws ExistingTopicException, RemoteException, SQLException {
@@ -134,7 +135,7 @@ public class UserBean {
     }
 
     public void buyShares(int idea_id, int num_parts, double value, double new_value) throws RemoteException, SQLException, NotEnoughSharesException, NotEnoughCashException {
-        transactions.buyShares(userID,idea_id,num_parts,value,new_value,false);
+        transactions.buyShares(userID,idea_id,num_parts,value,new_value,false,token,id);
     }
 
     public ArrayList<IdeaInfo> watchlist() throws RemoteException, SQLException {
@@ -186,7 +187,7 @@ public class UserBean {
         }
     }
 
-    public boolean authenticateFacebook(String token) {
+    public boolean authenticateFacebook(String token) throws UserAuthenticationException, SQLException, RemoteException {
         OAuthService service = new ServiceBuilder()
                 .provider(FacebookApi.class)
                 .apiKey("436480809808619")
@@ -197,7 +198,9 @@ public class UserBean {
         Token token_final = new Token(token,AppSecret);
         service.signRequest(token_final, authRequest);
         Response authResponse = authRequest.send();
+
         try {
+            username = new JSONObject(authResponse.getBody()).getString("name");
             id = new JSONObject(authResponse.getBody()).getString("id");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -205,7 +208,10 @@ public class UserBean {
         }
         if (id == null)
             return false;
-        System.out.println("O id e " + id);
+        UserInfo u = um.authenticateFace(id,token,username);
+        userID = u.getUserId();
+        money = u.getMoney();
+        this.token = token;
         return true;
     }
 }

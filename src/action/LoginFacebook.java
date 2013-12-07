@@ -1,5 +1,10 @@
 package action;
 
+import common.rmi.UserAuthenticationException;
+
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: joaosimoes
@@ -13,7 +18,16 @@ public class LoginFacebook extends User {
 
     public String execute() {
         super.execute();
-        boolean auth = user.authenticateFacebook(token);
+        boolean auth;
+        try {
+            auth = user.authenticateFacebook(token);
+        } catch (UserAuthenticationException e) {
+            return ERROR;
+        } catch (SQLException e) {
+            return ERROR;
+        } catch (RemoteException e) {
+            return ERROR;
+        }
         if(auth == true) {
             return SUCCESS;
         }

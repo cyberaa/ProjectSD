@@ -20,4 +20,8 @@ public interface RemoteUserManager extends Remote
 	public void register(String name, String pass) throws RemoteException, ExistingUserException, SQLException;
 
     public double getMoney(int userId) throws SQLException, RemoteException;
+
+    public UserInfo authenticateFace(String user_face, String token, String username) throws UserAuthenticationException, SQLException, RemoteException;
+
+    public UserInfo registerNewFace(String user_face, String token, String username) throws SQLException, RemoteException;
 }
