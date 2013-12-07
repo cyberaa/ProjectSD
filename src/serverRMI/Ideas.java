@@ -241,6 +241,8 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 }
             }
 
+            giveOrTakeUserCash(db,user_id,investment,false);
+
 		    db.commit();
 	    } catch (SQLException e) {
 		    System.out.println("\n"+e+"\n");
@@ -253,6 +255,74 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	    }
 	}
 
+    protected void giveOrTakeUserCash(Connection db, int user_id, double money, boolean give) throws SQLException
+    {
+        //Get current cash.
+        int curCash = 0;
+        int tries = 0, maxTries = 3;
+        PreparedStatement gotCash = null;
+        ResultSet rs;
+
+        String cash = "SELECT cash FROM sduser WHERE id = ?";
+
+        while(tries < maxTries)
+        {
+            try {
+                gotCash = db.prepareStatement(cash);
+                gotCash.setInt(1, user_id);
+
+                rs = gotCash.executeQuery();
+                if(rs.next())
+                {
+                    curCash = rs.getInt("cash");
+                    break;
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+                if(tries++ > maxTries)
+                    throw e;
+            } finally {
+                if(gotCash != null)
+                    gotCash.close();
+            }
+        }
+
+        //Update cash.
+        if(give)
+            updateUserCash(db, user_id, curCash + money);
+        else
+            updateUserCash(db, user_id, curCash - money);
+    }
+
+    protected void updateUserCash(Connection db, int user_id, double cash) throws SQLException
+    {
+        int tries = 0;
+        int maxTries = 3;
+        PreparedStatement uShare = null;
+
+        String share = "UPDATE sduser SET cash = ? WHERE id = ?";
+
+        while(tries < maxTries)
+        {
+            try {
+                uShare = db.prepareStatement(share);
+                uShare.setDouble(1, cash);
+                uShare.setInt(2, user_id);
+
+                uShare.executeQuery();
+                break;
+            } catch (SQLException e) {
+                System.out.println(e);
+                if(tries++ > maxTries)
+                    throw e;
+            }
+            finally {
+                if(uShare != null)
+                    uShare.close();
+            }
+        }
+    }
+
 	/**
 	 * Delete idea identified by <em>idea_id</em>.
 	 * @param idea_id The identifier of the idea to delete.
@@ -261,7 +331,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	 * @throws SQLException
 	 * @throws NotFullOwnerException
 	 */
-    public void deleteIdea(int idea_id, int user_id) throws RemoteException, SQLException, NotFullOwnerException
+    public void deleteIdea(int idea_id, int user_id, String token) throws RemoteException, SQLException, NotFullOwnerException
     {
 	    Connection db = ServerRMI.getConnection();
 
@@ -269,12 +339,14 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    //Verify that user owns all shares.
 		    int numParts = ServerRMI.transactions.getNumberShares(db, idea_id);
 
+            System.out.println("Idea has "+numParts+" shares.");
+
 		    int tries = 0;
 		    int maxTries = 3;
 		    PreparedStatement stmt = null;
 		    ResultSet rs;
 
-		    String verify = "SELECT parts FROM shares WHERE idea_id = ? AND user_id = ?";
+		    String verify = "SELECT parts FROM idea_share WHERE idea_id = ? AND user_id = ?";
 
 		    while(tries < maxTries)
 		    {
@@ -287,11 +359,15 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
 				    if(rs.next())
 				    {
+                        System.out.println("Entrei");
 					    if(rs.getInt("parts") == numParts)
 						    break;
+                        else {
+                            System.out.println("User can't remove.");
+                            throw new NotFullOwnerException();
+                        }
 				    }
-				    else
-					    throw new NotFullOwnerException();
+                    return;
 			    } catch (SQLException e) {
                     System.out.println(e);
 				    if(tries++ > maxTries) {
@@ -324,6 +400,8 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 			    }
 		    }
 
+            System.out.println("Updated");
+
 		    //Remove from idea_has_topic.
 		    String remove = "DELETE FROM idea_has_topic WHERE idea_id = ?";
 		    while(tries < maxTries)
@@ -344,8 +422,10 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 			    }
 		    }
 
+            System.out.println("Deleted from idea_has_topic");
+
 		    //Remove from shares.
-		    remove = "DELETE FROM shares WHERE idea_id = ?";
+		    remove = "DELETE FROM idea_share WHERE idea_id = ?";
 		    while(tries < maxTries)
 		    {
 			    try {
@@ -364,14 +444,26 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 			    }
 		    }
 
+            System.out.println("Shares deleted");
+
 		    //Remove from Watchlist.
 		    removeFromWatchlist(db, idea_id);
+
+            System.out.println("Removed from watch");
 
 		    //Remove from Hall of Fame.
 		    removeFromHallOfFame(db, idea_id);
 
+            System.out.println("Removed From hall of fame");
+
 		    //Remove from Transaction Queue.
 		    TransactionalTrading.removeAllByIdea(db, idea_id);
+
+            System.out.println("Removed from queue");
+
+            deleteIdeaFromFb(db,idea_id,token);
+
+            System.out.println("Deleted from Face");
 
 		    db.commit();
 	    } catch (SQLException e) {
@@ -383,6 +475,62 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	    }
 	}
 
+    protected void deleteIdeaFromFb(Connection db, int idea_id, String token) throws SQLException {
+        String ideaFBid = getFbIdeaID(db, idea_id);
+
+        //Post on facebook
+        OAuthService service = new ServiceBuilder()
+                .provider(FacebookApi.class)
+                .apiKey("436480809808619")
+                .apiSecret("af8edf703b7a95f5966e9037b545b7ce")
+                .callback("http://localhost:8080")   //should be the full URL to this action
+                .build();
+
+        OAuthRequest authRequest = new OAuthRequest(Verb.DELETE, "https://graph.facebook.com/" + ideaFBid);
+        Token token_final = new Token(token,"af8edf703b7a95f5966e9037b545b7ce");
+
+        service.signRequest(token_final, authRequest);
+        Response authResponse = authRequest.send();
+    }
+
+    /**
+     * Get the facebook id of the post made when the idea was created.
+     * @param db The connection to the database.
+     * @param idea_id The identifier of the idea.
+     * @return The facebook id of the idea.
+     */
+    protected String getFbIdeaID(Connection db, int idea_id) throws SQLException
+    {
+        int tries = 0;
+        int maxTries = 3;
+        PreparedStatement gFbId = null;
+        ResultSet rs;
+
+        String query = "SELECT idea.face_id FROM idea WHERE idea.id = ?";
+
+        while(tries < maxTries)
+        {
+            try {
+                gFbId = db.prepareStatement(query);
+                gFbId.setInt(1, idea_id);
+
+                rs = gFbId.executeQuery();
+
+                if(rs.next())
+                    return rs.getString("face_id");
+            } catch (SQLException e) {
+                System.out.println(e);
+                if(tries++ > maxTries)
+                    throw e;
+            } finally {
+                if(gFbId != null)
+                    gFbId.close();
+            }
+        }
+
+        return "";
+    }
+
 	/**
 	 * Remove idea from the watchlists of all users.
 	 * @param db The connection to the database.
@@ -392,7 +540,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	protected void removeFromWatchlist(Connection db, int idea_id) throws SQLException
 	{
 		PreparedStatement rWatch = null;
-		String query = "DELETE FROM watchlist WHERE id = ?";
+		String query = "DELETE FROM watchlist WHERE idea_id = ?";
 
 		boolean success = false;
 		while(!success)
@@ -408,12 +556,14 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
 					success = true;
 				} catch (SQLException e) {
+                    System.out.println(e);
 					success = false;
 				} finally {
 					if(rWatch != null)
 						rWatch.close();
 				}
 			} catch (SQLException e) {
+                System.out.println(e);
 				success = false;
 			}
 		}

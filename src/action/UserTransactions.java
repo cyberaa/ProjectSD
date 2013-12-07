@@ -29,6 +29,7 @@ public class UserTransactions extends User {
         } catch (SQLException e) {
             return ERROR;
         }
+        user.getMoneyFromRMI();
         return SUCCESS;
     }
 

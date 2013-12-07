@@ -179,12 +179,16 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				//Give money to sellers.
 				giveOrTakeUserCash(db, aux2.user_id, transactionMoney, true);
+                System.out.println("Money Gived");
 				//Update transaction history.
 				createTransaction(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
+                System.out.println("Transaction Created");
 
 				//Create and store notification.
-				ServerRMI.notifications.insertNotification(db, user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
-				ServerRMI.notifications.insertNotification(db, aux2.user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
+				//ServerRMI.notifications.insertNotification(db, user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
+				//ServerRMI.notifications.insertNotification(db, aux2.user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
+
+                System.out.println("Notification Stored");
             }
 
 			System.out.println("Money given to sellers and transaction history updated.");

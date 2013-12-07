@@ -44,6 +44,7 @@ public class SubmitIdea extends User {
             responseIdea = "rmi";
             return SUCCESS;
         }
+        user.getMoneyFromRMI();
         responseIdea = "success";
         return SUCCESS;
     }

@@ -214,4 +214,8 @@ public class UserBean {
         this.token = token;
         return true;
     }
+
+    public void deleteIdea(int idea_id) throws NotFullOwnerException, RemoteException, SQLException {
+        ideas.deleteIdea(idea_id,userID,token);
+    }
 }

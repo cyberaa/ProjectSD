@@ -33,6 +33,7 @@ public class ViewTopicIdeas extends User {
         for(int i=0; i<ideas.size(); i++) {
             System.out.println(ideas.get(i).getText());
         }
+        user.getMoneyFromRMI();
         return SUCCESS;
     }
 

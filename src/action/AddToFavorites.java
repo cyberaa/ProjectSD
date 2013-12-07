@@ -35,6 +35,7 @@ public class AddToFavorites extends User {
             responseWatch = "rmi";
             return SUCCESS;
         }
+        user.getMoneyFromRMI();
         responseWatch = "success";
         return SUCCESS;
     }

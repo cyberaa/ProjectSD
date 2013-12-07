@@ -32,6 +32,7 @@ public class ListTopics extends User {
         for(int i=0; i<topics.size(); i++) {
             System.out.println(topics.get(i).text);
         }
+        user.getMoneyFromRMI();
         responseShowTopics = "success";
         return SUCCESS;
     }

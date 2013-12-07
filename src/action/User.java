@@ -40,7 +40,7 @@ public class User extends ActionSupport implements SessionAware, UserAware {
     public String execute() {
         getUserSession();
         System.out.println("Getting Money");
-        this.user.getMoneyFromRMI();
+        //this.user.getMoneyFromRMI();
         System.out.println("Money Set");
         return SUCCESS;
     }

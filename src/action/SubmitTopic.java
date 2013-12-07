@@ -36,6 +36,7 @@ public class SubmitTopic extends User {
             responseTopic = "rmi";
             return SUCCESS;
         }
+        user.getMoneyFromRMI();
         responseTopic = "success";
         return  SUCCESS;
     }

@@ -29,6 +29,7 @@ public class AddFavoritesSearch extends User {
         } catch (RemoteException e) {
             return ERROR;
         }
+        user.getMoneyFromRMI();
         return SUCCESS;
     }
 

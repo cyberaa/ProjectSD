@@ -127,6 +127,11 @@
             <result name="error">/login.jsp</result>
         </action>
 
+        <action name="deleteIdeaAction" class="action.DeleteIdea" method="execute">
+            <interceptor-ref name="authStack" />
+            <result name="success">/portfolio.jsp</result>
+        </action>
+
     </package>
 
 </struts>

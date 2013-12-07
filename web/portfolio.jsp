@@ -89,6 +89,9 @@
             <c:param name="ideaText" value="${idea.text}" />
             <c:param name="ideaOwner" value="${idea.ideaOwner}" />
         </c:url>
+        <c:url value="deleteIdeaAction.action" var="deleteIdeaTag">
+            <c:param name="ideaId" value="${idea.idea_id}"/>
+        </c:url>
 
             <div class="panel panel-default">
                 <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
@@ -120,7 +123,9 @@
                                 </div>
 
 
-                                <div class="col-md-1" style="margin-bottom: 0px;"></div>
+                                <div class="col-md-1" style="margin-bottom: 0px;">
+                                    <button style="height: 35px;" type="button" class="btn btn-success" onclick="location.href='<c:out value="${deleteIdeaTag}"/>'"><i class="fa fa-times"></i></button>
+                                </div>
                                 <div class="col-md-2" style="margin-bottom: 0px;">
                                     <div style="text-align: right">
                                         <button type="button" class="btn btn-danger" onclick="location.href='<c:out value="${buySharesTag}"/>'">Buy Shares</button>
