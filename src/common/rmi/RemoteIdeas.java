@@ -20,7 +20,7 @@ public interface RemoteIdeas extends Remote
 {
     public void submitIdea(ArrayList<String> topics, int user_id, double investment, String text, byte[] fileData, String filename, int current, String token, String username, String faceId) throws RemoteException, SQLException, IOException;
 
-	public void deleteIdea(int idea_id, int user_id) throws RemoteException, SQLException, NotFullOwnerException;
+    public void deleteIdea(int idea_id, int user_id, String token) throws RemoteException, SQLException, NotFullOwnerException;
 
 	public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id, int user_id) throws RemoteException, SQLException;
 

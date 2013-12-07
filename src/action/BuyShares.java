@@ -39,6 +39,7 @@ public class BuyShares extends User {
         } catch (NotEnoughCashException e) {
 
         }
+        user.getMoneyFromRMI();
         return SUCCESS;
     }
 

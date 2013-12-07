@@ -29,6 +29,7 @@ public class LoginFacebook extends User {
             return ERROR;
         }
         if(auth == true) {
+            user.getMoneyFromRMI();
             return SUCCESS;
         }
         else {

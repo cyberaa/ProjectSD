@@ -30,6 +30,7 @@ public class SetShareValue extends User {
         } catch (SQLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+        user.getMoneyFromRMI();
         return SUCCESS;
     }
 

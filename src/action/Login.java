@@ -39,6 +39,7 @@ public class Login extends User {
             System.out.println(responseLogin + e);
             return ERROR;
         }
+        user.getMoneyFromRMI();
         responseLogin = "success";
         System.out.println(responseLogin);
         return SUCCESS;

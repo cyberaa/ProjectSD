@@ -32,6 +32,7 @@ public class Search extends User {
             } catch (RemoteException e) {
                 return ERROR;
             }
+            user.getMoneyFromRMI();
             return "idea";
         }
         else {
@@ -42,6 +43,7 @@ public class Search extends User {
             } catch (RemoteException e) {
                 return ERROR;
             }
+            user.getMoneyFromRMI();
             return "topic";
         }
     }
