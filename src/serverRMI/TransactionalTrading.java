@@ -106,8 +106,6 @@ public class TransactionalTrading
 					continue;
 				}
 			}
-
-			db.commit();
 		} catch (SQLException e) {
 			System.out.println("\n"+e+"\n");
 		} finally {
@@ -142,7 +140,6 @@ public class TransactionalTrading
 					dequeue.setInt(1, id);
 
 					dequeue.executeQuery();
-					db.commit();
 
 					success = true;
 				} catch (SQLException e) {
@@ -178,7 +175,6 @@ public class TransactionalTrading
 					dequeue.setInt(2, id);
 
 					dequeue.executeQuery();
-					db.commit();
 
 					success = true;
 				} catch (SQLException e) {
@@ -213,7 +209,6 @@ public class TransactionalTrading
 					dequeue.setInt(1, idea_id);
 
 					dequeue.executeQuery();
-					db.commit();
 
 					success = true;
 				} catch (SQLException e) {

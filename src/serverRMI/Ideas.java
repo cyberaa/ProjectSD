@@ -66,10 +66,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         ArrayList<Integer> topicIds = new ArrayList<Integer>();
         ResultSet rs;
 
-
-
-
-
         try {
 		    db.setAutoCommit(false);
 
