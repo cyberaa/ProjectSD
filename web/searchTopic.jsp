@@ -77,6 +77,10 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
+    <div class="well well-sm">
+        <h3><i class="fa fa-search"></i> Results for '${searchKey}'</h3>
+    </div>
+
     <s:set name="responseTopic" value="responseTopic"/>
     <s:if test="%{#response == 'success'}">
         <div class='alert alert-success alert-dismissable'>

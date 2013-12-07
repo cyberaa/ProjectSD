@@ -122,7 +122,7 @@
             <result name="success">/ideaTransactions.jsp</result>
         </action>
 
-        <action name="loginFAceAction" class="action.LoginFacebook" method="execute">
+        <action name="loginFaceAction" class="action.LoginFacebook" method="execute">
             <result name="success">/idea.jsp</result>
             <result name="error">/login.jsp</result>
         </action>
@@ -130,6 +130,21 @@
         <action name="deleteIdeaAction" class="action.DeleteIdea" method="execute">
             <interceptor-ref name="authStack" />
             <result name="success">/portfolio.jsp</result>
+        </action>
+
+        <action name="removeFromWatch" class="action.RemoveFromFavorites">
+            <interceptor-ref name="authStack" />
+            <result name="success">/viewTopicIdeas.jsp</result>
+        </action>
+
+        <action name="removeWatch" class="action.RemoveFromFavorites">
+            <interceptor-ref name="authStack" />
+            <result name="success">/watchlist.jsp</result>
+        </action>
+
+        <action name="removeWatchSearch" class="action.RemoveFavoritesSearch">
+            <interceptor-ref name="authStack" />
+            <result name="success">/searchIdea.jsp</result>
         </action>
 
     </package>

@@ -69,7 +69,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
                 int isRoot = resultSet.getInt("is_root");
                 double money = resultSet.getDouble("cash");
 
-				ServerRMI.userNotifications.put(userId, nots);
+				//ServerRMI.userNotifications.put(userId, nots);
 
 				return new UserInfo(userId,username,isRoot,money);
 			} catch (SQLException e) {

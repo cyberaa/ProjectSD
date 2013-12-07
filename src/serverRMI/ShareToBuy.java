@@ -13,9 +13,9 @@ public class ShareToBuy
 	public int user_id;
 	public int numToBuy;
 	public int total;
-	public int value;
+	public double value;
 
-	public ShareToBuy(int id, int user_id, int numToBuy, int total, int value)
+	public ShareToBuy(int id, int user_id, int numToBuy, int total, double value)
 	{
 		this.id = id;
 		this.user_id = user_id;

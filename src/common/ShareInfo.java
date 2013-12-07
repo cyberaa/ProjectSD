@@ -18,9 +18,9 @@ public class ShareInfo implements Serializable
 	private int user_id;
     private String username;
 	private int parts;
-	private int value;
+	private double value;
 
-	public ShareInfo(int id, int idea_id, int user_id, int parts, int value, String username)
+	public ShareInfo(int id, int idea_id, int user_id, int parts, double value, String username)
 	{
 		this.id = id;
 		this.idea_id = idea_id;
@@ -75,11 +75,11 @@ public class ShareInfo implements Serializable
         this.parts = parts;
     }
 
-    public int getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(double value) {
         this.value = value;
     }
 }

@@ -77,6 +77,10 @@
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
 
+    <div class="well well-sm">
+        <h3><i class="fa fa-search"></i> Results for '${searchKey}'</h3>
+    </div>
+
     <c:set var="count" value="0" scope="page" />
 
     <c:forEach var="idea" items="${ideas}">
@@ -89,6 +93,11 @@
             <c:param name="ideaId" value="${idea.idea_id}" />
             <c:param name="key" value="${searchKey}" />
         </c:url>
+        <c:url value="removeWatchSearch.action" var="removeTag">
+            <c:param name="ideaId" value="${idea.idea_id}" />
+            <c:param name="key" value="${searchKey}" />
+        </c:url>
+
         <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
             <div class="panel panel-default">
                 <div class="panel-body" style="">
@@ -104,7 +113,7 @@
                                 <button type="button" class="btn btn-warning" onclick="location.href='<c:out value="${addFavoriteTag}"/>'">Add to Watchlist</button>
                             </c:when>
                             <c:when test="${idea.isFavorite == 1}">
-                                <button type="button" class="btn btn-warning" onclick="location.href=''">Remove from Watchlist</button>
+                                <button type="button" class="btn btn-warning" onclick="location.href='<c:out value="${removeTag}"/>'">Remove from Watchlist</button>
                             </c:when>
                         </c:choose>
                         <button type="button" class="btn btn-danger" onclick="location.href='<c:out value="${buySharesTag}"/>'">Buy Shares</button>

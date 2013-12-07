@@ -185,13 +185,15 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
                 System.out.println("Transaction Created");
 
 				//Create and store notification.
-				//ServerRMI.notifications.insertNotification(db, user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
-				//ServerRMI.notifications.insertNotification(db, aux2.user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
+				ServerRMI.notifications.insertNotification(db, user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
+				ServerRMI.notifications.insertNotification(db, aux2.user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
 
                 System.out.println("Notification Stored");
             }
 
 			System.out.println("Money given to sellers and transaction history updated.");
+
+            System.out.println("Total cash: "+totalCash);
 
 			//Remove money from buyer.
 			giveOrTakeUserCash(db, user_id, totalCash, false);
@@ -275,7 +277,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
         Token token_final = new Token(token,"af8edf703b7a95f5966e9037b545b7ce");
 
         service.signRequest(token_final, authRequest);
-        Response authResponse = authRequest.send();
+        authRequest.send();
     }
 
     /**
@@ -341,7 +343,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				rs = gCash.executeQuery();
 
 				if(rs.next())
-					return rs.getInt("cash");
+					return rs.getDouble("cash");
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
@@ -384,7 +386,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				while(rs.next())
 				{
-					ret.add(new ShareInfo(rs.getInt("id"), rs.getInt("idea_id"), rs.getInt("user_id"), rs.getInt("parts"), rs.getInt("value"), ""));
+					ret.add(new ShareInfo(rs.getInt("id"), rs.getInt("idea_id"), rs.getInt("user_id"), rs.getInt("parts"), rs.getDouble("value"), ""));
 				}
 
 				break;
@@ -453,7 +455,8 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	protected ArrayList<ShareToBuy> getSharesToBuy(ArrayList<ShareInfo> shares, int share_num, double price_per_share, double user_id) throws NotEnoughSharesException
 	{
         ShareInfo aux;
-		int auxPrice, auxNum;
+		double auxPrice;
+        int auxNum;
 		int counterShares = 0;
 		ArrayList<ShareToBuy> sharesToBuy = new ArrayList<ShareToBuy>();
 		for(int i = 0; i < shares.size(); i++)
@@ -618,7 +621,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	protected void giveOrTakeUserCash(Connection db, int user_id, double money, boolean give) throws SQLException
 	{
         //Get current cash.
-		int curCash = 0;
+		double curCash = 0;
 		int tries = 0, maxTries = 3;
 		PreparedStatement gotCash = null;
 		ResultSet rs;
@@ -634,7 +637,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				rs = gotCash.executeQuery();
 				if(rs.next())
 				{
-					curCash = rs.getInt("cash");
+					curCash = rs.getDouble("cash");
 					break;
 				}
 			} catch (SQLException e) {
@@ -762,7 +765,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				while(rs.next())
 				{
-					ret.add(new ShareInfo(rs.getInt("id"), rs.getInt("idea_id"), rs.getInt("user_id"), rs.getInt("parts"), rs.getInt("value"), rs.getString("username")));
+					ret.add(new ShareInfo(rs.getInt("id"), rs.getInt("idea_id"), rs.getInt("user_id"), rs.getInt("parts"), rs.getDouble("value"), rs.getString("username")));
 				}
 
 				break;

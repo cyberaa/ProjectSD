@@ -47,8 +47,16 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
      * @throws RemoteException
      * @throws SQLException
      */
-    public void submitIdea(ArrayList<String> topics, int user_id, double investment, String text, byte[] fileData, String filename, int current, String token, String username, String faceId) throws RemoteException, SQLException, IOException
+    public void submitIdea(ArrayList<String> topics, int user_id, double investment, String text, byte[] fileData, String filename, int current, String token, String username, String faceId) throws RemoteException, SQLException, IOException, NotEnoughCashException
     {
+        Connection db = ServerRMI.getConnection();
+
+        //Check if user has enough cash.
+        double userCash = ServerRMI.transactions.getCash(db, user_id);
+        if(userCash < investment) {
+            throw new NotEnoughCashException();
+        }
+
         if (!filename.equals("-")) {
             FileOutputStream fos = new FileOutputStream("assets/"+filename);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
@@ -58,17 +66,11 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
             bos.close();
         }
 
-        Connection db = ServerRMI.getConnection();
-
         int tries = 0;
         int maxTries = 3;
         PreparedStatement stmt = null;
         ArrayList<Integer> topicIds = new ArrayList<Integer>();
         ResultSet rs;
-
-
-
-
 
         try {
 		    db.setAutoCommit(false);
@@ -123,31 +125,10 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
             System.out.println("Post in facebook");
 
-            //Post on facebook
-            OAuthService service = new ServiceBuilder()
-                    .provider(FacebookApi.class)
-                    .apiKey("436480809808619")
-                    .apiSecret("af8edf703b7a95f5966e9037b545b7ce")
-                    .callback("http://localhost:8080")   //should be the full URL to this action
-                    .build();
+            String messageId = "";
 
-            OAuthRequest authRequest = new OAuthRequest(Verb.POST, "https://graph.facebook.com/me/feed");
-            authRequest.addHeader("Content-Type", "text/html");
-            authRequest.addBodyParameter("message", username
-                    + " criou a seguinte ideia: \"" + text + "\"\nInvestiu " +
-                    investment + " DEICoins!");
-            Token token_final = new Token(token,"af8edf703b7a95f5966e9037b545b7ce");
-
-            service.signRequest(token_final, authRequest);
-            Response authResponse = authRequest.send();
-
-            String messageId = null;
-
-            try {
-                messageId = new JSONObject(authResponse.getBody()).getString("id");
-            } catch (JSONException e) {
-                e.printStackTrace();
-                //FIXME WHAT TO DO WITH THIS?????
+            if(token != null) {
+                messageId = postIdeaOnFacebook(username,text, investment, token);
             }
 
 		    //Insert idea.
@@ -245,7 +226,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 }
             }
 
-            giveOrTakeUserCash(db,user_id,investment,false);
+            ServerRMI.transactions.giveOrTakeUserCash(db,user_id,investment,false);
 
 		    db.commit();
 	    } catch (SQLException e) {
@@ -259,73 +240,37 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	    }
 	}
 
-    protected void giveOrTakeUserCash(Connection db, int user_id, double money, boolean give) throws SQLException
-    {
-        //Get current cash.
-        int curCash = 0;
-        int tries = 0, maxTries = 3;
-        PreparedStatement gotCash = null;
-        ResultSet rs;
+    protected String postIdeaOnFacebook(String username, String text, double investment, String token) {
+        //Post on facebook
+        OAuthService service = new ServiceBuilder()
+                .provider(FacebookApi.class)
+                .apiKey("436480809808619")
+                .apiSecret("af8edf703b7a95f5966e9037b545b7ce")
+                .callback("http://localhost:8080")   //should be the full URL to this action
+                .build();
 
-        String cash = "SELECT cash FROM sduser WHERE id = ?";
+        OAuthRequest authRequest = new OAuthRequest(Verb.POST, "https://graph.facebook.com/me/feed");
+        authRequest.addHeader("Content-Type", "text/html");
+        authRequest.addBodyParameter("message", username
+                + " criou a seguinte ideia: \"" + text + "\"\nInvestiu " +
+                investment + " DEICoins!");
+        Token token_final = new Token(token,"af8edf703b7a95f5966e9037b545b7ce");
 
-        while(tries < maxTries)
-        {
-            try {
-                gotCash = db.prepareStatement(cash);
-                gotCash.setInt(1, user_id);
+        service.signRequest(token_final, authRequest);
+        Response authResponse = authRequest.send();
 
-                rs = gotCash.executeQuery();
-                if(rs.next())
-                {
-                    curCash = rs.getInt("cash");
-                    break;
-                }
-            } catch (SQLException e) {
-                System.out.println(e);
-                if(tries++ > maxTries)
-                    throw e;
-            } finally {
-                if(gotCash != null)
-                    gotCash.close();
-            }
+        String messageId = null;
+
+        try {
+            messageId = new JSONObject(authResponse.getBody()).getString("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //FIXME WHAT TO DO WITH THIS?????
         }
 
-        //Update cash.
-        if(give)
-            updateUserCash(db, user_id, curCash + money);
-        else
-            updateUserCash(db, user_id, curCash - money);
+        return messageId;
     }
 
-    protected void updateUserCash(Connection db, int user_id, double cash) throws SQLException
-    {
-        int tries = 0;
-        int maxTries = 3;
-        PreparedStatement uShare = null;
-
-        String share = "UPDATE sduser SET cash = ? WHERE id = ?";
-
-        while(tries < maxTries)
-        {
-            try {
-                uShare = db.prepareStatement(share);
-                uShare.setDouble(1, cash);
-                uShare.setInt(2, user_id);
-
-                uShare.executeQuery();
-                break;
-            } catch (SQLException e) {
-                System.out.println(e);
-                if(tries++ > maxTries)
-                    throw e;
-            }
-            finally {
-                if(uShare != null)
-                    uShare.close();
-            }
-        }
-    }
 
 	/**
 	 * Delete idea identified by <em>idea_id</em>.
@@ -480,7 +425,10 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	}
 
     protected void deleteIdeaFromFb(Connection db, int idea_id, String token) throws SQLException {
-        String ideaFBid = getFbIdeaID(db, idea_id);
+        String fbId = getFbIdeaID(db, idea_id);
+
+        if(fbId == null)
+            return;
 
         //Post on facebook
         OAuthService service = new ServiceBuilder()
@@ -490,7 +438,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 .callback("http://localhost:8080")   //should be the full URL to this action
                 .build();
 
-        OAuthRequest authRequest = new OAuthRequest(Verb.DELETE, "https://graph.facebook.com/" + ideaFBid);
+        OAuthRequest authRequest = new OAuthRequest(Verb.DELETE, "https://graph.facebook.com/" + fbId);
         Token token_final = new Token(token,"af8edf703b7a95f5966e9037b545b7ce");
 
         service.signRequest(token_final, authRequest);
@@ -572,6 +520,51 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 			}
 		}
 	}
+
+    /**
+     * Remove idea from the watchlist of the given user.
+     * @param user_id
+     * @param idea_id
+     * @throws SQLException
+     */
+    public void removeFromWatchlist(int user_id, int idea_id) throws RemoteException, SQLException
+    {
+        Connection db = ServerRMI.getConnection();
+        db.setAutoCommit(false);
+
+        PreparedStatement rWatch = null;
+        String query = "DELETE FROM watchlist WHERE sduser_id = ? AND idea_id = ?";
+
+        boolean success = false;
+        while(!success)
+        {
+            try {
+
+                try {
+                    rWatch = db.prepareStatement(query);
+                    rWatch.setInt(1, user_id);
+                    rWatch.setInt(2, idea_id);
+
+                    rWatch.executeQuery();
+                    db.commit();
+
+                    success = true;
+                } catch (SQLException e) {
+                    System.out.println(e);
+                    success = false;
+                } finally {
+                    if(rWatch != null)
+                        rWatch.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+                success = false;
+            }
+        }
+
+        db.setAutoCommit(true);
+        db.close();
+    }
 
 	/**
 	 * Remove an idea from the Hall of Fame
@@ -859,7 +852,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
             String key = "%"+ideaKey+"%";
 
-            String verify = "SELECT lol.id, lol.text, lol.username, lol.sduser_id, lol.idea_id FROM (SELECT idea.id, idea.text, sduser.username, lol.sduser_id, lol.idea_id, idea.in_hall FROM idea LEFT OUTER JOIN (Select watchlist.* FROM watchlist where sduser_id = ?) lol ON idea.id = lol.idea_id LEFT OUTER JOIN sduser ON sduser.id = idea.user_id) lol WHERE lol.in_hall = 0 AND lol.text LIKE ?";
+            String verify = "SELECT lol.id, lol.text, lol.username, lol.sduser_id, lol.idea_id FROM (SELECT idea.id, idea.text, idea.active, sduser.username, lol.sduser_id, lol.idea_id, idea.in_hall FROM idea LEFT OUTER JOIN (Select watchlist.* FROM watchlist where sduser_id = ?) lol ON idea.id = lol.idea_id LEFT OUTER JOIN sduser ON sduser.id = idea.user_id) lol WHERE lol.in_hall = 0 AND lol.text LIKE ? AND lol.active = 1";
 
             while(tries < maxTries)
             {

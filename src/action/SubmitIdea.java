@@ -2,6 +2,7 @@ package action;
 
 import com.opensymphony.xwork2.ActionSupport;
 import common.IdeaInfo;
+import common.rmi.NotEnoughCashException;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -43,6 +44,8 @@ public class SubmitIdea extends User {
             System.out.println("SQL Exception");
             responseIdea = "rmi";
             return SUCCESS;
+        } catch (NotEnoughCashException e) {
+            return ERROR;
         }
         user.getMoneyFromRMI();
         responseIdea = "success";

@@ -89,6 +89,11 @@
             <c:param name="ideaText" value="${idea.text}" />
             <c:param name="ideaOwner" value="${idea.ideaOwner}" />
         </c:url>
+        <c:url value="removeWatch.action" var="removeFavoriteTag">
+            <c:param name="ideaId" value="${idea.idea_id}" />
+            <c:param name="topicText" value="${topicText}" />
+            <c:param name="topicId" value="${topicId}" />
+        </c:url>
         <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
             <div class="panel panel-default">
                 <div class="panel-body" style="">
@@ -99,7 +104,7 @@
                 </div>
                 <div class="panel-heading" id="${count}" style="display: none;">
                     <div style="text-align: right">
-                        <button type="button" class="btn btn-warning" onclick="location.href=''">Remove from Watchlist</button>
+                        <button type="button" class="btn btn-warning" onclick="location.href='<c:out value="${removeFavoriteTag}"/>'">Remove from Watchlist</button>
                         <button type="button" class="btn btn-danger" onclick="location.href='<c:out value="${buySharesTag}"/>'">Buy Shares</button>
                     </div>
                 </div>

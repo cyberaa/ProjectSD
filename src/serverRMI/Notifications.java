@@ -33,8 +33,11 @@ public class Notifications extends UnicastRemoteObject
 	public void insertNotification(Connection db, int user_id, String not) throws RemoteException, SQLException
 	{
 		RemoteNotifications nots = ServerRMI.userNotifications.get(user_id);
-		if(nots != null)
-			nots.pushNotification(not);
+		if(nots != null) {
+            System.out.println("Will push notification.");
+            nots.pushNotification(not);
+            System.out.println("Notification pushed!");
+        }
 		else
 		{
 			PreparedStatement insert = null;

@@ -110,7 +110,7 @@ public class UserBean {
         this.money = money;
     }
 
-    public void submitIdea(ArrayList<String> topics, String text, String investment) throws IOException, SQLException {
+    public void submitIdea(ArrayList<String> topics, String text, String investment) throws IOException, SQLException, NotEnoughCashException {
         ideas.submitIdea(topics, userID, Double.parseDouble(investment), text, null, "-", 0, token, username, id);
     }
 
@@ -132,6 +132,10 @@ public class UserBean {
 
     public void addToWatchlist(int idea_id) throws SQLException, RemoteException {
         ideas.addToWatchlist(userID,idea_id);
+    }
+
+    public void removeFromWatchlist(int idea_id) throws SQLException, RemoteException {
+        ideas.removeFromWatchlist(userID,idea_id);
     }
 
     public void buyShares(int idea_id, int num_parts, double value, double new_value) throws RemoteException, SQLException, NotEnoughSharesException, NotEnoughCashException {
