@@ -109,6 +109,7 @@ public class Notifications extends UnicastRemoteObject
 		String query = "DELETE FROM notification WHERE id = ?";
 
 		Connection db = ServerRMI.getConnection();
+		db.setAutoCommit(false);
 
 		try {
 			for(int i=0; i < not_ids.size(); i++)
@@ -128,6 +129,7 @@ public class Notifications extends UnicastRemoteObject
 			if(remove != null)
 				remove.close();
 
+			db.setAutoCommit(true);
 			db.close();
 		}
 	}
