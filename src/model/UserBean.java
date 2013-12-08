@@ -63,7 +63,7 @@ public class UserBean {
     }
 
     public boolean authenticateUser(String username, String password) throws RemoteException, UserAuthenticationException, SQLException {
-        UserInfo rmiResponse = um.authenticate(username,password, nots);
+        UserInfo rmiResponse = um.authenticate(username,password);
         this.userID = rmiResponse.getUserId();
         this.username = rmiResponse.getUsername();
         this.root = rmiResponse.getRoot();
