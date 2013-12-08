@@ -105,9 +105,11 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 		try {
 			db.setAutoCommit(false);
+			System.out.println("Auto commit set to false.");
 
 			//Check if user has enough cash.
 			double userCash = getCash(db, user_id);
+			System.out.println("Got user's cash: " + userCash);
 			if(userCash < share_num * price_per_share) {
 				throw new NotEnoughCashException();
             }
@@ -179,14 +181,19 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				//Give money to sellers.
 				giveOrTakeUserCash(db, aux2.user_id, transactionMoney, true);
-                System.out.println("Money Gived");
+                System.out.println("Money given.");
 				//Update transaction history.
 				createTransaction(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
-                System.out.println("Transaction Created");
+                System.out.println("Transaction created.");
 
 				//Create and store notification.
-				ServerRMI.notifications.insertNotification(db, user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
-				ServerRMI.notifications.insertNotification(db, aux2.user_id, ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
+				System.out.println(ServerRMI.notifications);
+				String aux = ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
+				System.out.println("Notification 1: "+aux);
+				ServerRMI.notifications.insertNotification(db, user_id, aux);
+				aux = ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
+				System.out.println("Notification 2: "+aux);
+				ServerRMI.notifications.insertNotification(db, aux2.user_id, aux);
 
                 System.out.println("Notification Stored");
             }
@@ -344,6 +351,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				if(rs.next())
 					return rs.getDouble("cash");
+				tries++;
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)

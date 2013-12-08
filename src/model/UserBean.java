@@ -51,6 +51,7 @@ public class UserBean {
             ideas = (RemoteIdeas) Naming.lookup(rmiAddress+"Ideas");
             topics= (RemoteTopics) Naming.lookup(rmiAddress+"Topics");
             transactions = (RemoteTransactions) Naming.lookup(rmiAddress+"Transactions");
+	        nots = new Notifications();
         } catch (NotBoundException e) {
             System.out.println("NotBoundException");
         } catch (MalformedURLException e) {

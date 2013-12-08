@@ -18,9 +18,9 @@ import java.util.ArrayList;
  * Time: 10:32 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Notifications extends UnicastRemoteObject
+public class Notifications
 {
-	public Notifications() throws RemoteException{}
+	public Notifications(){}
 
 	/**
 	 * Insert a notification into the database. Notifications are
@@ -30,16 +30,23 @@ public class Notifications extends UnicastRemoteObject
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public void insertNotification(Connection db, int user_id, String not) throws RemoteException, SQLException
+	public void insertNotification(Connection db, int user_id, String not) throws SQLException
 	{
+		System.out.println("Entered insertNotification.");
 		RemoteNotifications nots = ServerRMI.userNotifications.get(user_id);
+		System.out.println("Got remote object from hash table.");
 		if(nots != null) {
-            System.out.println("Will push notification.");
-            nots.pushNotification(not);
-            System.out.println("Notification pushed!");
+            System.out.println("[WS] Will push notification.");
+			try {
+				nots.pushNotification(not);
+			} catch (RemoteException e) {
+				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			}
+			System.out.println("[WS] Notification pushed!");
         }
 		else
 		{
+			System.out.println("[DB] Will push notification.");
 			PreparedStatement insert = null;
 
 			String query = "INSERT INTO notification VALUES (seq_notification.nextval, ?, ?)";
@@ -58,6 +65,7 @@ public class Notifications extends UnicastRemoteObject
 				if(insert != null)
 					insert.close();
 			}
+			System.out.println("[DB] Notification pushed!");
 		}
 	}
 
@@ -68,7 +76,7 @@ public class Notifications extends UnicastRemoteObject
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public ArrayList<NotificationInfo> getNotifications(int user_id) throws RemoteException, SQLException
+	public ArrayList<NotificationInfo> getNotifications(int user_id) throws SQLException
 	{
 		ArrayList<NotificationInfo> ret = new ArrayList<NotificationInfo>();
 
@@ -103,7 +111,7 @@ public class Notifications extends UnicastRemoteObject
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public void removeNotifications(ArrayList<NotificationInfo> not_ids) throws RemoteException, SQLException
+	public void removeNotifications(ArrayList<NotificationInfo> not_ids) throws  SQLException
 	{
 		PreparedStatement remove = null;
 		String query = "DELETE FROM notification WHERE id = ?";
@@ -146,6 +154,7 @@ public class Notifications extends UnicastRemoteObject
 	 */
 	public String createNotificationString(Connection db, int idea_id, int seller_id, int buyer_id, int parts, double totalPrice) throws SQLException
 	{
+		System.out.println("Entered create notification.");
 		String buyer, seller;
 
 		PreparedStatement getNotifications = null;
@@ -174,6 +183,7 @@ public class Notifications extends UnicastRemoteObject
 				getNotifications.close();
 		}
 
+		System.out.println("Notification created.");
 		return buyer + " bought " + parts + " from " + seller + " (idea " + idea_id +") for a total of " + totalPrice + " coins.";
 	}
 }

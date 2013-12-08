@@ -60,6 +60,9 @@ public class ServerRMI
 		//Create remote RMI objects and bind them.
 		createAndBindObjects();
 
+		//Create hash table.
+		userNotifications = new HashMap<Integer, RemoteNotifications>();
+
 		//Menu.
         String command;
         Scanner sc = new Scanner(System.in);
@@ -135,6 +138,8 @@ public class ServerRMI
 
 			transactions = new Transactions();
 			rmiRegistry.rebind("Transactions", transactions);
+
+			notifications = new Notifications();
 
 			System.out.println("Objects successfully bound to RMI registry.");
 		} catch (RemoteException e) {
