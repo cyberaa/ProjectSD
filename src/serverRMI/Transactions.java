@@ -98,6 +98,8 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	public int buyShares(int user_id, int idea_id, int share_num, double price_per_share, double new_price_share, boolean fromQueue, String token, String faceUserId) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException
 	{
+		System.out.println("UserID: "+ user_id + "\tIdeaID: " + idea_id + "\tShareNum: " + share_num + "\tPricePerShare: " + price_per_share);
+
 		int ret = -1;
 		System.out.println("\nGetting connection...");
         Connection db = ServerRMI.getConnection();
@@ -133,81 +135,86 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			ArrayList<ShareToBuy> sharesToBuy;
 			sharesToBuy = getSharesToBuy(shares, share_num, price_per_share, user_id);
 
+			System.out.println(sharesToBuy);
 			System.out.println("Size: "+sharesToBuy.size());
 			for(int k=0; k < sharesToBuy.size(); k++) //DEBUG
 				System.out.println(sharesToBuy.get(k));
 
-			//Remove (or update) all selected shares to be bought.
-			int lastIndex = sharesToBuy.size() -1;
-			for(int i=0; i < lastIndex; i++)
-				deleteShare(db, sharesToBuy.get(i).id);
-
-			ShareToBuy lastShare = sharesToBuy.get(lastIndex);
-			if(lastShare.numToBuy == lastShare.total)
-				deleteShare(db, lastShare.id);
-			else
-				updateShare(db, lastShare.id, lastShare.total - lastShare.numToBuy, lastShare.value);
-
-			System.out.println("Shares updated/removed.");
-
-			//Create new share for the buyer or update previous amount of shares.
-			ShareInfo aux1;
-			boolean updated = false;
-			for(int i=0; i < shares.size(); i++)
-			{
-				aux1 = shares.get(i);
-				if(aux1.getUser_id() == user_id)
-				{
-					updateShare(db, aux1.getId(), aux1.getParts() + share_num, new_price_share);
-					updated = true;
-					break;
-				}
-			}
-			if(!updated)
-				createShare(db, idea_id, user_id, share_num, new_price_share);
-
-			System.out.println("New shares created/Old shares updated.");
-
-			//Give money to sellers and update transaction history.
-			ShareToBuy aux2;
-			double transactionMoney, totalCash=0;
 			int totalShares=0;
-			for(int i=0; i < sharesToBuy.size(); i++)
+			if(sharesToBuy.size() > 0)
 			{
-				aux2 = sharesToBuy.get(i);
-				transactionMoney = aux2.numToBuy * aux2.value;
-				totalCash += transactionMoney;
-				totalShares += aux2.numToBuy;
+				//Remove (or update) all selected shares to be bought.
+				int lastIndex = sharesToBuy.size() -1;
+				for(int i=0; i < lastIndex; i++)
+					deleteShare(db, sharesToBuy.get(i).id);
 
-				//Give money to sellers.
-				giveOrTakeUserCash(db, aux2.user_id, transactionMoney, true);
-                System.out.println("Money given.");
-				//Update transaction history.
-				createTransaction(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
-                System.out.println("Transaction created.");
+				ShareToBuy lastShare = sharesToBuy.get(lastIndex);
+				if(lastShare.numToBuy == lastShare.total)
+					deleteShare(db, lastShare.id);
+				else
+					updateShare(db, lastShare.id, lastShare.total - lastShare.numToBuy, lastShare.value);
 
-				//Create and store notification.
-				System.out.println(ServerRMI.notifications);
-				String aux = ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
-				System.out.println("Notification 1: "+aux);
-				ServerRMI.notifications.insertNotification(db, user_id, aux);
-				aux = ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
-				System.out.println("Notification 2: "+aux);
-				ServerRMI.notifications.insertNotification(db, aux2.user_id, aux);
+				System.out.println("Shares updated/removed.");
 
-                System.out.println("Notification Stored");
-            }
+				//Create new share for the buyer or update previous amount of shares.
+				ShareInfo aux1;
+				boolean updated = false;
+				for(int i=0; i < shares.size(); i++)
+				{
+					aux1 = shares.get(i);
+					if(aux1.getUser_id() == user_id)
+					{
+						updateShare(db, aux1.getId(), aux1.getParts() + share_num, new_price_share);
+						updated = true;
+						break;
+					}
+				}
+				if(!updated)
+					createShare(db, idea_id, user_id, share_num, new_price_share);
 
-			System.out.println("Money given to sellers and transaction history updated.");
+				System.out.println("New shares created/Old shares updated.");
 
-            System.out.println("Total cash: "+totalCash);
+				//Give money to sellers and update transaction history.
+				ShareToBuy aux2;
+				double transactionMoney, totalCash=0;
+				for(int i=0; i < sharesToBuy.size(); i++)
+				{
+					aux2 = sharesToBuy.get(i);
+					transactionMoney = aux2.numToBuy * aux2.value;
+					totalCash += transactionMoney;
+					totalShares += aux2.numToBuy;
 
-			//Remove money from buyer.
-			giveOrTakeUserCash(db, user_id, totalCash, false);
+					//Give money to sellers.
+					giveOrTakeUserCash(db, aux2.user_id, transactionMoney, true);
+					System.out.println("Money given.");
+					//Update transaction history.
+					createTransaction(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
+					System.out.println("Transaction created.");
 
-			System.out.println("Money taken from buyer.");
+					//Create and store notification.
+					System.out.println(ServerRMI.notifications);
+					String aux = ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
+					System.out.println("Notification 1: "+aux);
+					ServerRMI.notifications.insertNotification(db, user_id, aux);
+					aux = ServerRMI.notifications.createNotificationString(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
+					System.out.println("Notification 2: "+aux);
+					ServerRMI.notifications.insertNotification(db, aux2.user_id, aux);
+
+					System.out.println("Notification Stored");
+				}
+
+				System.out.println("Money given to sellers and transaction history updated.");
+
+				System.out.println("Total cash: "+totalCash);
+
+				//Remove money from buyer.
+				giveOrTakeUserCash(db, user_id, totalCash, false);
+
+				System.out.println("Money taken from buyer.");
+			}
 
 			//Transactional trading stuff.
+			System.out.println("Comencing transactional trading...");
 			if(!fromQueue)
 			{
 				if(totalShares < share_num)
@@ -500,9 +507,10 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			else
 				break;
 		}
+		System.out.println("Finished selecting shares: " + counterShares + " " + share_num);
 
-		if(counterShares != share_num)
-			throw new NotEnoughSharesException();
+		//if(counterShares != share_num)
+		//	throw new NotEnoughSharesException();
 
 		return sharesToBuy;
 	}
@@ -725,8 +733,8 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			try {
 				cShare = db.prepareStatement(share);
 				cShare.setInt(1, idea_id);
-				cShare.setInt(2, seller_id);
-				cShare.setInt(3, buyer_id);
+				cShare.setInt(2, buyer_id);
+				cShare.setInt(3, seller_id);
 				cShare.setInt(4, share_num);
 				cShare.setDouble(5, transactionMoney);
 
