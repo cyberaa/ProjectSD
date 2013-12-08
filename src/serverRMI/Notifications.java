@@ -38,7 +38,7 @@ public class Notifications
 		if(nots != null) {
             System.out.println("[WS] Will push notification.");
 			try {
-				nots.pushNotification(not);
+				nots.pushNotification(not, true);
 			} catch (RemoteException e) {
 				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 			}
@@ -190,6 +190,6 @@ public class Notifications
 	public static void broadcastMessage(String message) throws RemoteException
 	{
 		for(int i=0; i < ServerRMI.users.size(); i++)
-			ServerRMI.userNotifications.get(ServerRMI.users.get(i)).pushNotification(message);
+			ServerRMI.userNotifications.get(ServerRMI.users.get(i)).pushNotification(message, false);
 	}
 }

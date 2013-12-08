@@ -12,5 +12,5 @@ import java.rmi.RemoteException;
  */
 public interface RemoteNotifications extends Remote
 {
-	public void pushNotification(String message) throws RemoteException;
+	public void pushNotification(String message, boolean isNotif) throws RemoteException;
 }
