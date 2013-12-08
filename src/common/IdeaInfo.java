@@ -45,7 +45,20 @@ public class IdeaInfo implements Serializable
         this.value = value;
     }
 
-    public void setRelatedTopics(ArrayList<TopicInfo> relatedTopics) {
+	@Override
+	public String toString() {
+		return "IdeaInfo{" +
+				       "relatedTopics=" + relatedTopics +
+				       ", idea_id=" + idea_id +
+				       ", text='" + text + '\'' +
+				       ", ideaOwner='" + ideaOwner + '\'' +
+				       ", isFavorite=" + isFavorite +
+				       ", parts=" + parts +
+				       ", value=" + value +
+				       '}';
+	}
+
+	public void setRelatedTopics(ArrayList<TopicInfo> relatedTopics) {
         this.relatedTopics = relatedTopics;
     }
 
