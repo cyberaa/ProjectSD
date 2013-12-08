@@ -36,6 +36,7 @@ public class RemoveFromFavorites extends User
             return SUCCESS;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         responseWatch = "success";
         return SUCCESS;
     }

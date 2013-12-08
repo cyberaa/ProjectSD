@@ -15,6 +15,15 @@
     <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
+    <link href="assets/jquery.pnotify.default.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="assets/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="assets/jquery.pnotify.min.js"></script>
+    <script type="text/javascript">
+
+        window.onload = function() {
+            initializeWS();
+        }
+    </script>
     <title>Idea Broker</title>
 </head>
 <body>
@@ -99,6 +108,11 @@
            <c:param name="topicText" value="${topicText}" />
            <c:param name="topicId" value="${topicId}" />
        </c:url>
+       <c:url value="ideaTransactionsAction.action" var="ideaTransactionsTag">
+           <c:param name="ideaId" value="${idea.idea_id}"/>
+           <c:param name="ideaText" value="${idea.text}" />
+           <c:param name="ideaOwner" value="${idea.ideaOwner}" />
+       </c:url>
        <a onclick="togglePanel('${count}');" style="text-decoration: none; cursor: pointer; color: #000;">
            <div class="panel panel-default">
                <div class="panel-body" style="">
@@ -109,6 +123,7 @@
                </div>
                <div class="panel-heading" id="${count}" style="display: none;">
                    <div style="text-align: right">
+                       <button type="button" class="btn btn-info" onclick="location.href='<c:out value="${ideaTransactionsTag}"/>'">Your Transactions</button>
                        <c:choose>
                            <c:when test="${idea.isFavorite == 0}">
                                <button type="button" class="btn btn-warning" onclick="location.href='<c:out value="${addFavoriteTag}"/>'">Add to Watchlist</button>
@@ -131,6 +146,12 @@
 <script src="assets/jquery.js"></script>
 <script src="assets/dist/js/bootstrap.min.js"></script>
 <script src="assets/jquery-ui-1.10.3/ui/jquery-ui.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/jquery.noty.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/top.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/topLeft.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/topRight.js"></script>
+<!-- You can add more layouts if you want -->
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/themes/default.js"></script>
 <script src="assets/custom.js"></script>
 
 

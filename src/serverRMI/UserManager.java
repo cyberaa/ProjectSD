@@ -23,7 +23,7 @@ import java.sql.SQLException;
  */
 public class UserManager extends UnicastRemoteObject implements RemoteUserManager
 {
-	protected final int startCash = 1000;
+	protected final int startCash = 1000000;
 
 	public UserManager() throws RemoteException
 	{

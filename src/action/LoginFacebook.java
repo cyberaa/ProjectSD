@@ -22,18 +22,19 @@ public class LoginFacebook extends User {
         try {
             auth = user.authenticateFacebook(token);
         } catch (UserAuthenticationException e) {
-            return ERROR;
+            return LOGIN;
         } catch (SQLException e) {
-            return ERROR;
+            return LOGIN;
         } catch (RemoteException e) {
-            return ERROR;
+            return LOGIN;
         }
         if(auth == true) {
             user.getMoneyFromRMI();
+            super.writeUserCookie();
             return SUCCESS;
         }
         else {
-            return ERROR;
+            return LOGIN;
         }
     }
 

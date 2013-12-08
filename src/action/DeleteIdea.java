@@ -19,19 +19,30 @@ public class DeleteIdea extends User {
     private int ideaId;
     private ArrayList<IdeaInfo> ideas;
 
+    private String responseDel;
+
     public String execute() {
         super.execute();
         try {
             user.deleteIdea(ideaId);
-            ideas = user.portfolio();
         } catch (NotFullOwnerException e) {
-            return ERROR;
+            try {
+                ideas = user.portfolio();
+            } catch (SQLException e1) {
+                return LOGIN;
+            } catch (RemoteException e1) {
+                return LOGIN;
+            }
+            responseDel = "nfo";
+            return SUCCESS;
         } catch (RemoteException e) {
-            return ERROR;
+            return LOGIN;
         } catch (SQLException e) {
-            return ERROR;
+            return LOGIN;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
+        responseDel = "success";
         return SUCCESS;
     }
 
@@ -49,5 +60,13 @@ public class DeleteIdea extends User {
 
     public void setIdeas(ArrayList<IdeaInfo> ideas) {
         this.ideas = ideas;
+    }
+
+    public String getResponseDel() {
+        return responseDel;
+    }
+
+    public void setResponseDel(String responseDel) {
+        this.responseDel = responseDel;
     }
 }

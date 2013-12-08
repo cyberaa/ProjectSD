@@ -28,11 +28,12 @@ public class Search extends User {
             try {
                 ideas = user.searchIdea(searchKey);
             } catch (SQLException e) {
-                return ERROR;
+                return LOGIN;
             } catch (RemoteException e) {
-                return ERROR;
+                return LOGIN;
             }
             user.getMoneyFromRMI();
+            super.writeUserCookie();
             return "idea";
         }
         else {

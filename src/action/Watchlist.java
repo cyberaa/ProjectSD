@@ -27,6 +27,7 @@ public class Watchlist extends User {
             return ERROR;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         return SUCCESS;
     }
 

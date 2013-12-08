@@ -30,12 +30,13 @@ public class AddToFavorites extends User {
             ideas = user.showTopicIdeas(topicId);
         } catch (SQLException e) {
             responseWatch = "rmi";
-            return SUCCESS;
+            return LOGIN;
         } catch (RemoteException e) {
             responseWatch = "rmi";
-            return SUCCESS;
+            return LOGIN;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         responseWatch = "success";
         return SUCCESS;
     }

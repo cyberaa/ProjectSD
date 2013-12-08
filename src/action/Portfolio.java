@@ -22,11 +22,12 @@ public class Portfolio extends User {
         try {
             ideas = user.portfolio();
         } catch (SQLException e) {
-            return ERROR;
+            return LOGIN;
         } catch (RemoteException e) {
-            return ERROR;
+            return LOGIN;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         return SUCCESS;
     }
 

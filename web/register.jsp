@@ -14,6 +14,12 @@
     <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
+    <link href="jquery.pnotify.default.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="jquery.pnotify.default.icons.css" media="all" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+
+        initializeWS();
+    </script>
     <title>Idea Broker</title>
 </head>
 <body background="assets/textures/escheresque_ste.png">
@@ -49,6 +55,7 @@
 
 <script src="assets/jquery.js"></script>
 <script src="assets/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="jquery.pnotify.min.js"></script>
 <script src="assets/custom.js"></script>
 
 

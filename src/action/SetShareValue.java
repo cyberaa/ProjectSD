@@ -31,6 +31,7 @@ public class SetShareValue extends User {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         return SUCCESS;
     }
 

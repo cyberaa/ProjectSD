@@ -1,5 +1,6 @@
 package model;
 
+import action.WSocketClient;
 import common.rmi.RemoteNotifications;
 
 import java.rmi.RemoteException;
@@ -14,7 +15,11 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class Notifications extends UnicastRemoteObject implements RemoteNotifications
 {
-	protected Notifications() throws RemoteException {}
+    private WSocketClient socket;
+
+	public Notifications(WSocketClient socket) throws RemoteException {
+        this.socket = socket;
+    }
 
 	/**
 	 *
@@ -26,5 +31,6 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	public void pushNotification(String message, boolean isNotif) throws RemoteException
 	{
 		System.out.println("New message:\n"+message);
+        socket.notify(message, isNotif);
 	}
 }

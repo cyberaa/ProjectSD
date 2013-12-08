@@ -29,7 +29,7 @@ public class Login extends User {
         } catch (RemoteException e) {
             responseLogin = "rmi";
             System.out.println(responseLogin + e);
-            return ERROR;
+            return LOGIN;
         } catch (UserAuthenticationException e) {
             responseLogin = "failedAuth";
             System.out.println(responseLogin + e);
@@ -37,9 +37,10 @@ public class Login extends User {
         } catch (SQLException e) {
             responseLogin = "rmi";
             System.out.println(responseLogin + e);
-            return ERROR;
+            return LOGIN;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         responseLogin = "success";
         System.out.println(responseLogin);
         return SUCCESS;

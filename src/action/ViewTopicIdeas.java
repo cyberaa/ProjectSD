@@ -34,6 +34,7 @@ public class ViewTopicIdeas extends User {
             System.out.println(ideas.get(i).getText());
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         return SUCCESS;
     }
 

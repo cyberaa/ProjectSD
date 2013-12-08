@@ -18,33 +18,45 @@ function togglePanel(pID) {
     return false;
 }
 
-/*$("#submitIdea").click(function() {
-    alert(1);
-    $.ajax({
-        type: "POST",
-        url: "submitIdeaAction.action",
-        data: {
-            "topic" : $("#topic").val(),
-            "text" :  $("#ideaText").val(),
-            "investment" :  $("#investment").val()
-        },
-        success: function() {
-            var str = "";
-            str += "<div class='alert alert-success alert-dismissable'>";
-            str += "   <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
-            str += "   <strong>Success!</strong> You're idea was submited successfully";
-            str += "</div>";
+function initializeWS() {
+    connect('ws://' + window.location.host + '/chat');
+}
 
-            $("#alertDiv").html(str);
-        },
-        error: function() {
-            var str = "";
-            str += "<div class='alert alert-danger alert-dismissable'>";
-            str += "   <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
-            str += "   <strong>Error!</strong> An error ocurred during operation";
-            str += "</div>";
-                                       s
-            $("#alertDiv").html(str);
-        }
-    });
-});*/
+function connect(host) {
+    if ('WebSocket' in window)
+        websocket = new WebSocket(host);
+    else if ('MozWebSocket' in window)
+        websocket = new MozWebSocket(host);
+    else {
+        return;
+    }
+
+    websocket.onopen    = onOpen; // set the event listeners below
+    websocket.onclose   = onClose;
+    websocket.onmessage = onMessage;
+    websocket.onerror   = onError;
+}
+
+function onOpen(event) {
+    console.log('Connected to ' + window.location.host + '.');
+    makeNotification("Hello World!", "A Mariana é linda!!!!")
+}
+
+function onClose(event) {
+    //FIXME: CLosed, shit
+    console.log("Websocket closed!");
+}
+
+function onMessage(message) {
+    not = $.parseJSON(message.data);
+    if(not.notif == true) {
+       alert(not.message);
+    }
+    else {
+        alert("Stock Market: "+ not.message);
+    }
+}
+
+function onError(event) {
+    console.log('WebSocket error (' + event.data + ').');
+}

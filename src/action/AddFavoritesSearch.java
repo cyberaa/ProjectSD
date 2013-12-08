@@ -25,11 +25,12 @@ public class AddFavoritesSearch extends User {
             user.addToWatchlist(ideaId);
             ideas = user.searchIdea(key);
         } catch (SQLException e) {
-            return ERROR;
+            return LOGIN;
         } catch (RemoteException e) {
-            return ERROR;
+            return LOGIN;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         return SUCCESS;
     }
 

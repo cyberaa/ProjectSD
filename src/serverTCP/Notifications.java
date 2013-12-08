@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
  */
 public class Notifications implements RemoteNotifications
 {
-	public void pushNotification(String message) throws RemoteException
+	public void pushNotification(String message, boolean isNotif) throws RemoteException
 	{
 		System.out.println("\nNew notification:\n"+message);
 	}

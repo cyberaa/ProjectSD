@@ -47,6 +47,7 @@ public class SubmitIdea extends User {
             return ERROR;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         responseIdea = "success";
         return SUCCESS;
     }

@@ -25,11 +25,12 @@ public class IdeaTransactions extends User {
         try {
             transactions = user.ideaTransactions(ideaId);
         } catch (RemoteException e) {
-            return ERROR;
+            return LOGIN;
         } catch (SQLException e) {
-            return ERROR;
+            return LOGIN;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         return SUCCESS;
     }
 

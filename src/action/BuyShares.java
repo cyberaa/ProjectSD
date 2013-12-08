@@ -25,21 +25,29 @@ public class BuyShares extends User {
     private String ideaOwner;
     private ArrayList<ShareInfo> shares;
 
+    private String responseBuy;
+
     public String execute() {
         super.execute();
         try {
             user.buyShares(ideaId,share_num,price_share, new_price_share);
             shares = user.showIdeaShares(ideaId);
         } catch (RemoteException e) {
-
+            responseBuy = "error";
+            return LOGIN;
         } catch (SQLException e) {
-
+            responseBuy = "error";
+            return LOGIN;
         } catch (NotEnoughSharesException e) {
-
+            responseBuy = "nes";
+            return SUCCESS;
         } catch (NotEnoughCashException e) {
-
+            responseBuy = "nec";
+            return SUCCESS;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
+        responseBuy = "success";
         return SUCCESS;
     }
 
@@ -97,5 +105,13 @@ public class BuyShares extends User {
 
     public void setIdeaOwner(String ideaOwner) {
         this.ideaOwner = ideaOwner;
+    }
+
+    public String getResponseBuy() {
+        return responseBuy;
+    }
+
+    public void setResponseBuy(String responseBuy) {
+        this.responseBuy = responseBuy;
     }
 }

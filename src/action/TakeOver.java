@@ -24,6 +24,7 @@ public class TakeOver extends User {
             return ERROR;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         return SUCCESS;
     }
 

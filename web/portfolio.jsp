@@ -15,6 +15,15 @@
     <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
+    <link href="assets/jquery.pnotify.default.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="assets/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="assets/jquery.pnotify.min.js"></script>
+    <script type="text/javascript">
+
+        window.onload = function() {
+            initializeWS();
+        }
+    </script>
     <title>Idea Broker</title>
 </head>
 <body>
@@ -76,6 +85,24 @@
 
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
+
+    <c:choose>
+        <c:when test="${responseDel == 'nfo'}">
+            <div class='alert alert-danger alert-dismissable'>
+                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                <strong>Error!</strong> You're not full owner of idea.
+            </div>
+        </c:when>
+        <c:when test="${responseDel == 'success'}">
+            <div class='alert alert-success alert-dismissable'>
+                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                <strong>Success!</strong> Idea deleted successfully!
+            </div>
+        </c:when>
+        <c:otherwise>
+
+        </c:otherwise>
+    </c:choose>
 
     <div class="well well-sm">
         <h3><i class="fa fa-tasks"></i> Your Portfolio</h3>
@@ -145,6 +172,12 @@
 <script src="assets/jquery.js"></script>
 <script src="assets/dist/js/bootstrap.min.js"></script>
 <script src="assets/jquery-ui-1.10.3/ui/jquery-ui.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/jquery.noty.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/top.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/topLeft.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/topRight.js"></script>
+<!-- You can add more layouts if you want -->
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/themes/default.js"></script>
 <script src="assets/custom.js"></script>
 
 

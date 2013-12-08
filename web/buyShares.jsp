@@ -15,7 +15,15 @@
     <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
+    <link href="assets/jquery.pnotify.default.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="assets/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="assets/jquery.pnotify.min.js"></script>
     <title>Idea Broker</title>
+    <script type="text/javascript">
+        window.onload = function() {
+            initializeWS();
+        }
+    </script>
 </head>
 <body>
 
@@ -76,6 +84,30 @@
 
 <!-- Main container -->
 <div class="container" style="padding-left: 200px; padding-right: 200px;">
+
+    <c:choose>
+        <c:when test="${responseBuy == 'nes'}">
+            <div class='alert alert-danger alert-dismissable'>
+                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                <strong>Error!</strong> There's not enough shares to buy!
+            </div>
+        </c:when>
+        <c:when test="${responseBuy == 'nec'}">
+            <div class='alert alert-danger alert-dismissable'>
+                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                <strong>Error!</strong> No enough cash!
+            </div>
+        </c:when>
+        <c:when test="${responseBuy == 'success'}">
+            <div class='alert alert-success alert-dismissable'>
+                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                <strong>Success!</strong> Your request has been fulfilled successfully!
+            </div>
+        </c:when>
+        <c:otherwise>
+
+        </c:otherwise>
+    </c:choose>
 
     <div class="panel panel-default">
         <div class="panel-body" style="">
@@ -156,6 +188,12 @@
 
 <script src="assets/jquery.js"></script>
 <script src="assets/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/jquery.noty.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/top.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/topLeft.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/topRight.js"></script>
+<!-- You can add more layouts if you want -->
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/themes/default.js"></script>
 <script src="assets/custom.js"></script>
 
 

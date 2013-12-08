@@ -37,6 +37,7 @@ public class SubmitTopic extends User {
             return SUCCESS;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         responseTopic = "success";
         return  SUCCESS;
     }

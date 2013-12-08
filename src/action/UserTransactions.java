@@ -30,6 +30,7 @@ public class UserTransactions extends User {
             return ERROR;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         return SUCCESS;
     }
 

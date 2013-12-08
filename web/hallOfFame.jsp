@@ -15,6 +15,15 @@
     <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
+    <link href="assets/jquery.pnotify.default.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="assets/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="assets/jquery.pnotify.min.js"></script>
+    <script type="text/javascript">
+
+        window.onload = function() {
+            initializeWS();
+        }
+    </script>
     <title>Idea Broker</title>
 </head>
 <body>
@@ -112,7 +121,12 @@
 
 <script src="assets/jquery.js"></script>
 <script src="assets/dist/js/bootstrap.min.js"></script>
-<script src="assets/jquery-ui-1.10.3/ui/jquery-ui.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/jquery.noty.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/top.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/topLeft.js"></script>
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/layouts/topRight.js"></script>
+<!-- You can add more layouts if you want -->
+<script type="text/javascript" src="assets/noty-2.1.3/js/noty/themes/default.js"></script>
 <script src="assets/custom.js"></script>
 
 

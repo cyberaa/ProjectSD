@@ -112,7 +112,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			//Check if user has enough cash.
 			double userCash = getCash(db, user_id);
 			System.out.println("Got user's cash: " + userCash);
+            System.out.println(share_num+" "+price_per_share);
 			if(userCash < share_num * price_per_share) {
+                System.out.println("Not enough cash.");
 				throw new NotEnoughCashException();
             }
 			System.out.println("Has enough cash.");

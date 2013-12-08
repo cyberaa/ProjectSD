@@ -6,7 +6,7 @@
       <identifier-quote-string>&quot;</identifier-quote-string>
       <synchronize>true</synchronize>
       <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
-      <jdbc-url>jdbc:oracle:thin:@192.168.0.106:1521:XE</jdbc-url>
+      <jdbc-url>jdbc:oracle:thin:@10.6.0.242:1521:XE</jdbc-url>
       <user-name>sd2</user-name>
       <user-password>dfd9dfcedf98</user-password>
       <libraries>
@@ -20,7 +20,7 @@
       <identifier-quote-string>&quot;</identifier-quote-string>
       <synchronize>true</synchronize>
       <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
-      <jdbc-url>jdbc:oracle:thin:@194.210.173.116:1521:XE</jdbc-url>
+      <jdbc-url>jdbc:oracle:thin:@10.6.0.242:1521:XE</jdbc-url>
       <user-name>sd2</user-name>
       <user-password>dfd9dfcedf98</user-password>
       <default-dialect>Oracle</default-dialect>

@@ -22,11 +22,12 @@ public class HallOfFame extends User {
         try {
             ideas = user.hallOfFame();
         } catch (RemoteException e) {
-            return ERROR;
+            return LOGIN;
         } catch (SQLException e) {
-            return ERROR;
+            return LOGIN;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         return SUCCESS;
     }
 

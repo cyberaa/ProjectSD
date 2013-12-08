@@ -41,7 +41,6 @@ public class UserBean {
     private double money = 0;
     private String AppSecret = "af8edf703b7a95f5966e9037b545b7ce";
     private String id;
-	private Notifications nots;
     private String token;
 
     public UserBean() {
@@ -51,7 +50,6 @@ public class UserBean {
             ideas = (RemoteIdeas) Naming.lookup(rmiAddress+"Ideas");
             topics= (RemoteTopics) Naming.lookup(rmiAddress+"Topics");
             transactions = (RemoteTransactions) Naming.lookup(rmiAddress+"Transactions");
-	        nots = new Notifications();
         } catch (NotBoundException e) {
             System.out.println("NotBoundException");
         } catch (MalformedURLException e) {

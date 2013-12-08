@@ -5,6 +5,10 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
            version="2.5">
 
+    <servlet>
+        <servlet-name>WebSocketChat</servlet-name>
+        <servlet-class>action.WSocketServelet</servlet-class>
+    </servlet>
     <filter>
         <filter-name>struts2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
@@ -13,4 +17,8 @@
         <filter-name>struts2</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+    <servlet-mapping>
+        <servlet-name>WebSocketChat</servlet-name>
+        <url-pattern>/chat</url-pattern>
+    </servlet-mapping>
 </web-app>

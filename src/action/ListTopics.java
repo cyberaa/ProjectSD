@@ -26,14 +26,13 @@ public class ListTopics extends User {
         try {
             topics = user.showTopics();
         } catch (Exception e) {
-            responseShowTopics = "rmi";
-            return SUCCESS;
+            return LOGIN;
         }
         for(int i=0; i<topics.size(); i++) {
             System.out.println(topics.get(i).text);
         }
         user.getMoneyFromRMI();
-        responseShowTopics = "success";
+        super.writeUserCookie();
         return SUCCESS;
     }
 

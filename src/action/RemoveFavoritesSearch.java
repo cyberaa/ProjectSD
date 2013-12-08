@@ -25,11 +25,12 @@ public class RemoveFavoritesSearch extends User {
             user.removeFromWatchlist(ideaId);
             ideas = user.searchIdea(key);
         } catch (SQLException e) {
-            return ERROR;
+            return LOGIN;
         } catch (RemoteException e) {
-            return ERROR;
+            return LOGIN;
         }
         user.getMoneyFromRMI();
+        super.writeUserCookie();
         return SUCCESS;
     }
 

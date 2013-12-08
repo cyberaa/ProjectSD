@@ -15,6 +15,9 @@
           <element id="library" level="project" name="restfb-1.6.12" />
           <element id="library" level="project" name="scribe-1.2.2" />
           <element id="library" level="project" name="json-20090211" />
+          <element id="library" level="project" name="Java EE 6-Java EE 6" />
+          <element id="library" level="project" name="servlet-api" />
+          <element id="library" level="project" name="tomcat-coyote" />
         </element>
       </element>
     </root>
