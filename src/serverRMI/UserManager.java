@@ -351,6 +351,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 	public void registerNotificationCallback(int user_id, RemoteNotifications nots) throws RemoteException
 	{
+		ServerRMI.users.add(user_id);
 		ServerRMI.userNotifications.put(user_id, nots);
 	}
 }

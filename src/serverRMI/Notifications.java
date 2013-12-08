@@ -186,4 +186,10 @@ public class Notifications
 		System.out.println("Notification created.");
 		return buyer + " bought " + parts + " from " + seller + " (idea " + idea_id +") for a total of " + totalPrice + " coins.";
 	}
+
+	public static void broadcastMessage(String message) throws RemoteException
+	{
+		for(int i=0; i < ServerRMI.users.size(); i++)
+			ServerRMI.userNotifications.get(ServerRMI.users.get(i)).pushNotification(message);
+	}
 }

@@ -895,4 +895,36 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         }
         return ideas;
     }
+
+	public String getIdeaText(Connection db, int idea_id) throws SQLException
+	{
+		int tries = 0;
+		int maxTries = 3;
+		PreparedStatement gIdeaText = null;
+		ResultSet rs;
+
+		String query = "SELECT idea.text FROM idea WHERE idea.id = ?";
+
+		while(tries < maxTries)
+		{
+			try {
+				gIdeaText = db.prepareStatement(query);
+				gIdeaText.setInt(1, idea_id);
+
+				rs = gIdeaText.executeQuery();
+
+				if(rs.next())
+					return rs.getString("text");
+			} catch (SQLException e) {
+				System.out.println(e);
+				if(tries++ > maxTries)
+					throw e;
+			} finally {
+				if(gIdeaText != null)
+					gIdeaText.close();
+			}
+		}
+
+		return "";
+	}
 }

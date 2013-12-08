@@ -11,6 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -36,6 +37,7 @@ public class ServerRMI
     protected static Ideas ideas;
 	protected static Transactions transactions;
 	protected static Notifications notifications;
+	protected static ArrayList<Integer> users;
 	protected static HashMap<Integer, RemoteNotifications> userNotifications;
 
 	public static void main(String args[])
@@ -61,6 +63,7 @@ public class ServerRMI
 		createAndBindObjects();
 
 		//Create hash table.
+		users = new ArrayList<Integer>();
 		userNotifications = new HashMap<Integer, RemoteNotifications>();
 
 		//Menu.

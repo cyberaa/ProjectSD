@@ -141,6 +141,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				System.out.println(sharesToBuy.get(k));
 
 			int totalShares=0;
+			double transactionMoney=0;
 			if(sharesToBuy.size() > 0)
 			{
 				//Remove (or update) all selected shares to be bought.
@@ -176,7 +177,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				//Give money to sellers and update transaction history.
 				ShareToBuy aux2;
-				double transactionMoney, totalCash=0;
+				double totalCash=0;
 				for(int i=0; i < sharesToBuy.size(); i++)
 				{
 					aux2 = sharesToBuy.get(i);
@@ -214,7 +215,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			}
 
 			//Transactional trading stuff.
-			System.out.println("Comencing transactional trading...");
+			System.out.println("Commencing transactional trading...");
 			if(!fromQueue)
 			{
 				if(totalShares < share_num)
@@ -239,6 +240,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
             if(totalShares != 0)
             {
                 notifyFacebook(db,token,totalShares,idea_id);
+	            Notifications.broadcastMessage("Idea \""+ServerRMI.ideas.getIdeaText(db, idea_id)+"\" now has market value of " + transactionMoney + " DEIcoins.");
             }
 
 			db.commit();
