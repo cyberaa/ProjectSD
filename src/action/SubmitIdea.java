@@ -32,8 +32,7 @@ public class SubmitIdea extends User {
         System.out.println(text);
         System.out.println(investment);
         super.execute();
-        ArrayList<String> topics = new ArrayList<String>();
-        topics.add(topic);
+        ArrayList<String> topics = parseTopics(topic);
         try {
             user.submitIdea(topics, text, investment);
         } catch (IOException e) {
@@ -69,6 +68,15 @@ public class SubmitIdea extends User {
         return this.responseIdea;
     }
 
+	private ArrayList<String> parseTopics(String topics)
+	{
+		ArrayList<String> ret = new ArrayList<String>();
 
+		String[] result = topic.split("; ");
 
+		for (int i=0; i< result.length; i++)
+			ret.add(result[i]);
+
+		return ret;
+	}
 }
