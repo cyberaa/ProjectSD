@@ -49,6 +49,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
      */
     public void submitIdea(ArrayList<String> topics, int user_id, double investment, String text, byte[] fileData, String filename, int current, String token, String username, String faceId) throws RemoteException, SQLException, IOException, NotEnoughCashException
     {
+	    System.out.println("Entered submit idea.");
         Connection db = ServerRMI.getConnection();
 
         //Check if user has enough cash.
@@ -229,6 +230,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
             ServerRMI.transactions.giveOrTakeUserCash(db,user_id,investment,false);
 
 		    db.commit();
+	        System.out.println("Idea submitted.");
 	    } catch (SQLException e) {
 		    System.out.println("\n"+e+"\n");
 		    if(db != null)
