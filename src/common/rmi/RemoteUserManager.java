@@ -15,7 +15,7 @@ import java.sql.SQLException;
  */
 public interface RemoteUserManager extends Remote
 {
-	public UserInfo authenticate(String name, String pass, RemoteNotifications nots) throws RemoteException, UserAuthenticationException, SQLException;
+	public UserInfo authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException;
 
 	public void register(String name, String pass) throws RemoteException, ExistingUserException, SQLException;
 
@@ -24,4 +24,6 @@ public interface RemoteUserManager extends Remote
     public UserInfo authenticateFace(String user_face, String token, String username) throws UserAuthenticationException, SQLException, RemoteException;
 
     public UserInfo registerNewFace(String user_face, String token, String username) throws SQLException, RemoteException;
+
+	public void registerNotificationCallback(int user_id, RemoteNotifications nots) throws RemoteException;
 }

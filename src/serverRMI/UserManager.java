@@ -38,9 +38,8 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 * @throws UserAuthenticationException
 	 * @throws SQLException
 	 */
-	public UserInfo authenticate(String name, String pass, RemoteNotifications nots) throws RemoteException, UserAuthenticationException, SQLException
+	public UserInfo authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException
 	{
-		System.out.println("[Authenticate] nots = " + nots);
 		Connection db = ServerRMI.getConnection();
 
 		int tries = 0, maxTries = 3;
@@ -69,8 +68,6 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
                 String username = resultSet.getString("username");
                 int isRoot = resultSet.getInt("is_root");
                 double money = resultSet.getDouble("cash");
-
-				ServerRMI.userNotifications.put(userId, nots);
 
 				return new UserInfo(userId,username,isRoot,money);
 			} catch (SQLException e) {
@@ -352,5 +349,8 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
         return money;
     }
 
-
+	public void registerNotificationCallback(int user_id, RemoteNotifications nots) throws RemoteException
+	{
+		ServerRMI.userNotifications.put(user_id, nots);
+	}
 }
