@@ -1,11 +1,6 @@
-DROP TRIGGER TSHARES;
-
-create or replace 
-trigger TSHARES
+CREATE OR REPLACE TRIGGER tShares
 AFTER
-UPDATE ON idea_share 
-FOR EACH ROW 
-WHEN (NEW.parts < 0)
-BEGIN
-  DELETE FROM idea_share WHERE id = :NEW.id;
-END;
+UPDATE OF parts ON idea_share
+  BEGIN
+    DELETE FROM idea_share WHERE parts = 0;
+  END;
