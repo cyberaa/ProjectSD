@@ -9,10 +9,7 @@ import java.awt.event.KeyListener;
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 import org.json.JSONException;
@@ -330,87 +327,26 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 			    }
 		    }
 
-		    //Update active field to 0.
-		    String update = "UPDATE idea SET active = 0 WHERE id = ?";
+		    CallableStatement dIdea = null;
+		    String procedureCall = "{call deleteidea(?)}";
 
-		    while(tries < maxTries)
+		    for(tries=0; tries < maxTries;)
 		    {
 			    try {
-				    stmt = db.prepareStatement(update);
-				    stmt.setInt(1, idea_id);
+				    dIdea = db.prepareCall(procedureCall);
+				    dIdea.setInt(1, idea_id);
 
-				    stmt.executeQuery();
+				    dIdea.executeQuery();
 				    break;
 			    } catch (SQLException e) {
-				    System.out.println(e);
+				    System.out.println("deleteIdea():\n"+e);
 				    if(tries++ > maxTries)
 					    throw e;
 			    } finally {
-				    if(stmt != null)
-					    stmt.close();
+				    if(dIdea != null)
+					    dIdea.close();
 			    }
 		    }
-
-            System.out.println("Updated");
-
-		    //Remove from idea_has_topic.
-		    String remove = "DELETE FROM idea_has_topic WHERE idea_id = ?";
-		    while(tries < maxTries)
-		    {
-			    try {
-				    stmt = db.prepareStatement(remove);
-				    stmt.setInt(1, idea_id);
-
-				    stmt.executeQuery();
-				    break;
-			    } catch (SQLException e) {
-				    System.out.println(e);
-				    if(tries++ > maxTries)
-					    throw e;
-			    } finally {
-				    if(stmt != null)
-					    stmt.close();
-			    }
-		    }
-
-            System.out.println("Deleted from idea_has_topic");
-
-		    //Remove from shares.
-		    remove = "DELETE FROM idea_share WHERE idea_id = ?";
-		    while(tries < maxTries)
-		    {
-			    try {
-				    stmt = db.prepareStatement(remove);
-				    stmt.setInt(1, idea_id);
-
-				    stmt.executeQuery();
-				    break;
-			    } catch (SQLException e) {
-				    System.out.println(e);
-				    if(tries++ > maxTries)
-					    throw e;
-			    } finally {
-				    if(stmt != null)
-					    stmt.close();
-			    }
-		    }
-
-            System.out.println("Shares deleted");
-
-		    //Remove from Watchlist.
-		    removeFromWatchlist(db, idea_id);
-
-            System.out.println("Removed from watch");
-
-		    //Remove from Hall of Fame.
-		    removeFromHallOfFame(db, idea_id);
-
-            System.out.println("Removed From hall of fame");
-
-		    //Remove from Transaction Queue.
-		    TransactionalTrading.removeAllByIdea(db, idea_id);
-
-            System.out.println("Removed from queue");
 
             deleteIdeaFromFb(db,idea_id,token);
 

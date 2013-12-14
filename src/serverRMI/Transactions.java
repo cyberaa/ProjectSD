@@ -9,10 +9,7 @@ import common.rmi.RemoteTransactions;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 import org.json.JSONException;
@@ -147,33 +144,14 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			if(sharesToBuy.size() > 0)
 			{
 				//Remove (or update) all selected shares to be bought.
-				int lastIndex = sharesToBuy.size() -1;
+				int lastIndex = sharesToBuy.size();
 				for(int i=0; i < lastIndex; i++)
-					deleteShare(db, sharesToBuy.get(i).id);
-
-				ShareToBuy lastShare = sharesToBuy.get(lastIndex);
-				if(lastShare.numToBuy == lastShare.total)
-					deleteShare(db, lastShare.id);
-				else
-					updateShare(db, lastShare.id, lastShare.total - lastShare.numToBuy, lastShare.value);
+					updateShare(db, sharesToBuy.get(i).id, idea_id, sharesToBuy.get(i).value, sharesToBuy.get(i).numToBuy, true);
 
 				System.out.println("Shares updated/removed.");
 
 				//Create new share for the buyer or update previous amount of shares.
-				ShareInfo aux1;
-				boolean updated = false;
-				for(int i=0; i < shares.size(); i++)
-				{
-					aux1 = shares.get(i);
-					if(aux1.getUser_id() == user_id)
-					{
-						updateShare(db, aux1.getId(), aux1.getParts() + share_num, new_price_share);
-						updated = true;
-						break;
-					}
-				}
-				if(!updated)
-					createShare(db, idea_id, user_id, share_num, new_price_share);
+				updateShare(db, user_id, idea_id, new_price_share, share_num, false);
 
 				System.out.println("New shares created/Old shares updated.");
 
@@ -555,10 +533,55 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 	/**
 	 * Updates the amount of parts a user has of the share identified by <em>id</em>.
+	 * @param db The connection to the database.
+	 * @param user_id The id of the user buying/selling shares.
+	 * @param idea_id The id of the idea which is being transacted.
+	 * @param share_price The new price of the shares.
+	 * @param number_shares The number of shares transacted.
+	 * @param isSeller Is the user identified by <em>user_id</em> selling shares?
+	 * @throws SQLException
+	 */
+	protected void updateShare(Connection db, int user_id, int idea_id, double share_price, int number_shares, boolean isSeller) throws SQLException
+	{
+		int tries = 0;
+		int maxTries = 3;
+		CallableStatement uShare = null;
+
+		String procedureCall = "{call buyshares(?,?,?,?,?)}";
+
+		while(tries < maxTries)
+		{
+			try {
+				uShare = db.prepareCall(procedureCall);
+				uShare.setInt(1, user_id);
+				uShare.setDouble(2, share_price);
+				uShare.setInt(3, number_shares);
+				uShare.setInt(4, idea_id);
+				if(isSeller)
+					uShare.setInt(5, 1);
+				else
+					uShare.setInt(5, 0);
+
+				uShare.executeQuery();
+				break;
+			} catch (SQLException e) {
+				System.out.println("updateShare():\n"+e);
+				if(tries++ > maxTries)
+					throw e;
+			} finally {
+				if(uShare != null)
+					uShare.close();
+			}
+		}
+	}
+
+	/**
+	 * Updates the amount of parts a user has of the share identified by <em>id</em>.
 	 * <p>NOTE: this function does not commit the changes to the database!</p>
 	 * @param db The connection to the database.
 	 * @param id The identifier of the share to update.
 	 * @param newNumParts The number of parts of the idea the user will now have.
+	 * @param value The new value of the shares.
 	 * @throws SQLException
 	 */
 	protected void updateShare(Connection db, int id, int newNumParts, double value) throws SQLException
