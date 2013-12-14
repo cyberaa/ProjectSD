@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION authenticate(username IN varchar2, faceId IN varchar2) RETURN NUMBER IS  
+CREATE OR REPLACE FUNCTION authenticate(username IN varchar2, faceId IN varchar2) RETURN NUMBER IS
   PRAGMA AUTONOMOUS_TRANSACTION;
   user_reg NUMBER;
   counter NUMBER;
@@ -18,4 +18,3 @@ EXCEPTION
     return -1;
     ROLLBACK;
 END;
-  
