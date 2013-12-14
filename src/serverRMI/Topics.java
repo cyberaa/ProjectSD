@@ -36,48 +36,20 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
         Connection db = ServerRMI.getConnection();
 
         PreparedStatement stmt = null;
-        String query;
+        String query = "Select insertTopic(?) as id from dual";
 
         int topic_id;
-
         ResultSet rs;
 
-        getTopicID(name);
-
         try {
-
             db.setAutoCommit(false);
-
-            query = "SELECT * FROM topic WHERE text LIKE ?";
 
             stmt = db.prepareStatement(query);
 	        stmt.setString(1, name);
 
             rs = stmt.executeQuery();
 
-            if(rs.next()) {
-                throw new ExistingTopicException();
-            }
-	        if(stmt != null)
-		        stmt.close();
-
-            query = "INSERT INTO topic (id, text) VALUES (seq_topic.nextval,?)";
-
-            stmt = db.prepareStatement(query);
-            stmt.setString(1,name);
-
-            stmt.executeQuery();
-
-            query = "SELECT seq_topic.currval as id FROM dual";
-
-	        if(stmt != null)
-		        stmt.close();
-            stmt = db.prepareStatement(query);
-
-            rs = stmt.executeQuery();
-
-            rs.next();
-
+	        rs.next();
             topic_id = rs.getInt("id");
 
             db.commit();

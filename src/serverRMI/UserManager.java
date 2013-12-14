@@ -306,7 +306,8 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		return pass;
 	}
 
-    public double getMoney(int userId) throws SQLException, RemoteException {
+    public double getMoney(int userId) throws SQLException, RemoteException
+    {
         Connection db = ServerRMI.getConnection();
 
         int tries = 0, maxTries = 3;

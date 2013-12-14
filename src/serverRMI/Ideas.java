@@ -130,42 +130,22 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
             }
 
 		    //Insert idea.
-		    query = "INSERT INTO idea (id,user_id,number_parts,active,text,attach,in_hall,face_id) VALUES (seq_idea.nextval,?,?,?,?,?,?,?)";
+	        int idea_id = 0;
+		    query = "SELECT newidea(?,?,?,?,?,?) as id FROM dual";
 
             try {
                 stmt = db.prepareStatement(query);
                 stmt.setInt(1, user_id);
                 stmt.setInt(2, 100000);
-                stmt.setInt(3, 1);
+                stmt.setDouble(3, investment/100000);
                 stmt.setString(4, text);
                 stmt.setString(5, filename);
-                stmt.setInt(6, 0);
-                stmt.setString(7, messageId);
-
-                stmt.executeQuery();
-            } catch (SQLException e) {
-                System.out.println(e);
-                if(db != null) {
-                    db.rollback();
-                }
-            } finally {
-                if(stmt != null) {
-                    stmt.close();
-                }
-            }
-
-            int idea_id = 0;
-
-            query = "SELECT seq_idea.currval as id FROM dual";
-
-            try {
-                stmt = db.prepareStatement(query);
+                stmt.setString(6, faceId);
 
                 rs = stmt.executeQuery();
 
-                rs.next();
-
-                idea_id = rs.getInt("id");
+	            rs.next();
+	            idea_id = rs.getInt("id");
             } catch (SQLException e) {
                 System.out.println(e);
                 if(db != null) {
@@ -177,6 +157,8 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 }
             }
 
+	        if(idea_id == 0)
+		        throw new SQLException();
 
 		    //Create relationship between topic and idea.
 		    query = "INSERT INTO idea_has_topic (idea_id,topic_id) VALUES (?,?)";
@@ -201,28 +183,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 }
 
 		    }
-
-            //Insert initial share of idea
-            query = "INSERT INTO idea_share (id,idea_id,user_id,parts,VALUE) VALUES (seq_idea_share.nextval,?,?,?,?)";
-
-            try {
-                stmt = db.prepareStatement(query);
-                stmt.setInt(1, idea_id);
-                stmt.setInt(2, user_id);
-                stmt.setInt(3, 100000);
-                stmt.setDouble(4, investment / 100000);
-
-                stmt.executeQuery();
-            } catch (SQLException e) {
-                System.out.println(e);
-                if(db != null) {
-                    db.rollback();
-                }
-            } finally {
-                if(stmt != null) {
-                    stmt.close();
-                }
-            }
 
             ServerRMI.transactions.giveOrTakeUserCash(db,user_id,investment,false);
 
