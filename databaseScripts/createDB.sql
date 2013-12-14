@@ -474,21 +474,13 @@ CREATE OR REPLACE PROCEDURE buyshares(userId IN NUMBER, share_price IN NUMBER, n
   END;
 
 --deleteIdea
-CREATE OR REPLACE PROCEDURE buyshares(userId IN NUMBER, share_price IN NUMBER, number_shares IN NUMBER, ideaId IN NUMBER, isSeller IN NUMBER) IS
-  share_id NUMBER := -1;
-  counter NUMBER;
+CREATE OR REPLACE PROCEDURE deleteIdea(ideaId IN NUMBER) IS
   BEGIN
-    SELECT count(id) INTO counter FROM idea_share WHERE user_id = userId;
-    IF counter > 0 THEN
-      SELECT id INTO share_id FROM idea_share WHERE user_id = userId;
-      IF isSeller = 0 THEN
-        UPDATE idea_share SET parts = idea_share.parts + number_shares, value = share_price WHERE id = share_id;
-      ELSE
-        UPDATE idea_share SET parts = idea_share.parts - number_shares, value = share_price WHERE id = share_id;
-      END IF;
-    ELSE
-      INSERT INTO idea_share VALUES (seq_idea_share.nextval, ideaId, userId, number_shares, share_price);
-    END IF;
+    UPDATE idea SET active=0, in_hall=0 WHERE id = ideaId;
+    DELETE FROM idea_has_topic WHERE idea_id = ideaId;
+    DELETE FROM idea_share WHERE idea_id = ideaId;
+    DELETE FROM watchlist WHERE idea_id = ideaId;
+    DELETE FROM transaction_queue WHERE idea_id = ideaId;
   END;
 
 --faceAuth
