@@ -91,30 +91,35 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
         int tries = 0, maxTries = 3;
 
         PreparedStatement queryUser = null;
+	    PreparedStatement functionCall = null;
         ResultSet resultSet = null;
 
-        String query = "SELECT id, face_id, username, is_root, cash FROM sduser WHERE face_id LIKE ?";
+        String query = "SELECT id, face_id, username, is_root, cash FROM sduser WHERE id LIKE ?";
+	    String call = "SELECT authenticate(?,?) as id FROM dual";
 
         while(tries < maxTries)
         {
             try {
+	            functionCall = db.prepareStatement(call);
+	            functionCall.setString(1, username);
+	            functionCall.setString(2, user_face);
+
+	            resultSet = functionCall.executeQuery();
+
+	            resultSet.next();
+	            int id = resultSet.getInt("id");
+
                 queryUser = db.prepareStatement(query);
-                queryUser.setString(1, user_face);
+                queryUser.setInt(1, id);
 
                 resultSet = queryUser.executeQuery();
 
-                if(!resultSet.next())
-                {
-                    UserInfo info = registerNewFace(user_face,token, username);
-                    return info;
-                }
+                resultSet.next();
                 int userId = resultSet.getInt("id");
                 int isRoot = resultSet.getInt("is_root");
                 double money = resultSet.getDouble("cash");
 
                 System.out.println(userId+" "+isRoot+" "+money);
-
-                //ServerRMI.userNotifications.put(userId, nots);
 
                 return new UserInfo(userId,username,isRoot,money);
             } catch (SQLException e) {
